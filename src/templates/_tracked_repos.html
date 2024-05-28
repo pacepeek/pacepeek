@@ -1,0 +1,23 @@
+{% for repo in repos %}
+<div class="repo-item">
+    <div class="repo-container">
+        <a class="repo-link" href="https://github.com/{{repo.owner_github_login}}/{{repo.name}}" target="_blank">{{repo.name}}
+        </a>
+        {% if current_user.github_login == repo.owner_github_login %}
+            {% if not repo.webhook_active %}
+                (webhook deactivated, probably the lack of premium)</a>
+            {% endif %}
+            <div hx-get="/load_repo_info?repo_id={{repo.id}}" 
+                 hx-trigger="click" 
+                 hx-target="#repo-info-{{repo.id}}"
+                 hx-swap="innerHTML"
+                 style="cursor:pointer;">
+                More Info
+            </div>
+        {% endif %}
+    </div>
+    <div id="repo-info-{{repo.id}}">
+    </div>
+</div>
+
+{% endfor %}

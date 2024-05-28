@@ -1,0 +1,67 @@
+<div class="openai">
+    <!-- THIS IS NOT USED SINCE IT TURNED OUT TO BE ILLEGAL TO SHARE OPENAI API KEYS LOL BUT I'M KEEPING IT HERE FOR REFERENCE 
+    {% if current_user.model_provider == "openai" %}
+    <div class="selected-tag">{{gettext("Selected")}} -></div>
+    <form hx-post="/select-provider" hx-target=".api-providers" class="api-key-form selected-api-provider">
+    {% else %}
+    <div class="not-selected-hidden-tag"></div>
+    <form hx-post="/select-provider" hx-target=".api-providers" class="api-key-form">
+    {% endif %}
+
+        <h3>{{gettext("OpenAI")}}</h3>
+        <label>{{gettext("OpenAI API Key")}}</label>
+        <input type="password" name="openai_api_key" id="openai_api_key" placeholder="{{gettext('Enter your OpenAI API Key')}}" class="form-input" value="{{current_user.openai_api_key_decrypted}}">
+        <button type="button" class="small-button" onclick="toggleOpenAIAPIKeyVisibility()">{{gettext("View")}}</button>
+        <input type="hidden" name="provider" value="openai">
+        <label>Model</label>
+        <select id="models" name="model">
+            {% for model in openai_models %}
+                {% if model == "newest gpt" %}
+                <option value="{{model}}">{{model}} ({{newest_gpt}})</option>
+                {% elif model == "newest llama" %}
+                <option value="{{model}}">{{model}} ({{newest_llama}})</option>
+                {% elif model == "newest mixtral" %}
+                <option value="{{model}}">{{model}} ({{newest_mixtral}})</option>
+                {% else %}
+                <option value="{{model}}">{{model}}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <img class="htmx-indicator" width="20" src="/img/bars.svg">
+
+        <input type="submit" value="{{gettext('Save and Select')}}" class="basic-button">
+    </form>
+</div>
+<div class="groq">
+    {% if current_user.model_provider == "groq" %}
+    <div class="selected-tag">{{gettext("Selected")}} -></div>
+    <form hx-post="/select-provider" hx-target=".api-providers" class="api-key-form selected-api-provider">
+    {% else %}
+    <div class="not-selected-hidden-tag"></div>
+    <form hx-post="/select-provider" hx-target=".api-providers" class="api-key-form">
+    {% endif %}
+        <h3>{{gettext("Groq")}}</h3>
+            <label>{{gettext("Groq API Key")}}</label>
+            <input type="password" name="groq_api_key" id="groq_api_key" placeholder="{{gettext('Enter your Groq API Key')}}" class="form-input" value="{{current_user.groq_api_key_decrypted}}">
+            <button type="button" class="small-button" onclick="toggleGroqAPIKeyVisibility()">{{gettext("View")}}</button>
+            <input type="hidden" name="provider" value="groq">
+            <label>Model</label>
+            <select id="models" name="model">
+                {% for model in groq_models %}
+                    {% if model == "newest gpt" %}
+                    <option value="{{model}}" {{ 'selected' if current_user.model_name == model else '' }}>{{model}} ({{newest_gpt}})</option>
+                    {% elif model == "newest llama" %}
+                    <option value="{{model}}" {{ 'selected' if current_user.model_name == model else '' }}>{{model}} ({{newest_llama}})</option>
+                    {% elif model == "newest mixtral" %}
+                    <option value="{{model}}" {{ 'selected' if current_user.model_name == model else '' }}>{{model}} ({{newest_mixtral}})</option>
+                    {% else %}
+                    <option value="{{model}}" {{ 'selected' if current_user.model_name == model else '' }}>{{model}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        <img class="htmx-indicator" width="20" src="/img/bars.svg">
+        <input type="submit" value="{{gettext('Save and Select')}}" class="basic-button">
+    </form>
+</div>
+-->
+{% include '_flash_messages.html' %}

@@ -1,0 +1,226 @@
+<div id="flash-messages" style="display:none;">
+    <!-- This will be filled with flash messages by HTMX -->
+    </div>
+    <div class="language-choice-container-mobile">
+        {% if not current_user.is_authenticated %}
+            {% if langlocale|string == 'fi' %}
+            <select id="languageChoice" name="language" hx-post="/change-language" hx-trigger="change" hx-swap="innerHTML" hx-target=".body">
+                <option value="fi" selected>Finnish</option>
+                <option value="en">English</option>
+            </select>
+            {% else %}
+            <select id="languageChoice" name="language" hx-post="/change-language" hx-trigger="change" hx-swap="innerHTML" hx-target=".body">
+                <option value="en" selected>English</option>
+                <option value="fi">Finnish</option>
+            </select>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="sidebar sidebar-left">
+        {% include '_flash_messages.html' %}
+        <nav class="main-nav">
+            <ul>
+                <li><a href="/" class="brand"><img src="{{ url_for('static', filename='photos/pacepeeklogomountainblue.png') }}" >PacePeek<div class="early-access-badge">{{gettext("Early Access")}}</div></a>
+                </li>
+                <div class="language-choice-container-desktop">
+                    {% if not current_user.is_authenticated %}
+                        {% if langlocale|string == 'fi' %}
+                        <select id="languageChoice" name="language" hx-post="/change-language" hx-trigger="change" hx-swap="innerHTML" hx-target=".body">
+                            <option value="fi" selected>Finnish</option>
+                            <option value="en">English</option>
+                        </select>
+                        {% else %}
+                        <select id="languageChoice" name="language" hx-post="/change-language" hx-trigger="change" hx-swap="innerHTML" hx-target=".body">
+                            <option value="en" selected>English</option>
+                            <option value="fi">Finnish</option>
+                        </select>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+
+                {% if not rendered_error_page %}
+                        {% if visible_page == 'feed' %}
+                        <a href="/"><li class="nav-item nav-item-selected">
+                                <i class="fa-solid fa-house fa-lg" style="color: #0dbce9;"></i>
+                                {{gettext("Home")}}</li></a>
+                        {% else %}
+                        <a href="/"><li class="nav-item">
+                                <i class="fa-solid fa-house fa-sm" style="color: #0dbce9;"></i>
+                                {{gettext("Home")}}</li></a>
+                        {% endif %}
+                    {% if user.is_authenticated %}
+                        {% if visible_page == 'profile' %}
+                        <a href="/{{current_user.github_login}}"><li class="nav-item nav-item-selected">
+                            <i class="fa-solid fa-user fa-lg" style="color: #0dbce9;"></i>
+                            {{gettext("Profile")}}</li></a>
+                        {% else %}
+                        <a href="/{{current_user.github_login}}"><li class="nav-item">
+                            <i class="fa-solid fa-user fa-sm" style="color: #0dbce9;"></i>
+                            {{gettext("Profile")}}</li></a>
+                        {% endif %}
+                    {% endif %}
+                        {% if visible_page == 'search' %}
+                        <a href="/search"><li class="nav-item nav-item-selected">
+                            <i class="fa-solid fa-magnifying-glass fa-lg" style="color: #0dbce9;"></i>
+                            {{gettext("Search")}}</li></a>
+                        {% else %}
+                        <a href="/search"><li class="nav-item">
+                            <i class="fa-solid fa-magnifying-glass fa-sm" style="color: #0dbce9;"></i>
+                            {{gettext("Search")}}</li></a>
+                        {% endif %}
+                    {% if user.is_authenticated %}
+                        {% if visible_page == 'settings' %}
+                        <a href="/settings"><li class="nav-item nav-item-selected">
+                            <i class="fa-solid fa-gear fa-lg" style="color: #0dbce9;"></i>
+                            {{gettext("Settings")}}</li></a>
+                        {% else %}
+                        <a href="/settings"><li class="nav-item">
+                            <i class="fa-solid fa-gear fa-sm" style="color: #0dbce9;"></i>
+                            {{gettext("Settings")}}</li></a>
+                        {% endif %}
+
+                    {% else %}
+                         {% if visible_page == 'faq' %}
+                            <a href="/faq"><li class="nav-item nav-item-selected">
+                                <i class="fa-solid fa-question-circle fa-lg" style="color: #0dbce9;"></i>
+                                FAQ</li></a>
+                        {% else %}
+                            <a href="/faq"><li class="nav-item">
+                                <i class="fa-solid fa-question-circle fa-sm" style="color: #0dbce9;"></i>
+                                FAQ</li></a>
+                        {% endif %}
+                    {% endif %}
+                    
+                {% endif %}
+
+            </ul>
+        </nav>
+        <footer>
+            
+
+        {% if current_user.is_authenticated %}
+            <div class="profile-link-container">
+
+                {% if current_user.github_avatar_url %}
+                    <img class="profile-image-post" src="{{ current_user.github_avatar_url}}" alt="Profile image">
+                {% else %}
+                    <img class="profile-image-post" src="https://github.com/rasmustestaccount.png" alt="Profile image">
+                {% endif %}
+
+                <div class="post-info">
+                    <span class="profile-link-name">
+                        {{ current_user.name }}
+                    </span>
+                    {% if current_user.is_admin %}
+                        <a href="/admin">Admin</a>
+                    {% endif %}
+                </div>
+            </div>
+            <details id="report-form">
+                <summary style="cursor:pointer;">{{gettext("Help make this app better!")}}</summary>
+                <form action="/submit-reports" method="post" class="feedback-form" hx-post="/submit-reports" hx-target="#report-form" hx-swap="outerHTML">
+                    <label for="feedback" class="form-label">{{gettext("Please be nice:)")}}</label><br>
+                    <textarea id="feedback" name="feedback" class="form-textarea" rows="4" cols="50" placeholder="{{gettext('Describe the bug found or suggest a feature...')}}"></textarea><br>
+                    <input type="submit" value="{{gettext('Submit')}}" class="form-submit">
+                    <small><i>{{gettext("*we could ask you for more information through your email")}}</i></small>
+                </form>
+            </details>
+            {% endif %}
+            <br>
+            <a style="padding-top:10px;" href="/tos-and-privacy"><small>{{gettext("Terms of Service & Privacy Policy")}}</small></a>
+        </footer>
+    </div>
+    <div class="content">
+        {% if rendered_profile %}
+
+            {{ rendered_profile | safe }}
+
+        {% elif rendered_error_page | safe %}
+
+            <div class="feed">
+                <div class="main-container">
+                    {{ rendered_error_page | safe }}
+                </div>
+            </div>
+            <div class="sidebar sidebar-right"> 
+            </div>
+
+        {% elif rendered_settings %}
+
+            {{ rendered_settings | safe }}
+
+        {% elif rendered_admin %}
+            
+            {{ rendered_admin | safe }}
+
+        {% elif rendered_tos_and_privacy %}
+            
+            <div class="feed">
+                <div class="main-container">
+                    {{ rendered_tos_and_privacy | safe }}
+                </div>
+            </div>
+            <div class="sidebar sidebar-right"> 
+            </div>
+
+        {% elif rendered_faq %}
+
+            <div class="feed">
+                <div class="main-container">
+                    {{ rendered_faq | safe }}
+                </div>
+            </div>
+            <div class="sidebar sidebar-right"> 
+            </div>
+        {% elif rendered_landing_page %}
+            <div class="feed">
+                <div class="main-container">
+                    {{ rendered_landing_page | safe }}
+                </div>
+            </div>
+            <div class="sidebar sidebar-right"> 
+            </div>
+
+        {% elif rendered_pricing %}
+            <div class="feed">
+                <div class="main-container">
+
+                    {{ rendered_pricing | safe }}
+
+                </div>
+            </div>
+            <div class="sidebar sidebar-right">  
+            </div>
+
+
+        {% elif rendered_search_page %}
+            
+            <div class="feed">
+                <div class="main-container">
+                    {{ rendered_search_page | safe }}
+                </div>
+            </div>
+            <div class="sidebar sidebar-right" 
+            </div>
+
+
+        {% elif rendered_post %}
+
+            <div class="feed">
+                <div class="main-container">
+                    {{ rendered_post | safe }}
+                </div>
+            </div>
+            <div class="sidebar sidebar-right"> 
+            </div>
+
+        {% else %}
+
+            {% include '_main_container_content.html' %}
+
+        {% endif %}
+    </div>
+    <div id="loadingIcon" style="display:none;">
+</div>

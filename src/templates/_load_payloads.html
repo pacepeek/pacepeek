@@ -1,0 +1,10 @@
+<div class="spacer"></div>
+<div class="spacer"></div>
+<div id="load-more-container" 
+     hx-ext="preload"
+     hx-get="/load_more_payloads?page=1"
+     hx-trigger="revealed" 
+     hx-indicator="#loading-indicator"
+     hx-swap="outerHTML">
+</div>
+<div id="loading-indicator">Loading...</div>

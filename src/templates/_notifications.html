@@ -1,0 +1,20 @@
+{% for noti in notifications %}
+    {% if noti.seen %}
+        {% if noti.link %}
+        <div class="noti-container noti-link" hx-get="{{noti.link}}" hx-push-url="true" hx-trigger="click" hx-target=".content" hx-swap="innerHTML" style="cursor: pointer;">
+        {% else %}
+        <div class="noti-container">
+        {% endif %}
+    {% else %}
+        {% if noti.link %}
+        <div class="noti-container noti-unseen noti-link" hx-get="{{noti.link}}" hx-push-url="true" hx-trigger="click" hx-target=".content" hx-swap="innerHTML" style="cursor: pointer;">
+        {% else %}
+        <div class="noti-container noti-unseen">
+        {% endif %}
+    {% endif %}
+        <div class="noti-content">
+            <p>{{noti.message}}</p>
+            <small>{{noti.creation_timestamp | timestamp_to_user_localtime | time_ago}}</small>
+        </div>
+    </div>
+{% endfor %}

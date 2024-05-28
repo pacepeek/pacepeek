@@ -1,0 +1,24 @@
+{% for noti in notifications %}
+    {% if noti.seen %}
+        {% if noti.link %}
+        <div id="noti-{{noti.id}}" class="noti-container noti-seen noti-link" hx-get="{{noti.link}}" hx-push-url="true" hx-trigger="click" hx-target=".content" hx-swap="innerHTML" style="cursor: pointer;">
+        {% else %}
+        <div id="noti-{{noti.id}}" class="noti-container noti-seen">
+        {% endif %}
+    {% else %}
+        {% if noti.link %}
+        <div id="noti-{{noti.id}}" class="noti-container noti-link" hx-get="{{noti.link}}" hx-push-url="true" hx-trigger="click" hx-target=".content" hx-swap="innerHTML" style="cursor: pointer;">
+        {% else %}
+        <div id="noti-{{noti.id}}" class="noti-container">
+        {% endif %}
+    {% endif %}
+        <div class="noti-content">
+            <p>{{noti.message}}</p>
+            <p>from: {{noti.user.github_login}}/{{noti.user.email_decrypted if noti.user.email_encrypted else None}}</p>
+            <small>{{noti.creation_timestamp | timestamp_to_user_localtime | time_ago}}</small>
+        </div>
+        <div class="basic-button button-sad" hx-delete="/delete_notification/{{noti.id}}" hx-target="#noti-{{noti.id}}" hx-swap="outerHTML" hx-confirm="Are you sure you want to delete this notification?" hx-trigger="click once">
+            <i class="fas fa-trash-alt"></i>
+        </div>
+    </div>
+{% endfor %}

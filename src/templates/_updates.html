@@ -1,0 +1,18 @@
+{% for update in updates %}
+    <div class="update-package">
+        <details>
+            <summary class="full-width-summary">
+                <h3>{{ update.new_posts[0].user.name }} has made {{ update.new_posts|length }} new posts in repo: {{ update.new_posts[0].repo.name }}</h3>
+            </summary>
+            <ul class="compact-post-list">
+                {% for post in update.new_posts %}
+                    <li class="compact-post">
+                        <p>{{ post.content_decrypted }}</p>
+                        <small>{{ post.creation_timestamp | timestamp_to_user_localtime | pretty_time }}</small>
+                    </li>
+                {% endfor %}
+            </ul>
+        </details>
+    </div>
+{% endfor %}
+

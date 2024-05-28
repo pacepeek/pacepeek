@@ -1,0 +1,21 @@
+{% if current_user.github_login == user.github_login%}
+
+    {% if not current_user.github_installation_id %}
+    <p style="padding: 10px;">{{gettext("PacePeek Integration Installation is needed for tracking repositories:)")}}</p>
+    <a href="{{install_url}}" class="a-button basic-button">{{gettext("Install PacePeek Integration to your personal account")}} "{{current_user.github_login}}"</a>
+    {% else %}
+        <button 
+            type="button" 
+            class="basic-button track-button"
+            hx-get="/get-repos-user" 
+            hx-trigger="click once"
+            hx-indicator="#loadingIcon"
+            hx-target=".main-container"
+            hx-swap="innerHTML">
+            {{gettext("Find more repos to track")}}
+        </button>
+    {% endif %}
+{% endif %}
+<ul class="repo-list">
+    {% include '_tracked_repos.html' %}
+</ul>

@@ -1,0 +1,18 @@
+{% for user in users %}
+    <button onclick="toggleUserInfoDropdown({{user.id}})" class="dropbtn">{{user.github_login}}<i class="fa-solid fa-circle-info" style="color:#0dbce9;pointer-events:none;"></i></button>
+    <div class="dropdown-user">
+        <div id="userInfoDropdown-{{user.id}}" class="dropdown-content">
+            <div class="sidebar-content dropdown-content-user-info">
+                <div id="load-more-container" 
+                     hx-get="/load_user_info?user_id={{user.id}}" 
+                     hx-trigger="click" 
+                     hx-indicator="#loading-indicator"
+                     hx-swap="outerHTML"
+                     style="cursor:pointer;">
+                    load by clicking
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+

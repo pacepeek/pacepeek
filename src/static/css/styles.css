@@ -1,0 +1,1960 @@
+:root { 
+    --main-color: #0dbce9;
+
+    /* Light shades of main-color*/
+    --main-color-light: #1ecff3;
+    --second-color: white;
+    --bg-color: #232626;
+    --dark-bg-color: #1a1a1a;
+    --border-color:	#0a8eb0;
+    --green: #4caf50;
+    --light-green: #66bb6a;
+    --red: #f44336;
+    --light-red: #ef5350;
+    --light-gray: rgba(255, 255, 255, 0.7);
+}
+
+body {
+    font-family: 'Fragment Mono';
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Switch to grid layout */
+    height: 100vh; /* Full viewport height */
+    background-color: var(--bg-color); 
+    color: var(--second-color);
+}
+
+a {
+    color: var(--main-color);
+    text-decoration: none;
+}
+p a:hover {
+    color: var(--main-color-light);
+}
+
+button {
+    background-color: var(--main-color);
+}
+
+#flash-messages {
+    z-index:110;
+    padding: 10px;
+    position:fixed;
+    bottom:45;
+    /* in the middle top of the screen*/
+    left: 50%;
+    transform: translateX(-50%);
+    width: 25%;
+    background-color:var(--main-color);
+    color:white;
+    border:1px solid black;
+    min-height:30px;
+}
+
+.padding-container {
+    padding: 20px;
+}
+
+.welcome-container {
+    /* Make the container take up the full viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+
+.groq, .openai {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.api-key-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    left: 25vw;
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--bg-color);
+}
+
+.selected-api-provider {
+    background-color: var(--dark-bg-color);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+.selected-tag {
+    background-color: var(--dark-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    width: 20%;
+    text-align: center;
+}
+
+.not-selected-hidden-tag {
+    padding: 10px;
+    margin: 10px;
+    width: 20%;
+}
+
+.first-page {
+    /* Make the first page take up the full viewport height */
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 17vh;
+    word-wrap: break-word;
+}
+
+.first-page h1 {
+    font-size: 36px; /* adjust font size to your liking */
+    margin-bottom: 20px; /* add some space between the tagline and paragraph */
+}
+
+.welcome-features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.welcome-feature {
+    width:  45%;
+    margin-bottom:  20px;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    color: var(--dark-bg-color);
+    border-radius: 10px;
+    background-color: white;
+    /* light shadow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-feature h1 {
+    word-wrap: break-word;
+    font-size: 1.0em;
+}
+.welcome-container h2 {
+    color: var(--main-color);
+}
+
+.welcome-container .header-h2 {
+    color: white;
+}
+
+
+.welcome-container h3 {
+    color: var(--main-color);
+}
+
+.tos-privacy-container {
+    padding: 20px;
+    margin: 20px;
+}
+.faq-container {
+    padding: 10px;
+}
+.faq-container strong {
+    color: var(--main-color);
+}
+
+.tos-privacy-container h3 {
+    color: var(--main-color);
+}
+
+.tos-privacy-container strong {
+    color: var(--main-color);
+}
+
+.tos-notice {
+    padding: 20px;
+    margin: 20px;
+    font-size: 0.8em;
+    text-align: center;
+}
+
+.public-orgs-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--bg-color);
+}
+
+.public-orgs {
+    border: 1px solid var(--border-color); 
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+.public-orgs-header {
+    background-color: var(--dark-bg-color);
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color); 
+}
+
+.public-orgs-header h2 {
+    margin: 0;
+    color: #ffffff;
+    font-family: 'Arial', sans-serif; /* Replace with your app's font */
+}
+
+.public-orgs-header p {
+    color: white;
+    font-family: 'Arial', sans-serif; /* Replace with your app's font */
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+.public-orgs-list {
+    padding: 20px;
+}
+
+.public-org {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.public-org:last-child {
+    border-bottom: none;
+}
+
+.public-org a {
+    text-decoration: none;
+    color: var(--main-color);
+    font-family: 'Arial', sans-serif; /* Replace with your app's font */
+}
+
+.public-org a:hover {
+    text-decoration: underline;
+}
+
+
+.pricing-container {
+    padding: 20px;
+    margin: 20px;
+}
+
+.pricing-section {
+    margin-bottom: 40px;
+}
+
+.pricing-section ul {
+    padding-left: 20px;
+}
+
+.pricing-section ul li {
+    margin-bottom: 5px;
+}
+
+.plan-card {
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 10px;
+    background-color: var(--dark-bg-color); 
+}
+
+small {
+    color: rgba(255, 255, 255, 0.7); /* Slightly faded text */
+}
+
+.pricing-container small {
+    color: rgba(255, 255, 255, 0.7); /* Slightly faded text */
+}
+
+.plan-card h2, .plan-card h1 {
+    margin-top: 0;
+    border-top: 0;
+    color: var(--main-color);
+}
+
+.price {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: var(--main-color);
+}
+
+.buy-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.buy-button:hover {
+    background-color: #0056b3;
+}
+
+
+.alert {
+    padding:  10px;
+    margin-bottom:  10px;
+}
+
+.alert.success {
+    /* green */
+    /* important*/
+    background-color: var(--green) !important;
+    border-color: #d6e9c6;
+}
+
+.alert.error {
+    background-color: var(--red) !important; /* red */
+    border-color: #ebccd1;
+}
+
+.alert.danger {
+    background-color: var(--red) !important; /* red */
+    border-color: #ebccd1;
+}
+
+.user-settings-container {
+    padding: 20px;
+}
+
+
+.feedback-form {
+    margin: 20px;
+}
+
+.form-label, .form-textarea, .form-submit {
+    display: block; /* Ensures each element takes up its own line */
+    width: 95%; /* Ensures elements take full width of their container */
+}
+
+.form-textarea {
+    height: 50px; /* Sets a fixed height for the textarea */
+    padding: 8px; /* Adds some padding inside the textarea */
+    border: 1px solid var(--border-color); /* Adds a simple border around the textarea */
+    resize: vertical; /* Allows the user to resize the textarea vertically */
+}
+
+
+.early-access-badge {
+    position: relative;
+    bottom: 0;
+    right: 0;
+    color: var(--second-color);
+    padding: 5px 10px;
+    font-size: 11px;
+    border-radius: 5px;
+}
+
+.language-choice-container-mobile {
+    display: none;
+}
+
+.language-choice-container-desktop {
+    display: block;
+}
+
+#languageChoice {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: var(--main-color);
+    color: var(--second-color);
+    padding: 5px 10px;
+    font-size: 12px;
+    border: none;
+    border-radius: 0 0 5px 0;
+}
+
+.payload {
+    padding: 20px;
+    margin: 20px;
+    max-width: 100%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Ensures equal column width */
+}
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+    word-wrap: break-word; /* Ensures content fits within the column */
+}
+th {
+    background-color: var(--dark-bg-color); /* Light grey background for headers */
+}
+
+.github-login-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 50px;
+    background-color: #000; /* GitHub color */
+    color: var(--second-color);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+.github-login-button:hover {
+    background-color: var(--main-color);
+}
+
+.github-icon {
+    height: 24px;
+    margin-right: 10px;
+}
+
+.a-button {
+    background-color: var(--bg-color);
+    border: none;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+}
+.little-spacer {
+    padding-top: 45px;
+}
+
+.spacer {
+    padding-top: 42.5px;
+}
+
+.spacer-tree {
+    padding-top: 175px;
+}
+
+.spacer-feed {
+    padding-top: 175px;
+}
+
+.time-window li {
+    list-style: none;
+}
+.time-window li:hover {
+    color: var(--main-color-light);
+}
+
+.time-window details {
+    text-align: right;
+}
+
+.tree-options-container {
+    padding: 20px;
+}
+
+.feature-description {
+    padding: 20px;
+    margin: 10px;
+    margin-left: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+}
+
+.day-starting-text-in-tree {
+    position: absolute;
+    bottom: -70px; 
+    right: -70%;
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    width: 300%;
+    pointer-events: none;
+}
+
+.day-starting-line {
+    /* line going the whole viewwidth under the parent*/
+    position: absolute;
+    bottom: -50px;
+    right: -50%;
+    width: 300%;
+    background-color: white;
+    color: #fff;
+    height: 2px;
+    pointer-events: none;
+}
+
+
+.started-tracking-text {
+    position: absolute;
+    bottom: -50px;
+    right: -50%;
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    width: 300%;
+    pointer-events: none;
+}
+
+.started-tracking-line {
+    /* line going the whole viewwidth under the parent*/
+    position: absolute;
+    bottom: -30px;
+    right: -50%;
+    width: 300%;
+    background-color: white;
+    color: #fff;
+    height: 2px;
+    pointer-events: none;
+}
+
+.branch-tag-box {
+    position: absolute;
+    top: -25px;
+    left: -15px;
+    background-color: #3498db;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    pointer-events: none;
+}
+
+.commit-tree {
+    padding: 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 0;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+
+.column {
+    position: relative;
+    width: 100%;
+}
+.column::before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+}
+
+.column-content {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.column-content-line-through {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex; /* Add this line */
+    justify-content: center; /* Add this line */
+}
+
+.fill-block {
+    width: 180px;
+}
+
+.connect-box {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: grid;
+    grid-template-rows: 1fr 1fr; 
+    grid-template-columns: 1fr 1fr; 
+}
+
+.commit-box {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 100%;
+    background-color: black;
+    position: relative;
+}
+
+.commit-info {
+  position: absolute;
+  bottom: 100%; /* Position the box above the commit box */
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-color);
+  min-width: 400%;
+  color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  visibility: hidden; /* Hide the info box by default */
+  opacity: 0;
+  transition: visibility 0.2s, opacity 0.2s ease-in-out;
+}
+
+.commit-info-wrapper {
+    padding: 10px;
+    z-index: 100;
+}
+
+/* Align to the left edge of the commit box */
+.commit-info.align-left {
+    left: -50%;
+    transform: translateX(-60%);
+}
+
+/* Align to the right edge of the commit box */
+.commit-info.align-right {
+    right: 50%;
+    transform: translateX(-25%);
+}
+
+.commit-box:hover .commit-info {
+  visibility: visible; /* Show the info box on hover */
+  opacity: 1;
+}
+
+.commit-box-empty {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    font-size: 0.5em;
+    text-align: center;
+}
+
+.commit-box-line-through {
+    width: 2px;
+    height: 100%;
+    margin: 0;
+    background-color: var(--border-color);
+}
+
+.commit-box.main-commit {
+    border-color: white;
+}
+/*
+
+.empty-box {
+    background-color: var(--bg-color);
+    border: 1px solid transparent;
+}
+
+
+.empty-box {
+    width: 122px;
+    height: 122px;
+    margin: 0;
+    display: grid;
+    border-left: 1px solid white;
+    border-right: 1px solid white;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr; 
+}
+
+.connect-box {
+    width: 142px;
+    height: 142px;
+    margin: 0;
+    display: grid;
+    border-left: 1px solid white;
+    border-right: 1px solid white;
+    grid-template-rows: 1fr 1fr; 
+    grid-template-columns: 1fr 1fr; 
+}*/
+
+.to-right {
+    grid-row: 2;
+    grid-column: 2;
+    margin: -1px;
+    border: 2px solid var(--border-color);
+    border-top-left-radius: 100%;
+    border-bottom: 0;
+    border-right: 0;
+}
+
+.to-left {
+    grid-row: 2;
+    grid-column: 1;
+    margin: -1px;
+    border: 2px solid var(--border-color);
+    border-top-right-radius: 100%;
+    border-bottom: 0;
+    border-left: 0;
+}
+
+.from-left {
+    grid-row: 1;
+    grid-column: 1;
+    margin: -1px;
+    border: 2px solid var(--border-color);
+    border-bottom-right-radius: 100%;
+    border-top: 0;
+    border-left: 0;
+}
+
+.from-right {
+    grid-row: 1;
+    grid-column: 2;
+    margin: -1px;
+    border: 2px solid var(--border-color);
+    border-bottom-left-radius: 100%;
+    border-top: 0;
+    border-right: 0;
+}
+
+
+.vertical-top {
+    grid-row: 1;
+    grid-column: 1;
+    margin: -1px;
+    border-right: 2px solid var(--border-color);
+}
+
+.vertical-bottom {
+    grid-row: 2;
+    grid-column: 1;
+    margin: -1px;
+    border-right: 2px solid var(--border-color);
+}
+
+.horizontal-left {
+    grid-row: 1;
+    grid-column: 1;
+    margin: -1px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.horizontal-right {
+    grid-row: 1;
+    grid-column: 2;
+    margin: -1px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.connect-box.main-commit .vertical-top,
+.connect-box.main-commit .vertical-bottom,
+.connect-box.main-commit .horizontal-left,
+.connect-box.main-commit .horizontal-right {
+    border-color: white;
+}
+
+.sha {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    font-size: 10px;
+}
+
+.welcome {
+    padding: 20px;
+    margin: 20px;
+}
+.welcome span {
+    color: var(--main-color);
+}
+
+
+.right-sidebar-content section {
+    overflow-y: auto;
+    max-height: calc(100vh - 40px); /* 100% viewport height - 40px padding */
+}
+
+
+
+
+
+.sidebar-left {
+    padding: 20px 0;
+    left: 0; /* Left position */
+    border-right: 1.5px solid var(--border-color); /* Right border for left sidebar */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* putting items vertically spaced out */
+    justify-content: space-between;
+    overflow-y: auto;
+
+}
+
+.sidebar-left footer {
+    margin-bottom: 20px;
+}
+
+.sidebar-left nav {
+    padding: 20px;
+    margin: 0;
+    top: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.nav-link {
+    font-weight:400;
+}
+
+.nav-link-selected {
+    font-weight: 800;
+    background-color: var(--dark-bg-color);
+}
+
+
+.sidebar-left nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-left nav li {
+    margin: 15px 0; /* Spacing between list items */
+    text-align: left;
+}
+
+.sidebar-right {
+    right: 0; /* Right position */
+    width: 25vw;
+    z-index: 5; 
+    border-left: 1.5px solid var(--border-color); /* Left border for right sidebar */
+}
+
+.sidebar-content {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(100vh - 40px);
+}
+
+.sidebar-content details {
+    padding: 20px;
+}
+
+.sidebar-content-mobile {
+    max-height: calc(100vh - 100px);
+}
+
+.dropdown-content-user-info {
+    max-height: calc(100vh - 100px);
+    min-width: 40vw;
+}
+
+.sidebar-content h2 {
+    margin: 0;
+    padding: 20px 0;
+    border-top: 1.5px solid var(--dark-bg-color);
+}
+
+
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+    color: var(--second-color);
+}
+
+.sidebar {
+    position: fixed; /* Fixed position - sit on top of the page */
+    top: 0;
+    height: 100vh; /* Full height */
+    width: 25vw;
+}
+
+.content {
+    height: 100%;
+    width: 100%;
+}
+
+.feed {
+    margin-left: 25vw;
+    margin-right: 25vw;
+    height: 100vh; /* Full height */
+    /*width: 50%;*/
+    background-color: var(--bg-color);
+}
+
+.main-container {
+    height: 100%;
+}
+
+.main-container p {
+    /*padding: 10px;*/
+}
+
+.feed-container {
+    left: 25vw;
+    right: 25vw;
+    height: 100%;
+}
+
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.profile-image {
+    width: 100px;  /* or whatever size you prefer */
+    height: auto;
+}
+
+.follow-button.hidden {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.profile-info h2 {
+    font-size: 1.7em;
+    margin-bottom: 5px;
+    margin-top: 10px;
+}
+
+.profile-info a {
+    font-size: 1.0em;
+    color: var(--second-color);
+    text-decoration: none;
+    margin-bottom: 5px;
+}
+
+.profile-info a:hover {
+    color: var(--main-color-light);
+}
+
+#previewPane {
+    background-color: white;
+}
+
+#previewPaneOrg {
+    max-width: 100%;
+}
+
+
+.widget-workshop {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+#widget-org-repo-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#widget-org-repo-container-mobile {
+    display: none;
+}
+
+#customizationOptions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#customizationOptions input {
+    margin: 10px;
+}
+
+#customizationOptions label {
+    margin: 10px;
+}
+
+.day-container {
+    border: 1px solid var(--border-color); 
+    margin-bottom: 10px; /* Add some space between each day container */
+    padding: 10px; /* Add padding inside the day container */
+    background-color: var(--dark-bg-color);
+    border-radius: 5px; /* Rounded corners */
+}
+
+.day-header {
+    font-size: 18px; /* Larger font size for the header */
+    font-weight: bold; /* Make the header text bold */
+    margin-bottom: 10px; /* Add some space below the header */
+}
+
+.day-content {
+    font-size: 14px; /* Smaller font size for the content */
+    color: white; /* Dark grey text color */
+}
+
+.days-container {
+    padding: 20px;
+    margin: 20px;
+}
+
+.tab-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.desktop-option {
+    display: block;
+    padding-left: 3px;
+}
+
+.sticky-button-tabs {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 3px solid var(--border-color);
+    border-bottom: 0;
+    background-color: var(--bg-color);
+    z-index: 5;  /* to keep it above other elements */
+}
+
+.button-flex-container {
+    flex: 1;
+    border-right: 3px solid var(--border-color);  /* right border */
+}
+
+.button-flex-container:last-child {
+    border-right: none;
+}
+
+.bottom-tab-button {
+    background-color: var(--bg-color);
+    color: var(--second-color);
+    padding: 10px 20px;  /* Increase horizontal padding */
+    margin: 0;  /* Remove margin */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;  /* Add transition for color */
+    text-align: center;  /* Add this line */
+    flex: 1;
+}
+
+
+
+
+.bottom-tab-button:hover {
+    color: var(--main-color-light);
+}
+
+
+.selected {
+    text-decoration: underline;
+}
+
+
+.profile-content {
+    padding-top: 309px;
+}
+
+
+
+.settings-content {
+    padding: 100px 20px 20px 20px;
+}
+.settings-content h3 {
+    text-decoration: underline var(--main-color);
+}
+
+.profile-container .basic-button  {
+    margin: 10px;
+    text-align: center;
+}
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+}
+
+
+.button-happy {
+    background-color: var(--green) !important;
+}
+.button-happy:hover {
+    background-color: var(--light-green)  !important;
+}
+.button-sad {
+    background-color: var(--red) !important;
+}
+.button-sad:hover {
+    background-color: var(--light-red) !important;
+}
+
+/* Dropdown Button */
+
+.dropdown {
+    /* items are on top of each other centered horizontally*/
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    right: 25vw;
+    left: 25vw;
+    z-index: 15;
+}
+.dropdown-user {
+    /* items are on top of each other centered horizontally*/
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    right: 25vw;
+    left: 25vw;
+    top: -2%;
+    z-index: 15;
+}
+
+.dropdown-fixed-org-header {
+    position: fixed;
+    top: 0;
+    z-index: 17;
+}
+
+.dropdown-fixed-org {
+    position: fixed;
+    top: 45px;
+    z-index: 16;
+}
+.dropdown-fixed-repo {
+    position: fixed;
+    top: 90px;
+    z-index: 15;
+}
+
+.dropbtn {
+    color: white;
+    background-color: var(--bg-color);
+    padding: 10px 0;
+    width: 100%;
+    font-size: 20px; /* Larger font size */
+    display: inline-block; /* Helps to set width and height */
+    border: 1px solid var(--border-color);
+    border-right: 1.5px solid var(--border-color);
+    border-top: 0;
+    cursor: pointer;
+    z-index: 11;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%); /* Shift the dropdown back by half its own width */
+    background-color: var(--bg-color);
+    min-width: 160px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 20;
+}
+
+
+.dropdown-content-org-info {
+    width: 80%;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+}
+
+/* Show the dropdown menu */
+.show {display:block;}
+
+.sticky {
+    position: fixed;
+    left: 25vw;   /* same as the left sidebar width */
+    right: 25vw; /* same as the right sidebar width */
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1.5px solid var(--border-color);
+    border-top: 0;
+    border-bottom: 0;
+    background-color: var(--bg-color);
+    z-index: 5; /*  to keep it above other elements */
+}
+
+.repository-sticky {
+    margin-top: 42.5px;
+}
+
+.org-repo-view-sticky {
+    margin-top: 136px;
+}
+
+#tabs {
+    display: flex;
+    justify-content: flex-start;  /* Align to the left */
+    width: 100%;
+    background-color: var(--bg-color);
+    border-bottom: 1.5px solid var(--border-color);
+}
+
+#repository-tabs {
+    display: flex;
+    justify-content: flex-start;  /* Align to the left */
+    width: 100%;
+    background-color: var(--bg-color);
+    border-bottom: 1.5px solid var(--border-color);
+}
+
+.unseen-count {
+    position: absolute; /* Position the badge relative to its parent */
+    top: 0; /* Adjust as needed to position at the top-right corner */
+    right: 0; /* Adjust as needed to position at the top-right corner */
+    background-color: var(--main-color); /* Badge background color */
+    color: white; /* Badge text color */
+    border-radius: 50%; /* Circular badge */
+    padding: 3.5px 3.5px; /* Padding inside the badge */
+    font-size: 0.75em; /* Smaller font size for the badge */
+    /* Adjust the positioning and size as needed */
+}
+
+.tab-button {
+    background-color: var(--bg-color);
+    color: var(--second-color);
+    border-right: 1.5px solid var(--border-color);
+    border-top: 1.5px solid var(--border-color);
+    padding: 10px 20px;  /* Increase horizontal padding */
+    margin: 0;  /* Remove margin */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;  /* Add transition for color */
+    position: relative;/* This is crucial for positioning the noti_count*/
+
+    /* Remove all borders */
+    border-left: 0;
+    border-bottom: 0;
+}
+
+.tab-button:hover {
+    color: var(--main-color-light);
+}
+
+.repository-tab-button {
+    background-color: var(--bg-color);
+    color: var(--second-color);
+    border-right: 1.5px solid var(--border-color);
+    padding: 10px 20px;
+    margin: 0;  
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;  /* Add transition for color */
+
+    /* Remove all borders */
+    border-left: 0;
+    border-bottom: 0;
+}
+
+.repository-tab-button:hover {
+    color: var(--main-color-light);
+}
+
+.selected {
+    text-decoration: underline;
+}
+
+.repo-item {
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1.5px solid var(--border-color);
+}
+.repo-item a:hover {
+    color: var(--main-color-light);
+}
+
+.repo-container {
+    min-width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.repo-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.repo-link {
+    color: var(--second-color);
+    text-decoration: none;
+}
+
+.untrack-button {
+    margin-left: 10px;
+}
+
+#search-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#search-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    outline: none; /* remove browser default outline */
+    background-color: var(--bg-color);
+    color: var(--second-color);
+}
+
+#search-container input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.search-results {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.person-link:focus .person::before {
+    content: "→ ";
+    display: inline-block;
+    color: var(--main-color);
+}
+
+
+.person {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.person-link {
+    display: block;
+    text-decoration: none;
+}
+
+.person-link .person {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: var(--second-color);
+}
+
+.person-link .person:last-child {
+    border-bottom: none;
+}
+
+.person-link .person:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.person-link:focus .person {
+    background-color: rgba(0, 0, 0, 0.2); 
+    outline: none; /* remove browser default outline */
+}
+
+.compact-post-list {
+    list-style-type: none;
+    padding: 0 20px 20px 20px;
+    margin: 0;
+}
+
+.compact-post {
+    padding: 10px;
+}
+
+.compact-post h4 {
+    margin: 0;
+    font-size: 16px;
+    color: var(--main-color);
+}
+
+.compact-post p {
+    margin: px 0;
+    font-size: 13px;
+}
+
+.compact-post small {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7); /* Slightly faded text */
+}
+
+.tree-options-container small {
+    color: rgba(255, 255, 255, 0.7); /* Slightly faded text */
+}
+
+.user-settings-container small {
+    color: rgba(255, 255, 255, 0.7); /* Slightly faded text */
+}
+
+
+.member-role {
+    padding: 5px;
+    font-weight: bold;
+}
+.member-you {
+    color: var(--green);
+}
+
+.member {
+    font-size: 1em;
+}
+.member:hover {
+    color: var(--main-color-light);
+}
+.noti-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-bottom: 1.5px solid var(--border-color);
+    background-color: var(--bg-color);
+    padding: 20px;
+    padding-top: 0;
+}
+
+.noti-unseen {
+    background-color: var(--dark-bg-color);
+}
+
+.noti-link:hover {
+    background-color: var(--dark-bg-color);
+}
+
+/*----*/
+.post-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-bottom: 1.5px solid var(--border-color);
+    background-color: var(--bg-color);
+    padding: 20px;
+    padding-top: 0;
+}
+
+.post-container:hover {
+    background-color: var(--dark-bg-color);
+}
+
+.single-post-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-bottom: 1.5px solid var(--border-color);
+    border-top: 1.5px solid var(--border-color);
+    background-color: var(--bg-color);
+    padding: 20px;
+    padding-top: 0;
+}
+
+.back-button {
+    padding: 10px;
+}
+
+.tree-post {
+    font-size: 2.0em;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+}
+
+.profile-link-container {
+    padding: 10px 15px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.post h3 {
+    text-decoration: underline var(--main-color);
+}
+
+.post p {
+    color: var(--second-color);
+    margin: 10px 0;
+}
+
+.post details {
+    color: var(--second-color);
+    cursor: pointer;
+}
+
+.post details summary {
+    margin-bottom: 10px;
+}
+
+.post h3 a {
+    text-decoration: none;
+}
+
+.post a {
+    color: var(--second-color);
+    text-decoration: none;
+}
+
+.post a:hover {
+    color: var(--main-color);
+}
+
+.post div {
+    color: var(--second-color);
+    font-size: 12px;
+    margin-top: 10px;
+}
+.post small {
+    color: rgba(255, 255, 255, 0.7); /* Slightly faded text */
+
+}
+
+.member-role {
+    padding: 5px;
+}
+
+.member-header {
+    padding-bottom: 13px;
+    display: flex;
+    align-items: center;
+    /* wrap items */
+    flex-wrap: wrap;
+}
+
+.profile-image-post {
+    width: 30px;
+    height: auto;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.post-info {
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.post-author-preview {
+    /* moving this to middle */
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.post-author {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.profile-link-name {
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+
+.post-author-absent {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.post-author:hover {
+    color: var(--main-color-light);
+}
+
+
+.post-repo {
+    font-size: smaller;
+    font-size: 1.2em;
+}
+
+.post-repo a {
+    color: var(--second-color);
+    text-decoration: none;
+}
+
+.post-repo a:hover {
+    color: var(--main-color-light);
+    text-decoration: underline;
+}
+
+
+.update-package {
+    border-bottom: 1.5px solid var(--border-color);
+    cursor: pointer;
+}
+
+.update-package details {
+    width: 100%;
+    height: 100%;
+}
+
+.update-package summary {
+    padding: 20px;
+    list-style: none;
+    outline: none;
+}
+.update-package summary h3 {
+    text-decoration: underline var(--main-color);
+}
+
+.update-package details:not([open]):hover {
+    background-color: var(--dark-bg-color);
+}
+
+.update-package details:not([open]) summary {
+    padding: 20px;
+    list-style: none;
+    outline: none;
+}
+
+.update-package details:not([open]) summary::after {
+    content: ' (Click to expand)';
+    transition: opacity 0.3s ease;
+}
+
+
+.update-package details[open] summary::after {
+    content: '';
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.update-package summary::-webkit-details-marker {
+    display: none;
+}
+
+
+section h2 {
+    margin: 0;
+    padding: 20px 0;
+    border-top: 1.5px solid var(--border-color);
+}
+
+.brand {
+    display: block;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 10px 20px;
+    text-align: center;
+    color: var(--second-color);
+    text-decoration: none;
+}
+.brand img {
+    width: 40px;
+    height: auto;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+
+
+.brand:hover {
+    color: var(--main-color);
+    background-color: rgba(0,0,0,0.2); /* subtle hover effect for brand */
+}
+
+.main-nav {
+    margin: 0 !important; /* Remove default margin */
+    padding: 0 !important; /* Remove default padding */
+}
+
+.nav-item {
+    color: var(--main-color); /* White text color */
+    text-decoration: none; /* Remove underline */
+    padding: 10px 20px;
+    padding-left: 60px;
+    font-weight:400;
+    text-align: center;
+    border-radius: 30px; /* Rounded corners */
+    font-size: 18px; /* Adjust font size as needed */
+    transition: background-color 0.3s; /* Smooth transition effect */
+}
+.nav-item:hover {
+    background-color: var(--dark-bg-color);
+}
+
+.nav-item-selected {
+    background-color: var(--dark-bg-color);
+}
+
+.nav-item a {
+    color: var(--second-color);
+    text-decoration: none;
+}
+
+
+.sidebar-left nav a.brand {
+    background-color: transparent; /* override with transparent background */
+    color: var(--second-color);
+}
+
+.sidebar-left nav a.brand:hover {
+    color: var(--main-color);
+}
+
+.small-button {
+    background-color: var(--light-gray);
+    color: var(--second-color);
+    padding: 5px 10px;
+    margin: 5px;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.basic-button {
+    background-color: var(--main-color);
+    text-decoration: none;
+    color: var(--second-color);
+    padding: 5px 10px;
+    margin: 5px;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.basic-button:hover {
+    background-color: var(--main-color-light); /* Slightly darker shade on hover */
+}
+
+.basic-button:active {
+    background-color: #078ca0; /* Even darker on click */
+    transform: scale(0.95); /* Reset to normal size on click */
+}
+
+.button-disabled {
+    background-color: var(--green);
+    cursor: not-allowed;
+}
+.button-disabled:hover {
+    background-color: var(--green);
+}
+
+.settings-logout-button {
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.repo-list-container {
+    padding: 20px;
+    background-color: var(--bg-color);
+    color: var(--second-color);
+}
+
+.repo-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.repo-options-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.repo-option {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.repo-checkbox {
+    margin-right: 10px;
+}
+
+.repo-label {
+    color: var(--second-color);
+    cursor: pointer;
+}
+
+.repo-track-button {
+    margin-top: 20px;
+}
+
+.custom-checkbox {
+    display: none;  /* Hide default checkbox */
+}
+
+.custom-checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.custom-checkbox-box {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.custom-checkbox:checked + .custom-checkbox-box {
+    background-color: var(--main-color);
+    position: relative;
+}
+
+.custom-checkbox:checked + .custom-checkbox-box::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--second-color);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 2px;
+}
+
+.repo-name {
+    color: var(--second-color);
+}
+
+#loading-indicator {
+    padding: 20px;
+    text-align: center;
+}
+
+.sticky-simple-header {
+    border-bottom: 1.5px solid var(--border-color);
+}
+
+
+footer {
+    padding-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    color: var(--second-color);
+    background-color: var(--bg-color);
+}
+
+footer details {
+    padding: 20px;
+    padding-bottom: 0;
+}
+
+.footer-settings {
+    display: block;
+}
+
+/* Show the sticky-button-tabs when screen width is less than 768px */
+@media screen and (max-width: 768px) {
+    .sticky-button-tabs {
+        display: flex;
+        left: 0;
+        right: 0;
+    }
+    .sidebar {
+        display: none;
+        width: 0;
+    }
+    .feed  {
+        margin-left: 0vw;
+        margin-right: 0vw; 
+        width: 100vw;
+    }
+    .sticky {
+        left: 0;
+        right: 0;
+        border-left: none;
+        border-right: none;
+    }
+
+    .repository-sticky {
+        width: 100%;
+        left: 0;
+        border-left: none;
+    }
+
+    .dropdown {
+        left: 0;
+        right: 0;
+    }
+
+    .dropbtn {
+        border-left: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
+    }
+
+ 
+    footer {
+        padding: 5px 20px 60px 20px;
+        text-align: center;
+        color: var(--second-color);
+        background-color: var(--bg-color);
+        border-top: 1.5px solid var(--border-color);
+    }
+
+    .welcome-feature {
+        width: 100%;
+    }
+
+    .languageChoice {
+        /* top left corner */
+        position: absolute;
+        top: 0;
+        left: 0;
+
+    }
+    .language-choice-container-mobile {
+        display: block;
+    }
+    .language-choice-container-desktop {
+        display: none;
+    }
+    .desktop-option {
+        display: none;
+    }
+
+
+    #widget-org-repo-container-mobile {
+        display: block;
+    }
+
+    #widget-org-repo-container {
+        display: none;
+    }
+    .first-page h1 {
+        font-size: 30px; /* adjust font size to your liking */
+        margin-bottom: 20px; /* add some space between the tagline and paragraph */
+    }
+}
+

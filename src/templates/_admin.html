@@ -1,0 +1,48 @@
+<div class="feed">
+    <div class="main-container">
+        <div class="sticky">
+            <div id="tabs" hx-target=".content" hx-swap="innerHTML">
+                <div class="tab-button {{ 'selected' if admin_feed_type == 'home' else '' }}" hx-get="/change-feed-type-admin" hx-vals='{"admin_feed_type":"home"}' hx-trigger="click" style="cursor: pointer;">Dash</div>
+
+                <div class="tab-button {{ 'selected' if admin_feed_type == 'notifications' else '' }}" hx-get="/change-feed-type-admin" hx-vals='{"admin_feed_type":"notifications"}' hx-trigger="click" style="cursor: pointer;">Notis</div>
+                <div class="tab-button {{ 'selected' if admin_feed_type == 'reports' else '' }}" hx-get="/change-feed-type-admin" hx-vals='{"admin_feed_type":"reports"}' hx-trigger="click" style="cursor: pointer;">Reports</div>
+                <div class="tab-button {{ 'selected' if admin_feed_type == 'payloads' else '' }}" hx-get="/change-feed-type-admin" hx-vals='{"admin_feed_type":"payloads"}' hx-trigger="click" style="cursor: pointer;">Payloads</div>
+                <div class="tab-button {{ 'selected' if admin_feed_type == 'users' else '' }}" hx-get="/change-feed-type-admin" hx-vals='{"admin_feed_type":"users"}' hx-trigger="click" style="cursor: pointer;">Users</div>
+
+            </div>
+        </div>
+
+        <div class="feed-container">
+            <div class="spacer"></div>
+            {% if admin_feed_type == 'notifications' %}
+
+                {% include '_load_notifications_admin.html' %}
+
+            {% elif admin_feed_type == 'users' %}
+
+                {% include '_load_users_admin.html' %}
+
+            {% elif admin_feed_type == 'reports' %}
+
+                {% include '_load_notifications_report.html' %}
+
+            {% elif admin_feed_type == 'payloads' %}
+
+                {% include '_load_payloads.html' %}
+
+            {% else %}
+
+                {% include '_load_admin_home.html' %}
+
+            {% endif %}
+        </div>
+
+        {% include '_sticky_main_tabs.html' %}
+    </div>
+</div>
+<div class="sidebar sidebar-right"> 
+    <div class="sidebar-content">
+    </div>
+</div>
+
+

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='photos/pacepeeklogomountain.png') }}" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
+    <script src="https://kit.fontawesome.com/a9267d4ec4.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&display=swap" rel="stylesheet">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>PacePeek</title>
+</head>
+<body class="body">
+    {% include '_home_body.html' %}
+</body>
+<script>
+    document.body.addEventListener('wheel', function(e) {
+        document.querySelector('.feed').scrollTop += e.deltaY;
+    });
+    
+    // Save scroll position
+    document.querySelector('.main-container').addEventListener('scroll', function() {
+        sessionStorage.setItem('scrollPosition', this.scrollTop);});
+
+    // Restore scroll position
+    window.addEventListener('load', function() {
+        const savedScrollPosition = sessionStorage.getItem('scrollPosition');
+        if (savedScrollPosition) {
+            document.querySelector('.main-container').scrollTop = savedScrollPosition;}});
+    function copyMarkdownToClipboard() {
+        var textarea = document.getElementById("markdownCode");
+        textarea.select();
+        document.execCommand('copy');
+    }
+    function copyHtmlToClipboard() {
+        var textarea = document.getElementById("htmlCode");
+        textarea.select();
+        document.execCommand('copy');
+    }
+    if (screen.orientation) {
+      screen.orientation.lock('portrait').catch((error) => {
+        console.error("Orientation lock failed:", error);
+      });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        fetch('/update_timezone', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json',},
+        body: JSON.stringify({ timezone: timezone }),})
+        .then(response => response.json()).then(data => {
+        console.log('Timezone updated:', data);})
+        .catch((error) => {console.error('Error:', error);});
+    });
+    
+    
+
+    function toggleUserInfoDropdown(user_id) {
+        var user_id_tag = "userInfoDropdown-" + user_id;
+        var userInfoDropdown = document.getElementById(user_id_tag);
+        userInfoDropdown.classList.toggle("show");
+    }
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(event) {
+      if (!event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("sidebar-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
+        }
+      }
+    }
+    document.addEventListener('htmx:afterSwap', function() {
+        const flashMessages = document.getElementById('flash-messages');
+        if (flashMessages) {
+            setTimeout(function() {
+                flashMessages.style.display = "none"; // Hide after 5 seconds
+            }, 5000);
+        }
+    });
+    window.onload = function() {
+        const flashMessages = document.getElementById('flash-messages');
+        if (flashMessages) {
+            setTimeout(function() {
+                flashMessages.style.display = "none"; // Hide after  5 seconds
+            },  5000);
+        }
+    };
+    document.addEventListener('DOMContentLoaded', function() {
+        const flashMessages = document.getElementById('flash-messages');
+        if (flashMessages) {
+            setTimeout(function() {
+                flashMessages.style.display = "none"; // Hide after  5 seconds
+            },  5000);
+        }
+    });
+   window.addEventListener("DOMContentLoaded", function() {
+        // Function to add hex input field for a given color input
+        function addHexInput(colorInputId) {
+            const colorInput = document.querySelector("#" + colorInputId);
+            const hexInput = document.createElement("input");
+            hexInput.type = "text";
+            hexInput.size = 7; // To fit the hex value
+            hexInput.value = colorInput.value; // Initialize with the current color value
+            hexInput.pattern = "#[0-9A-Fa-f]{6}"; // Validate the input as a hex value
+
+            // Insert the hex input after the color input
+            colorInput.insertAdjacentElement("afterend", hexInput);
+
+            // Update the hex input value when the color input changes
+            colorInput.addEventListener("input", function() {
+                hexInput.value = this.value;
+            });
+
+            // Update the color input value when the hex input changes
+            hexInput.addEventListener("input", function() {
+                if (this.validity.valid) {
+                    colorInput.value = this.value;
+                }
+            });
+        }
+
+        // Add hex input fields for each color input
+        addHexInput("fillColor");
+        addHexInput("strokeColor");
+        addHexInput("textColor");
+     }); 
+
+ 8       
+    function toggleOpenAIAPIKeyVisibility() {
+        var secretText = document.getElementById("openai_api_key");
+        if (secretText.type === "password") {
+            secretText.type = "text";
+        } else {
+            secretText.type = "password";
+        }
+    }
+    function toggleGroqAPIKeyVisibility() {
+        var secretText = document.getElementById("groq_api_key");
+        if (secretText.type === "password") {
+            secretText.type = "text";
+        } else {
+            secretText.type = "password";
+        }
+    }
+    </script>
+
+
+</html>
+

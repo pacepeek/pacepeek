@@ -1,0 +1,53 @@
+<div class="sticky-button-tabs">
+    <div class="button-flex-container">
+        <div class="bottom-tab-button {{ 'selected' if visible_page == 'feed' else '' }}" hx-push-url="true" hx-get="/" hx-trigger="click" hx-target=".main-container" hx-swap="innerHTML" style="cursor: pointer;">
+            {% if visible_page == 'feed' %}
+            <i class="fa-solid fa-house fa-lg" style="color: #ffffff;"></i>
+            {% else %}
+            <i class="fa-solid fa-house fa-lg" style="color: #56b9e4;"></i>
+            {% endif %}
+        </div>
+    </div>
+    <div class="button-flex-container">
+        <div class="bottom-tab-button {{ 'selected' if visible_page == 'search' else '' }}" hx-push-url="true" hx-get="/search" hx-trigger="click" hx-target=".main-container" hx-swap="innerHTML" style="cursor: pointer;">
+            {% if visible_page == 'search' %}
+            <i class="fa-solid fa-magnifying-glass fa-lg" style="color: #ffffff;"></i>
+            {% else %}
+            <i class="fa-solid fa-magnifying-glass fa-lg" style="color: #56b9e4;"></i>
+            {% endif %}
+        </div>
+    </div>
+    {% if current_user.is_authenticated %}
+    <div class="button-flex-container">
+        <div class="bottom-tab-button {{ 'selected' if visible_page == 'profile' else '' }}" hx-push-url="true" hx-get="/{{current_user.github_login}}" hx-trigger="click" hx-target=".main-container" hx-swap="innerHTML" style="cursor: pointer;">
+            {% if visible_page == 'profile' %}
+            <i class="fa-regular fa-user fa-lg" style="color: #ffffff;"></i>
+            {% else %}
+            <i class="fa-regular fa-user fa-lg" style="color: #56b9e4;"></i>
+            {% endif %}
+        </div>
+    </div>
+    <div class="button-flex-container">
+        <div class="bottom-tab-button {{ 'selected' if visible_page == 'settings' else '' }}" hx-push-url="true" hx-get="/settings" hx-trigger="click" hx-target=".main-container" hx-swap="innerHTML" style="cursor: pointer;">
+            {% if visible_page == 'settings' %}
+            <i class="fa-solid fa-gear fa-lg" style="color: #ffffff;"></i>
+            {% else %}
+            <i class="fa-solid fa-gear fa-lg" style="color: #56b9e4;"></i>
+            {% endif %}
+
+        </div>
+    </div>
+    {% else %}
+    <div class="button-flex-container">
+        <div class="bottom-tab-button {{ 'selected' if visible_page == 'faq' else '' }}" hx-push-url="true" hx-get="/faq" hx-trigger="click" hx-target=".main-container" hx-swap="innerHTML" style="cursor: pointer;">
+            {% if visible_page == 'faq' %}
+            <i class="fa-solid fa-question fa-lg" style="color: #ffffff;"></i>
+            {% else %}
+            <i class="fa-solid fa-question fa-lg" style="color: #56b9e4;"></i>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+ 

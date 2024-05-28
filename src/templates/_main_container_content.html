@@ -1,0 +1,58 @@
+<div class="feed">
+    <div class="main-container">
+
+        {% if current_user.is_authenticated %}
+
+            <div class="sticky">
+                <div id="tabs" hx-target=".content" hx-swap="innerHTML">
+                    <div class="tab-button {{ 'selected' if feed_type == 'main_feed_posts' else '' }}" hx-get="/change-feed-type" hx-vals='{"feed_type":"main_feed_posts"}' hx-trigger="click" style="cursor: pointer;">{{gettext("Home")}}</div>
+
+                    <!-- for later-->
+                    <!--<div class="tab-button {{ 'selected' if feed_type == 'main_feed_updates' else '' }}" hx-get="/change-feed-type" hx-vals='{"feed_type":"main_feed_updates"}' hx-trigger="click" style="cursor: pointer;">Missed?</div>-->
+
+                    <div class="tab-button {{ 'selected' if feed_type == 'notifications' else '' }}" hx-get="/change-feed-type" hx-vals='{"feed_type":"notifications"}' hx-trigger="click" style="cursor: pointer;">
+                        {{gettext("Notifications")}}
+                        {% if noti_count > 0 %}
+                        <div class="unseen-count">{{ noti_count }}</div>
+                        {% endif %}
+                        </div>
+                    </div>
+            </div>
+            <div class="feed-container">
+                <div class="spacer"></div>
+                {% if feed_type == 'main_feed_updates' %}
+
+                    {% include '_updates_feed.html' %}
+
+                {% elif feed_type == 'notifications' %}
+
+                    {% include '_load_notifications.html' %}
+
+                {% elif feed_type == 'profile' %}
+
+                    {% include '_load_profile.html' %}
+
+                {% else %}
+
+                    {% include '_feed.html' %}
+
+                {% endif %}
+            </div>
+
+        {% else %}
+
+            {% include '_landing_page.html' %}
+            <a href="login" class="github-login-button">
+                <img src="{{ url_for('static', filename='photos/github-mark-white.png')}}" alt="GitHub Logo" class="github-icon">
+                {{gettext("Login with GitHub")}}
+            </a>
+            <div class="spacer"></div>
+            <div class="spacer"></div>
+
+        {% endif %}
+
+        {% include '_sticky_main_tabs.html' %}
+    </div>
+</div>
+<div class="sidebar sidebar-right"> 
+</div>

@@ -1,0 +1,15 @@
+*.env
+
+*gunicorn.log
+*requirements.txt
+*venv*
+*.pyc*
+*migrations*
+*instance*
+venv/
+*/__pycache__/*
+*__pycache__*
+*__pycache__/*
+*.DS_Store
+*.db
+.env

@@ -1,0 +1,527 @@
+# Translations template for PROJECT.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2024-05-28 17:56+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.14.0\n"
+
+#: src/templates/_api_providers.html:4 src/templates/_api_providers.html:37
+msgid "Selected"
+msgstr ""
+
+#: src/templates/_api_providers.html:11
+msgid "OpenAI"
+msgstr ""
+
+#: src/templates/_api_providers.html:12
+msgid "OpenAI API Key"
+msgstr ""
+
+#: src/templates/_api_providers.html:13
+msgid "Enter your OpenAI API Key"
+msgstr ""
+
+#: src/templates/_api_providers.html:14 src/templates/_api_providers.html:46
+msgid "View"
+msgstr ""
+
+#: src/templates/_api_providers.html:32 src/templates/_api_providers.html:63
+msgid "Save and Select"
+msgstr ""
+
+#: src/templates/_api_providers.html:43
+msgid "Groq"
+msgstr ""
+
+#: src/templates/_api_providers.html:44
+msgid "Groq API Key"
+msgstr ""
+
+#: src/templates/_api_providers.html:45
+msgid "Enter your Groq API Key"
+msgstr ""
+
+#: src/templates/_browse_users.html:4
+msgid "Users"
+msgstr ""
+
+#: src/templates/_browse_users.html:5
+msgid "Users on pacepeek"
+msgstr ""
+
+#: src/templates/_faq.html:2 src/templates/_settings.html:26
+msgid "FAQ"
+msgstr ""
+
+#: src/templates/_faq.html:7
+msgid "What is PacePeek?"
+msgstr ""
+
+#: src/templates/_faq.html:10
+msgid "PacePeek"
+msgstr ""
+
+#: src/templates/_faq.html:10
+msgid ""
+"is a service that transforms GitHub commit patches into progress updates,"
+" making the story of development more accessible and engaging."
+msgstr ""
+
+#: src/templates/_faq.html:20
+msgid "How does it work?"
+msgstr ""
+
+#: src/templates/_faq.html:24
+msgid ""
+"You can track your public repositories, and PacePeek will generate "
+"summaries from the changes you make. By installing PacePeek's GitHub app "
+"on your personal GitHub account, you enable PacePeek to fetch necessary "
+"commit data from your repositories. You can also add markdown and HTML "
+"widgets to showcase your latest posts elsewhere on the internet. Follow "
+"other users to see their posts on your home page. PacePeek waits for a "
+"significant enough changes across commits to be made before generating a "
+"progress summary post, ensuring that the posts reflect meaningful "
+"progress. Premium accounts(coming soon) can add one X account to their "
+"PacePeek account to repost every post to X."
+msgstr ""
+
+#: src/templates/_home_body.html:24
+msgid "Early Access"
+msgstr ""
+
+#: src/templates/_home_body.html:47 src/templates/_home_body.html:51
+#: src/templates/_main_container_content.html:8
+msgid "Home"
+msgstr ""
+
+#: src/templates/_home_body.html:57 src/templates/_home_body.html:61
+msgid "Profile"
+msgstr ""
+
+#: src/templates/_home_body.html:67 src/templates/_home_body.html:71
+msgid "Search"
+msgstr ""
+
+#: src/templates/_home_body.html:77 src/templates/_home_body.html:81
+msgid "Settings"
+msgstr ""
+
+#: src/templates/_home_body.html:122 src/templates/_settings.html:36
+msgid "Help make this app better!"
+msgstr ""
+
+#: src/templates/_home_body.html:124 src/templates/_settings.html:38
+msgid "Please be nice:)"
+msgstr ""
+
+#: src/templates/_home_body.html:125 src/templates/_settings.html:39
+msgid "Describe the bug found or suggest a feature..."
+msgstr ""
+
+#: src/templates/_home_body.html:126 src/templates/_settings.html:40
+msgid "Submit"
+msgstr ""
+
+#: src/templates/_home_body.html:127 src/templates/_settings.html:41
+msgid "*we could ask you for more information through your email"
+msgstr ""
+
+#: src/templates/_home_body.html:132 src/templates/_settings.html:58
+msgid "Terms of Service & Privacy Policy"
+msgstr ""
+
+#: src/templates/_landing_page.html:5
+msgid "Tracking software projects with commit summarizing intelligence"
+msgstr ""
+
+#: src/templates/_landing_page.html:6
+msgid "Designed for both development teams and individual users."
+msgstr ""
+
+#: src/templates/_landing_page.html:8
+msgid "Key Features"
+msgstr ""
+
+#: src/templates/_landing_page.html:12
+msgid "Understanding Team Progress"
+msgstr ""
+
+#: src/templates/_landing_page.html:13
+msgid ""
+"PacePeek provides natural language summaries of team activities, making "
+"it easier for non-technical staff to stay informed."
+msgstr ""
+
+#: src/templates/_landing_page.html:16
+msgid "Track Github Copilot Usage"
+msgstr ""
+
+#: src/templates/_landing_page.html:17
+msgid ""
+"Gain precise insights into your team's Copilot adoption, offering "
+"detailed knowledge of its usage."
+msgstr ""
+
+#: src/templates/_landing_page.html:21
+msgid "Visual Commit History"
+msgstr ""
+
+#: src/templates/_landing_page.html:22
+msgid ""
+"Automatic commit branch trees offer a clear view of project workflows and"
+" collaboration patterns."
+msgstr ""
+
+#: src/templates/_landing_page.html:25
+msgid "Integration"
+msgstr ""
+
+#: src/templates/_landing_page.html:26
+msgid ""
+"Possible integration with X (Twitter) enables automatic sharing of "
+"updates, serving as a marketing and communication tool."
+msgstr ""
+
+#: src/templates/_landing_page.html:30
+msgid "Customizable Widgets"
+msgstr ""
+
+#: src/templates/_landing_page.html:31
+msgid ""
+"Embeddable widgets display the latest updates on your website or your "
+"project's README file."
+msgstr ""
+
+#: src/templates/_landing_page.html:34
+msgid "Automatic Feature History"
+msgstr ""
+
+#: src/templates/_landing_page.html:35
+msgid ""
+"PacePeek automatically updates the feature history of your project, "
+"allowing you to trace the evolution of each feature."
+msgstr ""
+
+#: src/templates/_landing_page.html:40
+msgid ""
+"With our automated process, you can focus on what matters most - your "
+"code. Let PacePeek handle the rest."
+msgstr ""
+
+#: src/templates/_landing_page.html:42
+msgid "Take a peek here!"
+msgstr ""
+
+#: src/templates/_main_container_content.html:14
+msgid "Notifications"
+msgstr ""
+
+#: src/templates/_main_container_content.html:45
+msgid "By clicking the button below, "
+msgstr ""
+
+#: src/templates/_main_container_content.html:45
+msgid "you agree to our "
+msgstr ""
+
+#: src/templates/_main_container_content.html:45
+#: src/templates/_tos_and_privacy.html:2
+msgid "Terms of Service and Privacy Policy"
+msgstr ""
+
+#: src/templates/_main_container_content.html:48
+msgid "Login with GitHub"
+msgstr ""
+
+#: src/templates/_markdown_widget_preview.html:1
+msgid "Markdown Widget"
+msgstr ""
+
+#: src/templates/_markdown_widget_preview.html:5
+#: src/templates/_markdown_widget_preview.html:14
+msgid "Copy to Clipboard"
+msgstr ""
+
+#: src/templates/_markdown_widget_preview.html:7
+msgid "HTML Widget"
+msgstr ""
+
+#: src/templates/_markdown_widget_preview.html:16
+msgid "Preview"
+msgstr ""
+
+#: src/templates/_post.html:1
+msgid "Back"
+msgstr ""
+
+#: src/templates/_post.html:25
+msgid "in"
+msgstr ""
+
+#: src/templates/_post.html:25
+msgid "on branch"
+msgstr ""
+
+#: src/templates/_post.html:33 src/templates/_posts.html:30
+msgid "lines changed"
+msgstr ""
+
+#: src/templates/_post.html:38 src/templates/_post.html:40
+msgid "Details"
+msgstr ""
+
+#: src/templates/_post.html:42
+msgid "Commits:"
+msgstr ""
+
+#: src/templates/_post.html:47
+msgid "Provider used:"
+msgstr ""
+
+#: src/templates/_post.html:49
+msgid "Model used:"
+msgstr ""
+
+#: src/templates/_post.html:51
+msgid "Tokens:"
+msgstr ""
+
+#: src/templates/_pricing.html:3
+msgid "PacePeek is currently free to use:)"
+msgstr ""
+
+#: src/templates/_pricing.html:6
+msgid "Contact"
+msgstr ""
+
+#: src/templates/_profile_content.html:24
+msgid "Following"
+msgstr ""
+
+#: src/templates/_profile_content.html:32
+msgid "Follow"
+msgstr ""
+
+#: src/templates/_profile_content.html:42
+msgid "Posts"
+msgstr ""
+
+#: src/templates/_profile_content.html:46
+msgid "Repositories"
+msgstr ""
+
+#: src/templates/_profile_content.html:51
+msgid "Integrations"
+msgstr ""
+
+#: src/templates/_repos.html:4
+msgid "PacePeek Integration Installation is needed for tracking repositories:)"
+msgstr ""
+
+#: src/templates/_repos.html:5
+msgid "Install PacePeek Integration to your personal account"
+msgstr ""
+
+#: src/templates/_repos.html:15
+msgid "Find more repos to track"
+msgstr ""
+
+#: src/templates/_search.html:8
+msgid "Search hackers..."
+msgstr ""
+
+#: src/templates/_settings.html:6
+msgid "General Settings"
+msgstr ""
+
+#: src/templates/_settings.html:10
+msgid "Timezone"
+msgstr ""
+
+#: src/templates/_settings.html:11
+msgid "Current"
+msgstr ""
+
+#: src/templates/_settings.html:12
+msgid "*timezone is your browsers's timezone"
+msgstr ""
+
+#: src/templates/_settings.html:15
+msgid "Language"
+msgstr ""
+
+#: src/templates/_settings.html:22
+msgid "Model"
+msgstr ""
+
+#: src/templates/_settings.html:24
+msgid "*selected model is used to generate summaries of your commits"
+msgstr ""
+
+#: src/templates/_settings.html:25
+msgid "Info"
+msgstr ""
+
+#: src/templates/_settings.html:28
+msgid "Landing Page"
+msgstr ""
+
+#: src/templates/_settings.html:47
+msgid "Manage User Profile"
+msgstr ""
+
+#: src/templates/_settings.html:49
+msgid "Delete user profile?"
+msgstr ""
+
+#: src/templates/_settings.html:50
+msgid ""
+"Are you sure you want to delete your user profile? This action is "
+"irreversible and will delete all your data from PacePeek including all "
+"your posts/commits."
+msgstr ""
+
+#: src/templates/_settings.html:51
+msgid "Delete Your Profile"
+msgstr ""
+
+#: src/templates/_settings.html:56
+msgid "Logout from"
+msgstr ""
+
+#: src/templates/_tos_and_privacy.html:4
+msgid ""
+"If you have any questions about these Terms or the Privacy Policy, please"
+" contact at"
+msgstr ""
+
+#: src/templates/_user_settings.html:4
+msgid "GitHub Integration"
+msgstr ""
+
+#: src/templates/_user_settings.html:6
+msgid "is installed on your personal account! Go track some repositories! :)"
+msgstr ""
+
+#: src/templates/_user_settings.html:6 src/templates/_user_settings.html:12
+msgid "*installation is required for tracking your repositories"
+msgstr ""
+
+#: src/templates/_user_settings.html:8
+msgid "Install PacePeek App to your personal Github account"
+msgstr ""
+
+#: src/templates/_user_settings.html:11
+msgid "Install"
+msgstr ""
+
+#: src/templates/_user_settings.html:16
+msgid "Widgets"
+msgstr ""
+
+#: src/templates/_user_settings.html:24
+msgid "X Automation"
+msgstr ""
+
+#: src/templates/_user_settings.html:28
+msgid "Connected to X as"
+msgstr ""
+
+#: src/templates/_user_settings.html:29
+msgid "Disconnect"
+msgstr ""
+
+#: src/templates/_user_settings.html:30
+msgid "Re-connect"
+msgstr ""
+
+#: src/templates/_user_settings.html:32 src/templates/_user_settings.html:36
+msgid "Enable X Automation"
+msgstr ""
+
+#: src/templates/_user_settings.html:33
+msgid "Connect to X"
+msgstr ""
+
+#: src/templates/_user_settings.html:37
+msgid "Upgrade to Premium"
+msgstr ""
+
+#: src/templates/_user_settings.html:42
+msgid "Learn More About X Automation"
+msgstr ""
+
+#: src/templates/_user_settings.html:44
+msgid "What is X?"
+msgstr ""
+
+#: src/templates/_user_settings.html:45
+msgid ""
+"X is a social media platform where you can share your thoughts, news, and"
+" other content."
+msgstr ""
+
+#: src/templates/_user_settings.html:47
+msgid "How Does Automation Work?"
+msgstr ""
+
+#: src/templates/_user_settings.html:48
+msgid ""
+"Once connected, our app will automatically post your updates to your X "
+"account. To get started, you'll need a X account to act as your bot."
+msgstr ""
+
+#: src/templates/_user_settings.html:48
+msgid "Create one here"
+msgstr ""
+
+#: src/templates/_user_settings.html:49
+msgid ""
+"If you have trouble creating a new one, try doing it in a private window "
+"so your current account won't mess it up."
+msgstr ""
+
+#: src/templates/_user_settings.html:51
+msgid "How to Stop Automation?"
+msgstr ""
+
+#: src/templates/_user_settings.html:52
+msgid ""
+"If you wish to stop automatic posting, simply click the 'Disconnect' "
+"button above."
+msgstr ""
+
+#: src/templates/_user_settings.html:53
+msgid ""
+"*This automation only applies to your personal account and its posts from"
+" all your public repos."
+msgstr ""
+
+#: src/templates/_widget_markdown.html:6
+msgid "Fill Color:"
+msgstr ""
+
+#: src/templates/_widget_markdown.html:9
+msgid "Stroke Color:"
+msgstr ""
+
+#: src/templates/_widget_markdown.html:12
+msgid "Text Color:"
+msgstr ""
+
+#: src/templates/_widget_markdown.html:14
+msgid "Reset"
+msgstr ""
+

@@ -1,0 +1,17 @@
+<div class="public-orgs-container">
+    <div class="public-orgs">
+        <div class="public-orgs-header">
+            <h2>{{gettext("Users")}}</h2>
+            <p>{{gettext("Users on pacepeek")}}</p>
+        </div>
+        <div class="public-orgs-list">
+            {% for user in users %}
+                <div class="public-org">
+                    <a href="/{{user.github_login}}">
+                        <h3>{{user.github_login}}</h3>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

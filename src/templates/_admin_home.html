@@ -1,0 +1,13 @@
+<h2>Last 100 lines from the error log file</h2>
+<div id="load-more-container" 
+     hx-get="/admin-error-logfile" 
+     hx-trigger="click" 
+     hx-indicator="#loading-indicator"
+     hx-swap="outerHTML"
+     style="cursor:pointer;">
+    load error log file by clicking
+</div>
+
+
+
+<div id="loading-indicator" hx-swap-oob="true"></div>

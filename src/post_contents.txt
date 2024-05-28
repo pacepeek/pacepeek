@@ -1,0 +1,185 @@
+Commit Message: moi:
+ Files:
+  bfs/main.c:
+  @@ -13,10 +13,10 @@ int d(int x_start, int y_start, int x_end, int y_end) {
+ 
+ int main(void)
+ {
+-    const int screenWidth = 1200;
++    const int screenWidth = 800;
+     const int screenHeight = 400;
+ 
+-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
++    InitWindow(screenWidth, screenHeight, "BFS vs DFS");
+     const int grid_size = 50;
+     const int grid_size_squared = grid_size * grid_size;
+ 
+@@ -28,14 +28,6 @@ int main(void)
+     int queueIndex = 0;
+     int going = 0; // 0 == not going, 1 == going
+ 
+-    // A*
+-    int gridAstar[grid_size][grid_size] = { 0 }; // 0 == open, 1 == reserved
+-    int visitedAstar[grid_size][grid_size] = { 0 }; // 0 == not visited, 1 == visited
+-    int queueAstar[grid_size_squared][2] = { 0 }; // 0 == x, 1 == y
+-    int queueSizeAstar = 1;
+-    int queueIndexAstar = 0;
+-    int goingAstar = 0; // 0 == not going, 1 == going
+-
+     // DFS
+     int gridDfs[grid_size][grid_size] = { 0 }; // 0 == open, 1 == reserved
+     int visitedDfs[grid_size][grid_size] = { 0 }; // 0 == not visited, 1 == visited
+@@ -52,7 +44,6 @@ int main(void)
+         y = rand() % grid_size;
+         grid[x][y] = 1;
+         gridDfs[x][y] = 1;
+-        gridAstar[x][y] = 1;
+     }
+ 
+     // random ending point
+@@ -70,15 +61,12 @@ int main(void)
+     stackDfs[0][0] = x;
+     stackDfs[0][1] = y;
+     visitedDfs[x][y] = 1;
+-    queueAstar[0][0] = x;
+-    queueAstar[0][1] = y;
+-    visitedAstar[x][y] = 1;
+ 
+ 
+     // timer
++    double timeStart = 0.0;
+     double timer = 0.0;
+     double timerDfs = 0.0;
+-    double timerAstar = 0.0;
+         
+     // refresh rate
+     SetTargetFPS(45);
+@@ -88,16 +76,15 @@ int main(void)
+         if (IsKeyPressed(KEY_SPACE)) {
+             printf("spacebar pressed\n");
+             // starting timer
+-            timer = GetTime();
+-            timerDfs = GetTime();
+-            timerAstar = GetTime();
++            timeStart = GetTime();
++            timer = 0.0;
++            timerDfs = 0.0;
+ 
+             // resetting the map
+             for (int i = 0; i < grid_size; i++) {
+                 for (int j = 0; j < grid_size; j++){
+                     visited[i][j] = 0;
+                     visitedDfs[i][j] = 0;
+-                    visitedAstar[i][j] = 0;
+                 }
+             }
+             // resetting the queue
+@@ -106,8 +93,6 @@ int main(void)
+                 queue[i][1] = 0;
+                 stackDfs[i][0] = 0;
+                 stackDfs[i][1] = 0;
+-                queueAstar[i][0] = 0;
+-                queueAstar[i][1] = 0;
+             }
+ 
+             x = grid_size/2;
+@@ -126,18 +111,12 @@ int main(void)
+             stackSizeDfs = 0;
+             goingDfs = 1;
+ 
+-            queueAstar[0][0] = x;
+-            queueAstar[0][1] = y;
+-            visitedAstar[x][y] = 1;
+-            queueSizeAstar = 1;
+-            queueIndexAstar = 0;
+-            goingAstar = 1;
+         } 
+ 
+         // BFS
+         if (going) {
+             // only update timer every 1000 frames
+-            timer = GetTime();
++            timer = GetTime() - timeStart;
+             // check if we are at the end
+             if (grid[queue[queueIndex][0]][queue[queueIndex][1]] == 2) {
+                 going = 0;
+@@ -195,58 +174,10 @@ int main(void)
+             }
+         }
+ 
+-        // A*
+-        if (goingAstar) {
+-            timerAstar = GetTime();
+-            // check if we are at the end
+-            if (gridAstar[queueAstar[queueIndexAstar][0]][queueAstar[queueIndexAstar][1]] == 2) {
+-                goingAstar = 0;
+-                printf("found\n");
+-            } else {
+-                int in_grid = 0;
+-                // check if we can go up
+-                if (queueAstar[queueIndexAstar][1] - 1 >= 0) {
+-                    int up = gridAstar[queueAstar[queueIndexAstar][0]][queueAstar[queueIndexAstar][1] - 1];
+-                    int up_visited = visitedAstar[queueAstar[queueIndexAstar][0]][queueAstar[queueIndexAstar][1] - 1];
+-                    if ((up == 0 || up == 2) && up_visited == 0) {
+-                        queueAstar[queueSizeAstar][0] = queueAstar[queueIndexAstar][0];
+-                        queueAstar[queueSizeAstar][1] = queueAstar[queueIndexAstar][1] - 1;
+-                        visitedAstar[queueAstar[queueIndexAstar][0]][queueAstar[queueIndexAstar][1] - 1] = 1;
+-                        queueSizeAstar++;
+-                    }
+-                }
+-
+-                // check if we can go down
+-                if (queueAstar[queueIndexAstar][1] + 1 < grid_size) {
+-                    int down = gridAstar[queueAstar[queueIndexAstar][0]][queueAstar[queueIndexAstar][1] + 1];
+-                    int down_visited = visitedAstar[queueAstar[queueIndexAstar][0]][queueAstar[queueIndexAstar][1] + 1];
+-                    if ((down == 0 || down == 2) && down_visited == 0) {
+-                        queueAstar[queueSizeAstar][0] = queueAstar[queueIndexAstar][0];
+-                        queueAstar[queueSizeAstar][1] = queueAstar[queueIndexAstar][1] + 1;
+-                        visitedAstar[queueAstar[queueIndexAstar][0]][queueAstar[queueIndexAstar][1] + 1] = 1;
+-                        queueSizeAstar++;
+-                    }
+-                }
+-                
+-                // check if we can go left
+-                if (queueAstar[queueIndexAstar][0] - 1 >= 0) {
+-                    int left = gridAstar[queueAstar[queueIndexAstar][0] - 1][queueAstar[queueIndexAstar][1]];
+-                    int left_visited = visitedAstar[queueAstar[queueIndexAstar][0] - 1][queueAstar[queueIndexAstar][1]];
+-                    if ((left == 0 || left == 2) && left_visited == 0) {
+-                        queueAstar[queueSizeAstar][0] = queueAstar[queueIndexAstar][0] - 1;
+-                        queueAstar[queueSizeAstar][1] = queueAstar[queueIndexAstar][1];
+-                        visitedAstar[queueAstar[queueIndexAstar][0] - 1][queueAstar[queueIndexAstar][1]] = 1;
+-                        queueSizeAstar++;
+-                    }
+-                
+-            }
+-
+-        }
+-
+         // DFS 
+         if (goingDfs) {
+-            // only update timer every 1000 frames
+-            timerDfs = GetTime();
++
++            timerDfs = GetTime() - timeStart;
+             // check if we are at the end
+             if (stackSizeDfs < 0) {
+                 goingDfs = 0;
+@@ -345,9 +276,15 @@ int main(void)
+             }
+         }
+         // timer on the corner in the bfs
+-        DrawText(TextFormat("%.2f", timer), 10, 20, 50, SKYBLUE);
++        if (going)
++            DrawText(TextFormat("%.2f", timer), 10, 20, 50, GREEN);
++        else
++            DrawText(TextFormat("%.2f", timer), 10, 20, 50, RED);
+         // timer on the corner in the dfs
+-        DrawText(TextFormat("%.2f", timerDfs), grid_size*8 + 10, 20, 50, SKYBLUE);
++        if (goingDfs)
++            DrawText(TextFormat("%.2f", timerDfs), grid_size*8 + 10, 20, 50, GREEN);
++        else
++            DrawText(TextFormat("%.2f", timerDfs), grid_size*8 + 10, 20, 50, RED);
+         // border between 
+         DrawRectangle(grid_size*8, 0, 4, grid_size*8, SKYBLUE);
+         // start button
+

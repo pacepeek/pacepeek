@@ -1,0 +1,30 @@
+{% if current_user.premium_subscription %}
+    <h2>X Automation</h2>
+    <div id="twitter-section">
+        {% if current_user.x_access_token_encrypted %}
+            <span>Connected to X as <a href="https://x.com/{{current_user.x_username}}" target="_blank">{{ current_user.x_username }}</a>!</span>
+            <a href="x_deauth" class="basic-button button-sad">Disconnect</a>
+            <a href="x_auth" class="basic-button">Re-connect</a>
+        {% else %}
+            <p><span class="status-icon inactive"></span> Enable X Automation</p>
+            <a href="x_auth" class="basic-button">Connect to X</a>
+        {% endif %}
+    </div>
+    <details id="twitter-info-section">
+        <summary><small>Learn More About X Automation</small></summary>
+        <section>
+            <h3>What is X?</h3>
+            <p>X, formerly known as Twitter is a social media platform where you can share your thoughts, news, and other content.</p>
+            
+            <h3>How Does Automation Work?</h3>
+            <p>Once connected, our app will automatically post your updates to your X account. To get started, you'll need a X account to act as your bot. <a href="http://x.com/signup" target="_blank">Create one here</a>.</p>
+            <small>If you have trouble creating a new one, it's good to do it in a private window so your current account won't mess it up</small>
+            
+            <h3>How to Stop Automation?</h3>
+            <p>If you wish to stop automatic posting, simply click the "Disconnect" button above.</p>
+        </section>
+    </details>
+{% else %}
+    <p>You don't have a premium subscription.</p>
+{% endif %}
+

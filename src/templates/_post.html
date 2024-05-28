@@ -1,0 +1,69 @@
+<div class="back-button" onclick="window.history.back()" hx-trigger="click" style="cursor: pointer;">&#8592; {{gettext("Back")}}</div>
+<div class="single-post-container">
+    <div class="post">
+        <div class="post-header">
+            {% if post.commits[0].user %}
+                <a hx-get="/{{ post.commits[0].user.github_login }}" hx-push-url="true" hx-trigger="click" hx-target=".main-container" hx-swap="innerHTML" style="cursor: pointer;">
+                    {% if post.commits[0].user.github_avatar_url %}
+                        <img class="profile-image-post" src="{{ post.commits[0].user.github_avatar_url}}" alt="Profile image">
+                    {% else %}
+                        <img class="profile-image-post" src="https://github.com/rasmustestaccount.png" alt="Profile image">
+                    {% endif %}
+
+                </a>
+            {% endif %}
+            <div class="post-info">
+                {% if post.commits[0].user %}
+                <span class="post-author" hx-get="/{{ post.commits[0].author_github_login }}" hx-push-url="true" hx-trigger="click" hx-target=".content" hx-swap="innerHTML" style="cursor: pointer;">
+                    {{ post.commits[0].user.name }}
+                </span>
+                {% else %}
+                <span class="post-author-absent">
+                    {{ post.commits[0].author_github_login}}
+                </span>
+                {% endif %}
+                <span class="post-repo">{{gettext("in")}} <a href="https://github.com/{{post.commits[0].author_github_login}}/{{post.repo.name}}" target="_blank">{{ post.commits[0].repo.name }}</a></span>
+            </div>
+        </div>
+        {% if post.content_decrypted %}
+            <p>{{post.content_decrypted|striptags}}</p>
+        {% else %}
+            <p>no content.</p>
+        {% endif %}
+        <small>{{post.lines_changed}} {{gettext("lines changed")}}</small>
+        <br>
+        <br>
+        <details>
+            {% if post.commits|length > 1 %}
+            <summary>{{gettext("Details")}}..</summary>
+            {% else %}
+            <summary>{{gettext("Details")}}..</summary>
+            {% endif %}
+            {% if post.summary_provider == 'local' %}
+                <p>{{gettext("Summary made with")}} {{post.summary_model}}
+            {% else %}
+            <p>{{gettext("Summary made with model")}} {{post.summary_model}} {{gettext("using")}} {{post.summary_token_count+post.judging_token_count}} tokens 
+            {% endif %}
+            from commits:</p>
+            # for commit in post.commits 
+                <a href="{{commit.link}}" target="_blank">{{commit.sha}}</a>
+            # endfor
+            {% if current_user_owner %}
+            <br>
+            <br>
+            <button 
+                type="button" 
+                class="basic-button" 
+                hx-get="/delete_post/{{post.id}}" 
+                hx-trigger="click once" 
+                hx-confirm="Are you sure you want to delete the post? This action is irreversible." 
+                title="Delete? This action is irreversible.">Delete</button>
+            {% endif %}
+        </details>
+        {% if post.creation_timestamp %}
+            <small>{{post.creation_timestamp|timestamp_to_user_localtime|pretty_time}}</small>
+        {% else %}
+            <small>no creation timestamp.</small>
+        {% endif %}
+    </div>
+</div>

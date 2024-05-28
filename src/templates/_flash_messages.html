@@ -1,0 +1,9 @@
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        # for category,message in messages
+        <div id="flash-messages" hx-swap-oob="true" class="alert {{ category }}" display="block">
+            {{message}}
+        </div>
+        # endfor
+    {% endif %}
+{% endwith %}

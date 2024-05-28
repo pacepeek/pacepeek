@@ -1,0 +1,15 @@
+<div id="search-container">
+    <input type="text"
+           name="search"
+           hx-get="/search-results"
+           hx-trigger="keyup changed delay:500ms"
+           hx-target="#search-results"
+           autocomplete="off"
+           placeholder="{{gettext('Search hackers...')}}">
+    <!-- Container for Search Results -->
+    <div id="search-results">
+      <!-- Results will be populated here -->
+    </div>
+</div>
+{% include '_browse_users.html' %}
+{% include '_sticky_main_tabs.html' %}

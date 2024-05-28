@@ -1,0 +1,34 @@
+{% for post in posts %}
+<div class="post-container" hx-get="/p/{{post.id}}" hx-push-url="true" hx-trigger="click" hx-target=".main-container" hx-swap="innerHTML" style="cursor: pointer;">
+    <div class="post">
+        <div class="post-header">
+            {% if post.commits[0].user %}
+                <a hx-get="/{{ post.commits[0].user.github_login }}" hx-push-url="true" hx-trigger="click" hx-target=".main-container" hx-swap="innerHTML" style="cursor: pointer;">
+                    {% if post.commits[0].user.github_avatar_url %}
+                        <img class="profile-image-post" src="{{ post.commits[0].user.github_avatar_url}}" alt="Profile image">
+                    {% else %}
+                        <img class="profile-image-post" src="https://github.com/rasmustestaccount.png" alt="Profile image">
+                    {% endif %}
+                </a>
+            {% else %}
+                <img class="profile-image-post" src="https://github.com/rasmustestaccount.png" alt="Profile image">
+            {% endif %}
+
+            <div class="post-info">
+                {% if post.commits[0].user %}
+                <span class="post-author" hx-get="/{{ post.commits[0].author_github_login }}" hx-push-url="true" hx-trigger="click" hx-target=".content" hx-swap="innerHTML" style="cursor: pointer;">
+                    {{ post.commits[0].user.name }} 
+                </span>
+                {% else %}
+                <span class="post-author-absent">
+                    {{ post.commits[0].author_github_login}}
+                </span>
+                {% endif %}
+                <span class="post-repo">{{gettext("in")}} <a href="https://github.com/{{post.commits[0].author_github_login}}/{{post.repo.name}}" target="_blank">{{ post.commits[0].repo.name }}</a></span>
+            </div>
+        </div>
+        <p>{{post.content_decrypted|striptags}}</p>
+        <small>{{post.creation_timestamp | timestamp_to_user_localtime | time_ago}}</small>
+    </div>
+</div>
+{% endfor %}

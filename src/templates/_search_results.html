@@ -1,0 +1,10 @@
+<div class="search-results">
+    {% for person in people %}
+    <a href="/{{person.github_login}}" class="person-link" tabindex="0">
+        <div class="person">
+            <h3>{{ person.github_login }}<small>(user)</small></h3>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+

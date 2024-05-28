@@ -1,0 +1,8 @@
+<div id="load-more-container" 
+     hx-ext="preload"
+     hx-get="/load_more_repo_updates?page=1&github_login={{user.github_login}}" 
+     hx-trigger="revealed" 
+     hx-indicator="#loading-indicator"
+     hx-swap="outerHTML">
+</div>
+<div id="loading-indicator"><i class="fa-solid fa-spinner fa-spin fa-xl"></i></div>
