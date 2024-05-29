@@ -1,7 +1,6 @@
 *.env
 
 *gunicorn.log
-*requirements.txt
 *venv*
 *.pyc*
 *migrations*
