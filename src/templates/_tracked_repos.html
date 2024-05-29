@@ -1,22 +1,54 @@
 {% for repo in repos %}
 <div class="repo-item">
     <div class="repo-container">
-        <a class="repo-link" href="https://github.com/{{repo.owner_github_login}}/{{repo.name}}" target="_blank">{{repo.name}}
-        </a>
-        {% if current_user.github_login == repo.owner_github_login %}
-            {% if not repo.webhook_active %}
-                (webhook deactivated, probably the lack of premium)</a>
-            {% endif %}
-            <div hx-get="/load_repo_info?repo_id={{repo.id}}" 
+        <h2><u>
+            <a class="repo-link" href="https://github.com/{{repo.owner_github_login}}/{{repo.name}}" target="_blank">
+                {{repo.name}}
+            </a>
+            </u>
+        </h2>
+        <small>{{repo.commits|commits_in_the_last_week}}</small>
+        {% if not repo.webhook_active and current_user.github_login == repo.owner_github_login %}
+            (webhook deactivated)
+        {% endif %}
+
+        <!-- desc of the repo -->
+        <div class="edit-buttons-container">
+            <div hx-target="this" hx-swap="outerHTML" class="repo-desc">
+                {% if repo.repo_description %}
+                    <p>{{repo.repo_description}}</p>
+                    {% if current_user.github_login == repo.owner_github_login %}
+                        <button hx-get="/edit-repo-desc/{{repo.id}}" class="basic-button">
+                            Edit desc
+                        </button>
+                    {% endif %}
+                {% else %} 
+                    {% if current_user.github_login == repo.owner_github_login %}
+                        <button hx-get="/edit-repo-desc/{{repo.id}}" class="basic-button">
+                            Add desc
+                        </button>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <button type="button" class="basic-button untrack-button"
+              hx-get="/untrack/{{ repo.owner_github_login }}/{{ repo.name }}"
+              hx-target="closest .repo-item"
+              hx-trigger="click once"
+              hx-indicator="#loadingIcon"
+              hx-swap="delete swap:#flash-messages->#flash-messages"
+              hx-posted="loadFlashMessages"
+              hx-confirm="Are you sure you want to untrack the repository? This means that PacePeek will no longer track the repository for new commits until you turn this back on. Your repository data will remain unchanged."
+              title="Untrack? PacePeek will no longer track new incoming commits to this repository. Your repository data will remain unchanged.">
+              Untrack
+            </button>
+        </div>
+
+        <div hx-get="/load_repo_info?repo_id={{repo.id}}" 
                  hx-trigger="click" 
-                 hx-target="#repo-info-{{repo.id}}"
-                 hx-swap="innerHTML"
+                 hx-swap="outerHTML"
                  style="cursor:pointer;">
                 More Info
-            </div>
-        {% endif %}
-    </div>
-    <div id="repo-info-{{repo.id}}">
+        </div>
     </div>
 </div>
 

@@ -1052,6 +1052,14 @@ def get_repos_for_user():
     logging.info(f"leaving get_repos_for_user with repos_list:{repos_list}")
     return repos_list
 
+def get_last_four_posts(repo: Repo, latest_post: Post):
+    """
+    Get's the last four posts from the latest post according to post.creation_timestamp which is in seconds
+    """
+    last_four_posts = Post.query.filter_by(repo=repo).filter(Post.creation_timestamp < latest_post.creation_timestamp).order_by(Post.creation_timestamp.desc()).limit(4).all()
+    return last_four_posts
+
+    
 
 def get_last_four_parent_commits(repo: Repo, commit: Commit):
     """

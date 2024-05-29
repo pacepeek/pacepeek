@@ -48,6 +48,7 @@ class User(db.Model,UserMixin):
     suspended_reason = db.Column(db.String(500))
     creation_timestamp = db.Column(db.Integer, index=True)
     language = db.Column(db.String(50), default='en')
+    joining_timestamp = db.Column(db.Integer, index=True)
 
     
     # access token
@@ -351,6 +352,7 @@ class Repo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     github_id = db.Column(db.String(300))
     name = db.Column(db.String(300))
+    repo_description = db.Column(db.String)
     owner_github_login = db.Column(db.String(300))
     owner_github_id = db.Column(db.String(300))
     webhook_id = db.Column(db.Integer)

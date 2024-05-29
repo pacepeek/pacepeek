@@ -580,7 +580,7 @@ def analyze_post(post: Post, post_data: str, provider: str, model: str):
         return post_content
     elif provider == "local":
         logging.info("provider is local")
-        post_content = gpt_generate_summary_for_user_commits_local(post_data, model)
+        post_content = gpt_generate_summary_for_user_commits_local(post.repo.repo_description, post_data, model)
         post.summary_provider = 'local'
         post.summary_model = model
         logging.info("leave analyze_post")

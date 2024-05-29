@@ -22,7 +22,7 @@ from src.github_auth import login
 from . import db,config, get_timezone
 from .models import User, Repo, Post, Month, Settings, UserRepoLastSeen, Commit, Branch, Notification, Payload
 from pprint import pprint
-from .utils import (create_admin_notification, create_user_notification, get_active_models_from_groq, get_repos_for_user,get_next_posts, give_premium_to_user, log_the_error_context, make_widget, update_user_widget_settings,set_last_seen_posts_for_new_following, make_commit_tree,verify_signature,remove_premium_from_user, create_report)
+from .utils import (create_admin_notification, create_user_notification, get_active_models_from_groq, get_last_four_parent_commits, get_last_four_posts, get_repos_for_user,get_next_posts, give_premium_to_user, log_the_error_context, make_widget, update_user_widget_settings,set_last_seen_posts_for_new_following, make_commit_tree,verify_signature,remove_premium_from_user, create_report)
                     
 from .github_utils import delete_user_profile, handle_payload, track_repo_for_user, get_installation_access_token_and_expiration_time, untrack_repo_for_user
 from datetime import datetime, timedelta
@@ -217,23 +217,77 @@ def admin_home():
     return render_template("_admin_home.html", visible_page=visible_page)
 
 
-@login_required
 @views.route('/load_repo_info')
 def load_repo_info():
     repo_id = request.args.get('repo_id',None)
     repo = Repo.query.filter_by(id=repo_id).first()
     if not repo:
-        flash('Repo details not found')
-        logging.error(f'Repo details not found in load_repo_info for the repo id: {repo_id}')
+        flash('Repo not found')
+        logging.error(f'Repo not found in load_repo_info for the repo id: {repo_id}')
         return "Repo not found", 404
-    if current_user.github_id != repo.owner_github_id:
-        flash('No credentials')
-        logging.error(f"no credentials for accessing info for repo with name: {repo.name} with user: {current_user.github_login}")
-        return "No credentials", 403
+    current_user_owner = False
+    if current_user.is_authenticated:
+        current_user_owner = True if current_user.github_id == repo.owner_github_id else False
     unfinished_post = Post.query.filter_by(author_github_id=repo.owner_github_id,not_finished=True).first()
-    return render_template('_repo_info.html', repo=repo, unfinished_post=unfinished_post)
+    return render_template('_repo_info.html', repo=repo, unfinished_post=unfinished_post, current_user_owner=current_user_owner)
 
 
+@login_required
+@views.route('/edit-repo-desc/<repo_id>', methods=['GET'])
+def edit_repo_desc(repo_id):
+    repo = Repo.query.filter_by(id=repo_id).first()
+    if not repo:
+        return "Repo not found", 404
+    if current_user.github_login != repo.owner_github_login:
+        return "Unauthorized", 403
+    return render_template_string('''
+    <form hx-put="/save-repo-desc/{{repo.id}}" hx-target="this" hx-swap="outerHTML" class="repo-desc">
+        <textarea min-width="100%" min-height="150px" name="desc">{{repo.repo_description}}</textarea>
+        <button class="basic-button button-happy">Save</button>
+        <button class="basic-button button-sad" hx-get="/cancel-repo-desc/{{repo.id}}">Cancel</button>
+    </form>
+    ''', repo=repo)
+
+@login_required
+@views.route('/cancel-repo-desc/<repo_id>', methods=['GET'])
+def cancel_repo_desc(repo_id):
+    repo = Repo.query.filter_by(id=repo_id).first()
+    if not repo:
+        return "Repo not found", 404
+    if current_user.github_login != repo.owner_github_login:
+        return "Unauthorized", 403
+    return render_template_string('''
+    <div hx-target="this" hx-swap="outerHTML" class="repo-desc">
+        <p>{{repo.repo_description}}</p>
+        {% if current_user_owner %}
+            <button hx-get="/edit-repo-desc/{{repo.id}}" class="basic-button">
+            Edit desc
+            </button>
+        {% endif %}
+    </div>
+    ''', repo=repo, current_user_owner=True)
+
+@login_required
+@views.route('/save-repo-desc/<repo_id>', methods=['PUT'])
+def save_repo_desc(repo_id):
+    repo = Repo.query.filter_by(id=repo_id).first()
+    if not repo:
+        return "Repo not found", 404
+    if current_user.github_login != repo.owner_github_login:
+        return "Unauthorized", 403
+    new_desc = request.form.get('desc')
+    repo.repo_description = new_desc
+    db.session.commit()
+    return render_template_string('''
+    <div hx-target="this" hx-swap="outerHTML" class="repo-desc">
+        <p>{{repo.repo_description}}</p>
+        {% if current_user_owner %}
+            <button hx-get="/edit-repo-desc/{{repo.id}}" class="basic-button">
+            Edit desc
+            </button>
+        {% endif %}
+    </div>
+    ''', repo=repo, current_user_owner=True)
 
 
 @login_required
@@ -397,11 +451,13 @@ def post(post_id):
     if current_user.github_login == post.commits[0].repo.owner_github_login:
         current_user_owner = True
 
+    last_four_posts = get_last_four_posts(repo, post)
+    rendered_last_four_posts = render_template("_posts.html", posts=last_four_posts)
 
     if 'HX-Request' in request.headers and request.headers['HX-Request'] == 'true':
-        return render_template("_post.html", user=current_user, post=post, current_user_owner=current_user_owner)
+        return render_template("_post.html", user=current_user, post=post, current_user_owner=current_user_owner,rendered_last_four_posts=rendered_last_four_posts, last_four_posts=last_four_posts)
     else:
-        rendered_post = render_template("_post.html", user=current_user, post=post, current_user_owner=current_user_owner)
+        rendered_post = render_template("_post.html", user=current_user, post=post, current_user_owner=current_user_owner, rendered_last_four_posts=rendered_last_four_posts, last_four_posts=last_four_posts)
         return render_template("home.html", rendered_post=rendered_post, user=current_user)
 
 
@@ -1234,7 +1290,21 @@ def get_profile(github_login=None):
         posts = Post.query.filter_by(user_id=user.id, not_finished=False).order_by(Post.creation_timestamp.desc()).all()
         session['selected_profile_tab'] = 'user_posts'
     elif selected_profile_tab == 'tracked_repos':
-        repos = Repo.query.filter_by(owner_github_id=user.github_id,deleted=False).all()
+        commit_count_subquery = (
+            db.session.query(Repo.id, func.count(Commit.id).label('commit_count'))
+           .join(Commit)  # No longer filtering by commit creation timestamp
+           .group_by(Repo.id)
+           .subquery()
+        )
+        repos = (
+            Repo.query
+           .filter_by(owner_github_id=user.github_id, deleted=False)
+           .outerjoin(commit_count_subquery, Repo.id == commit_count_subquery.c.id)  # Changed to left_join
+           .order_by(desc(commit_count_subquery.c.commit_count))  # Ordering remains the same
+           .all()
+        )
+        
+        
         session['selected_profile_tab'] = 'tracked_repos'
     elif selected_profile_tab == "user_settings":
         markdown_widget_svg = make_widget(user, 2, user.settings.markdown_widget_fill_color,user.settings.markdown_widget_stroke_color,user.settings.markdown_widget_text_color)

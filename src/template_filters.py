@@ -6,8 +6,19 @@ from flask_login import current_user
 from zoneinfo import ZoneInfo
 from . import get_locale
 import humanize
+import time
 
 template_filters = Blueprint('template_filters', __name__)
+
+@template_filters.app_template_filter('commits_in_the_last_week')
+def commits_in_the_last_week(commits):
+    c = len([commit for commit in commits if commit.creation_timestamp > int(time.time()) - 604800])
+    if c == 0:
+        return "No commits in the last week"
+    elif c == 1:
+        return "1 commit in the last week"
+    else:
+        return f"{c} commits in the last week"
 
 @template_filters.app_template_filter('timestamp_to_user_localtime')
 def timestamp_to_user_localtime_datetime(timestamp: int):

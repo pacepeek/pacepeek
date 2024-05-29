@@ -67,3 +67,11 @@
         {% endif %}
     </div>
 </div>
+<!-- last four posts for context here -->
+<br>
+{% if last_four_posts %}
+<div class="last-posts">
+<h2>{{gettext("Last posts from repo")}} {{post.commits[0].repo.name}}</h2>
+{{ rendered_last_four_posts | safe }}
+</div>
+{% endif %}

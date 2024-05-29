@@ -1,29 +1,12 @@
-{% if unfinished_post %}
-    <details>
-        <summary>Next post is in the making with currently {{unfinished_post.commits|length}} unsignificant commits. When there is enough progress among them all the post is generated.</summary>
-        {% for commit in unfinished_post.commits %}
-            <a href="{{commit.link}}" target="_blank">{{commit.sha}} -></a>
-        {% endfor %}
-    </details>
-{% else %}
-    <p>No unfinished post in the making for this repo.</p>
-{% endif %}
-
-<p><u>Stats</u></p>
-<p>posts: {{repo.posts|length}}</p>
-<p>commits: {{repo.commits|length}}</p>
-<p>tracked since: {{repo.added_timestamp|timestamp_to_user_localtime|pretty_time}}</p>
-<button 
-    type="button" 
-    class="basic-button untrack-button"
-    hx-get="/untrack/{{repo.owner_github_login}}/{{repo.name}}" 
-    hx-target="closest .repo-item"
-    hx-trigger="click once"
-    hx-indicator="#loadingIcon"
-    hx-swap="delete swap:#flash-messages->#flash-messages"
-    hx-posted="loadFlashMessages"
-    hx-confirm="Are you sure you want to untrack the repository? This means that PacePeek will no longer track the repository for new commits until you turn this back on. Your repository data will remain unchanged."
-    title="Untrack? PacePeek will no longer track new incoming commits to this repository. Your repository data will remain unchanged.">
-    Untrack
-</button>
+<!-- unfinished post details -->
+<p>Next post is in the making with {{ unfinished_post.commits|length }} unsignificant commits.</p>
+<ul>
+  {% for commit in unfinished_post.commits %}
+    <li><a href="{{ commit.link }}" target="_blank">{{ commit.sha }} -></a></li>
+  {% endfor %}
+</ul>
+<!-- stats -->
+<p>Posts: {{ repo.posts|length }}</p>
+<p>Commits: {{ repo.commits|length }}</p>
+<p>Tracked Since: {{ repo.added_timestamp|timestamp_to_user_localtime|pretty_time }}</p>
 

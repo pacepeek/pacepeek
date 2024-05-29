@@ -1294,15 +1294,20 @@ th {
 .repo-container {
     min-width: 100%;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: space-around;
     align-items: center;
+    text-align: center;
 }
 
 .repo-list {
     margin: 0;
     padding: 0;
     list-style-type: none;
+}
+
+.border-on-top { /* lol */
+    border-top: 1.5px solid var(--border-color);
 }
 
 .repo-link {
@@ -1452,6 +1457,23 @@ th {
     background-color: var(--dark-bg-color);
 }
 
+.last-posts {
+    /* make everypost a little smaller */
+    font-size: 0.8em;
+}
+
+.last-posts .post-author {
+    font-size: 1em;
+}
+
+.last-posts h2 {
+    font-size: 1.5em;
+    margin: 0;
+    margin-top: 20px;
+    padding: 20px;
+    border-bottom: 1.5px solid var(--border-color);
+}
+
 /*----*/
 .post-container {
     display: flex;
@@ -1477,6 +1499,7 @@ th {
     padding: 20px;
     padding-top: 0;
 }
+
 
 .back-button {
     padding: 10px;

@@ -15,7 +15,11 @@
             {{gettext("Find more repos to track")}}
         </button>
     {% endif %}
-{% endif %}
-<ul class="repo-list">
+    <div class="repo-list border-on-top">
+        {% include '_tracked_repos.html' %}
+    </div>
+{% else %}
+<div class="repo-list">
     {% include '_tracked_repos.html' %}
-</ul>
+</div>
+{% endif %}

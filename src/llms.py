@@ -29,7 +29,7 @@ def gpt_generate_summary_for_user_commits_groq(commit_patches_data: str, model: 
     ))
     return get_post_summary(client, commit_patches_data, model)
 
-def gpt_generate_summary_for_user_commits_local(commit_patches_data: str, model: str):
+def gpt_generate_summary_for_user_commits_local(repo_description, commit_patches_data: str, model: str):
 
     client = instructor.from_openai(
         OpenAI(
@@ -38,15 +38,19 @@ def gpt_generate_summary_for_user_commits_local(commit_patches_data: str, model:
         ),
         mode=instructor.Mode.JSON,
     )
-    return get_post_summary_local(client, commit_patches_data, model)
+    return get_post_summary_local(client, repo_description, commit_patches_data, model)
 
-def get_post_summary_local(client, commit_patches_data, model):
+def get_post_summary_local(client, repo_description, commit_patches_data, model):
     resp = client.chat.completions.create(
         model=model,
         max_tokens=1024,
         messages=[
                 {
-                "role": "system", "content": f"""Your task is to summarize the following commit patches into a concise, easily readable message that describes the functional changes made. Do not just state what files were changed or added, but explain the changes in terms of their functionality and impact. For instance, if an algorithm was implemented, describe which algorithm it is and what problem it solves. If there are no patches or data to summaries just say 'no changes'. The summary should be brief, like a Tweet (max 280 characters). 
+                "role": "system", "content": f"""Your task is to summarize the following commit patches into a concise, easily readable message that describes the functional changes made. Do not just state what files were changed or added, but explain the changes in terms of their functionality and impact. For instance, if an algorithm was implemented, describe which algorithm it is and what problem it solves. If there are no patches or data to summaries just say 'no changes'. The summary should be brief, like a Tweet (max 280 characters). You can be humorous or creative in your summary, but make sure it is still informative.
+
+    For context, here is the repo owner's description of the whole repo:
+    
+    {repo_description}
 
     Here are the commit patches:
 

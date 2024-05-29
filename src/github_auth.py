@@ -83,6 +83,7 @@ def callback():
         user.github_user_access_token_expires_at_timestamp = access_token_expires_at_timestamp
         user.github_refresh_token_decrypted = refresh_token
         user.github_refresh_token_expires_at_timestamp = refresh_token_expires_at_timestamp
+        user.joining_timestamp = int(time.time())
         if github_email:
             logging.info(f"User {github_login} has an email, adding it")
             user.email_decrypted = github_email
