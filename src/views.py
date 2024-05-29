@@ -14,11 +14,8 @@ from flask import abort
 from src.tasks import process_webhook_payload
 
 from flask_login import login_required, current_user
-from jsonschema import validate, ValidationError
-import requests
 from sqlalchemy import func, desc
 
-from src.github_auth import login
 from . import db,config, get_timezone
 from .models import User, Repo, Post, Month, Settings, UserRepoLastSeen, Commit, Branch, Notification, Payload
 from pprint import pprint
