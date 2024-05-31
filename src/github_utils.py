@@ -529,10 +529,15 @@ def create_post_data(github_ses, post: Post):
                 if file['changes'] is None:
                     file['changes'] = 0
                 changes_across_all_files += int(file['changes'])
+                lines_in_patch = len(file['patch'].split("\n"))
+                if lines_in_patch > 150:
+                    # cut the patch to 150 lines
+                    file['patch'] = "\n".join(file['patch'].split("\n")[:150])
+
                 filename = file['filename']
                 logging.info(f"filename: {filename}")
                 # we have to filter out the files that are cache or binary or not code files written by human
-                #analysis_method  = get_file_analysis_method(filename, file['patch'], post.repo)
+                #analysis_method = get_file_analysis_method(filename, file['patch'], post.repo)
                 analysis_method = "full"
                 logging.info(f"analysis_method: {analysis_method}")
                 if analysis_method == "full":
@@ -613,8 +618,8 @@ def judge_significance(post_data: str, post: Post, provider: str, model: str):
         post.judging_token_count += tokens
         return decision
     elif provider == 'local':
-        decision = gpt_judge_with_local(post_data, model)
-        return decision
+        return gpt_judge_with_local(post_data, model)
+        
     return None
 
 class ParentCommitNotFoundError(Exception):
@@ -678,7 +683,7 @@ def handle_new_commit(repo: Repo, commit_sha: str, cdata: dict, current_branch: 
         post_data = create_post_data(github,post)
         logging.info(f"post_data:{post_data}")
 
-        provider = 'local'
+        provider = 'groq'
         model = ""
         if provider == 'local':
             model = config.get('DEFAULT_LLAMA_MODEL')
@@ -739,25 +744,26 @@ def handle_commits(repo: Repo, commit_shas: list[str], branch_name: str):
     github = None
     current_branch = None
     try:
-        github = requests.Session()
-        user = User.query.filter_by(github_id=repo.owner_github_id).first()
-        if not user:
-            raise UserNotFoundError(f"User with github_login {repo.owner_github_login} not found for the incoming commit payload")
-        if not user.premium_subscription:
-            remove_premium_from_user(user)
-            raise UnauthorizedError(f"User with github_id {repo.owner_github_id} does not have a premium subscription but their commit payload came in")
+        with db.session.no_autoflush:
+            github = requests.Session()
+            user = User.query.filter_by(github_id=repo.owner_github_id).first()
+            if not user:
+                raise UserNotFoundError(f"User with github_login {repo.owner_github_login} not found for the incoming commit payload")
+            if not user.premium_subscription:
+                remove_premium_from_user(user)
+                raise UnauthorizedError(f"User with github_id {repo.owner_github_id} does not have a premium subscription but their commit payload came in")
 
-        installation_access_token = validate_installation_access_token_for_user(user) 
-        github.headers.update({'Authorization': f'Bearer {installation_access_token}',
-                               'Accept': 'application/vnd.github.v3+json',
-                               'X-GitHub-Api-Version': '2022-11-28'})
-        
-        current_branch = Branch.query.filter_by(name=branch_name, repo=repo).first()
-        logging.info(f"current_branch: {current_branch}")
-        if not current_branch:
-            current_branch = Branch(name=branch_name, repo=repo)
-            db.session.add(current_branch)
-            logging.info(f"created a new branch {branch_name}")
+            installation_access_token = validate_installation_access_token_for_user(user) 
+            github.headers.update({'Authorization': f'Bearer {installation_access_token}',
+                                   'Accept': 'application/vnd.github.v3+json',
+                                   'X-GitHub-Api-Version': '2022-11-28'})
+            
+            current_branch = Branch.query.filter_by(name=branch_name, repo=repo).first()
+            logging.info(f"current_branch: {current_branch}")
+            if not current_branch:
+                current_branch = Branch(name=branch_name, repo=repo)
+                db.session.add(current_branch)
+                logging.info(f"created a new branch {branch_name}")
     except UserNotFoundError as e:
         logging.error(f"UserNotFoundError occurred while handling commits: {e}")
         db.session.rollback()
@@ -903,12 +909,23 @@ def handle_payload(payload: dict):
             else:
                 deactivate_webhook_for_user_repo_with_installation_token(repo)
 
+
         commit_shas = []
         for commit in payload['commits']:
             commit_shas.append(commit['id'])
         branch_name = payload['ref'].split('/')[-1]
 
         logging.info(f"Received push payload for {repo_owner_github_login}/{repo_name} with {len(commit_shas)} commit(s) in branch {branch_name}")
+
+        user = User.query.filter_by(github_id=repo.owner_github_id).first()
+        daily_post_count = Post.query.filter(Post.creation_timestamp > int(time.time())-86400, Post.user_id==user.id ).count()
+        logging.info(f"User {user.github_login} has posted {daily_post_count} posts today")
+        if daily_post_count > 3:
+            logging.info(f"User {user.github_login} has reached the daily post limit of 4, not processing the commits")
+            create_admin_notification(f"User {user.github_login} has reached the daily post limit of 4, not processing the commits")
+            repo.added_timestamp = time.time() # to reset the parent finding
+            db.session.commit()
+            return False
 
         success = handle_commits(repo, commit_shas, branch_name)
         #log_the_push_context("Received push payload for {repo_owner_github_login}/{repo_name} with {len(commit_shas)} commit(s) in branch {branch_name}")

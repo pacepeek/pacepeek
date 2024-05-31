@@ -302,48 +302,28 @@ def load_user_info():
     commits = Commit.query.filter_by(author_github_id=user.id).all()
     posts = user.posts
     
-    estimate_judging_token_count_sum = 0
-    estimate_summary_token_count_sum = 0
     real_judging_token_count_sum = 0
     real_summary_token_count_sum = 0
     for post in posts:
-        if post.estimate_judging_token_count:
-            estimate_judging_token_count_sum += post.estimate_judging_token_count
-        logging.info(f"estimate_summary_token_count: {post.estimate_summary_token_count}") 
-        if post.estimate_summary_token_count:
-            estimate_summary_token_count_sum += post.estimate_summary_token_count
         if post.judging_token_count:
             real_judging_token_count_sum += post.judging_token_count
         if post.summary_token_count:
             real_summary_token_count_sum += post.summary_token_count
-    logging.info(f"estimate_summary_token_count_sum: {estimate_summary_token_count_sum}")
     logging.info(f"post_count: {len(posts)}")
     if len(posts) > 0:
-        estimate_judging_token_count_avg = estimate_judging_token_count_sum / len(posts)
-        estimate_summary_token_count_avg = estimate_summary_token_count_sum / len(posts)
         real_judging_token_count_avg = real_judging_token_count_sum / len(posts)
         real_summary_token_count_avg = real_summary_token_count_sum / len(posts)
     else:
-        estimate_judging_token_count_avg = 0
-        estimate_summary_token_count_avg = 0
         real_judging_token_count_avg = 0
         real_summary_token_count_avg = 0
-    estimate_cost_judging_post = estimate_judging_token_count_avg * (config.get('JUDGING_TOKEN_COST')/1000)
-    estimate_cost_summary_post = estimate_summary_token_count_avg * (config.get('SUMMARY_TOKEN_COST')/1000)
     real_cost_judging_post = real_judging_token_count_avg * (config.get('JUDGING_TOKEN_COST')/1000)
     real_cost_summary_post = real_summary_token_count_avg * (config.get('SUMMARY_TOKEN_COST')/1000)
 
     return render_template('_user_info.html', user=user, commits=commits, 
-                           posts=posts,estimate_judging_token_count_sum=estimate_judging_token_count_sum,
-                           estimate_summary_token_count_sum=estimate_summary_token_count_sum,
                            real_judging_token_count_sum=real_judging_token_count_sum,
                            real_summary_token_count_sum=real_summary_token_count_sum,
-                           estimate_judging_token_count_avg=estimate_judging_token_count_avg,
-                           estimate_summary_token_count_avg=estimate_summary_token_count_avg,
                            real_judging_token_count_avg=real_judging_token_count_avg,
                            real_summary_token_count_avg=real_summary_token_count_avg,
-                           estimate_cost_judging_post=estimate_cost_judging_post,
-                           estimate_cost_summary_post=estimate_cost_summary_post,
                            real_cost_judging_post=real_cost_judging_post,
                            real_cost_summary_post=real_cost_summary_post)
 

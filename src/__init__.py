@@ -21,7 +21,13 @@ elif "green" in os.getcwd():
     with open('/etc/pacepeek_green_config.json') as config_file:
         config = json.load(config_file)
 else: # dev
-    with open('/etc/pacepeek-social_config.json') as config_file:
+    if os.environ.get('IN_DOCKER') == 'true':
+        # Running in Docker environment
+        config_file_path = '/app/etc/pacepeek-social_config.json'
+    else:
+        # Running with flask run
+        config_file_path = '/etc/pacepeek-social_config.json'
+    with open(config_file_path) as config_file:
         config = json.load(config_file)
 
 db = SQLAlchemy()
@@ -93,7 +99,7 @@ def create_app():
     app.register_blueprint(template_filters)
 
 
-    if not os.path.exists(f'src/{DB_NAME}'):
+    if not os.path.exists(config.get('SQLITE_DATABASE_PATH')):
         with app.app_context():
             db.create_all()
         logging.info('Created Database!')

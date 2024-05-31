@@ -29,8 +29,6 @@ def process_webhook_payload(payload_id):
         db.session.commit()
         logging.info('payload processed successfully and removed from db')
     else:
-        payload.status = 'failed'
-        db.session.commit()
         logging.error('payload processing failed')
 
 @shared_task
