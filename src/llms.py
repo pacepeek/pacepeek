@@ -68,7 +68,7 @@ def get_post_summary_local(client, repo_description, commit_patches_data, model)
 
 
 def get_post_summary(client, commit_patches_data, model):
-    resp, completion = client.chat.completions.create(
+    resp = client.chat.completions.create(
         model=model,
         max_tokens=1024,
         messages=[
@@ -86,7 +86,7 @@ def get_post_summary(client, commit_patches_data, model):
         response_model=Summary,
     )
     logging.info(f"response: {resp.summary}")
-    return resp.summary, completion.usage.total_tokens
+    return resp.summary
 
 
 class FileAnalysisCategory(str, Enum):
@@ -188,6 +188,7 @@ def gpt_judge_with_groq(commit_patches_data: str, model: str):
     Returns:
         significance (str): 'significant' or 'not significant'
     """
+    logging.info(f"client: {instructor.from_groq(Groq(api_key=config.get('GROQ_API_KEY')))}")
     client = instructor.from_groq(Groq(
         api_key=config.get('GROQ_API_KEY')
     ))
@@ -210,10 +211,10 @@ def gpt_judge_with_local(commit_patches_data: str, model: str):
         ),
         mode=instructor.Mode.JSON,
     )
-    return get_judge_decision_local(client, commit_patches_data, model)
+    return get_judge_decision_without_tokens(client, commit_patches_data, model)
 
 
-def get_judge_decision_local(client, commit_patches_data, model):
+def get_judge_decision_without_tokens(client, commit_patches_data, model):
 
     resp = client.chat.completions.create(
         model=model,
@@ -247,7 +248,8 @@ def get_judge_decision_local(client, commit_patches_data, model):
 
 def get_judge_decision(client, commit_patches_data, model):
 
-    resp, completion = client.chat.completions.create(
+    logging.info(f"starting judge with model: {model}")
+    resp = client.chat.completions.create(
         model=model,
         max_tokens=1024,
         response_model=CommitAnalysis,
@@ -274,5 +276,5 @@ def get_judge_decision(client, commit_patches_data, model):
                 ],
     )
     logging.info(f"response: {resp.decision}")
-    return resp.decision, completion.usage.total_tokens
+    return resp.decision
         

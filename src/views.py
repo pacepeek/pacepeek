@@ -1108,7 +1108,7 @@ def handle_user_installation_event(payload, installation_id, account_github_logi
     sender.github_installation_access_token_expires_at = expires_at
 
 
-    create_user_notification(sender, f"PacePeek Integration has been installed to your GitHub account: {account_github_login} and you are ready to track your personal repos now!")
+    create_user_notification(sender, f"PacePeek has been installed to your GitHub account: {account_github_login} and you are ready to track your personal repos now!")
     logging.info(f"Successfully created user app installation with id: {account_github_id} and name: {account_github_login}")
     db.session.commit()
 

@@ -14,11 +14,8 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 import json
 
-if "blue" in os.getcwd():
-    with open('/etc/pacepeek_blue_config.json') as config_file:
-        config = json.load(config_file)
-elif "green" in os.getcwd():
-    with open('/etc/pacepeek_green_config.json') as config_file:
+if "pacepeek-social" in os.getcwd():
+    with open('/etc/pacepeek-social_config.json') as config_file:
         config = json.load(config_file)
 else: # dev
     if os.environ.get('IN_DOCKER') == 'true':
@@ -71,7 +68,6 @@ def create_app():
     # $ pybabel update -i messages.pot -d translations
     # when compiling translations:
     # $ pybabel compile -d translations
-
     
     app.config['CELERY_BROKER_URL'] = 'amqp://localhost:5672'
     app.config.from_mapping(CELERY=dict(

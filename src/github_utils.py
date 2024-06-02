@@ -575,10 +575,10 @@ def analyze_post(post: Post, post_data: str, provider: str, model: str):
         return post_content
     elif provider == "groq":
         logging.info("provider is groq")
-        post_content, tokens = gpt_generate_summary_for_user_commits_groq(post_data, model)
-        if post.summary_token_count is None:
-            post.summary_token_count = 0
-        post.summary_token_count += int(tokens)
+        post_content = gpt_generate_summary_for_user_commits_groq(post_data, model)
+        #if post.summary_token_count is None:
+        #    post.summary_token_count = 0
+        #post.summary_token_count += int(tokens)
         post.summary_provider = "groq"
         post.summary_model = model
         logging.info("leave analyze_post")
@@ -605,19 +605,22 @@ def post_post(post_data: str, post: Post, provider: str, model: str):
 
 def judge_significance(post_data: str, post: Post, provider: str, model: str):
     if provider == "openai":
-        decision, tokens = gpt_judge_with_openai(post_data, model)
-        if post.judging_token_count is None:
-            post.judging_token_count = 0
-        post.judging_token_count += tokens
+        logging.info("provider is openai")
+        decision = gpt_judge_with_openai(post_data, model)
+        #if post.judging_token_count is None:
+        #    post.judging_token_count = 0
+        #post.judging_token_count += tokens
         return decision
 
     elif provider == "groq":
-        decision, tokens = gpt_judge_with_groq(post_data, model)
-        if post.judging_token_count is None:
-            post.judging_token_count = 0
-        post.judging_token_count += tokens
+        logging.info("provider is groq")
+        decision = gpt_judge_with_groq(post_data, model)
+        #if post.judging_token_count is None:
+        #    post.judging_token_count = 0
+        #post.judging_token_count += tokens
         return decision
     elif provider == 'local':
+        logging.info("provider is local")
         return gpt_judge_with_local(post_data, model)
         
     return None

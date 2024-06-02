@@ -327,11 +327,11 @@ msgid "Integrations"
 msgstr ""
 
 #: src/templates/_repos.html:4
-msgid "PacePeek Integration Installation is needed for tracking repositories:)"
+msgid "PacePeek Installation is needed for tracking repositories:)"
 msgstr ""
 
 #: src/templates/_repos.html:5
-msgid "Install PacePeek Integration to your personal account"
+msgid "Install PacePeek to your personal account"
 msgstr ""
 
 #: src/templates/_repos.html:15
