@@ -118,15 +118,7 @@
                     {% endif %}
                 </div>
             </div>
-            <details id="report-form">
-                <summary style="cursor:pointer;">{{gettext("Help make this app better!")}}</summary>
-                <form action="/submit-reports" method="post" class="feedback-form" hx-post="/submit-reports" hx-target="#report-form" hx-swap="outerHTML">
-                    <label for="feedback" class="form-label">{{gettext("Please be nice:)")}}</label><br>
-                    <textarea id="feedback" name="feedback" class="form-textarea" rows="4" cols="50" placeholder="{{gettext('Describe the bug found or suggest a feature...')}}"></textarea><br>
-                    <input type="submit" value="{{gettext('Submit')}}" class="form-submit">
-                    <small><i>{{gettext("*we could ask you for more information through your email")}}</i></small>
-                </form>
-            </details>
+            {% include '_feedback_report_form.html' %}
             {% endif %}
             <br>
             <a style="padding-top:10px;" href="/tos-and-privacy"><small>{{gettext("Terms of Service & Privacy Policy")}}</small></a>

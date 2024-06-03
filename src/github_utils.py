@@ -14,11 +14,11 @@ from .models import (User, Post, Commit, Repo, Branch, Notification)
 
 from .llms import gpt_generate_summary_for_user_commits_openai, gpt_generate_summary_for_user_commits_groq, gpt_generate_summary_for_user_commits_local, gpt_judge_with_openai, gpt_judge_with_groq, gpt_judge_with_local
 
-from .utils import GPTCreateSummaryError, GPTJudgeError, create_admin_notification, get_last_four_parent_commits, log_the_error_context, remove_premium_from_user, get_file_analysis_method, log_the_push_context, create_user_notification
+from .utils import GPTCreateSummaryError, create_admin_notification, log_the_error_context, create_user_notification
 
 from .x_utils import post_to_x
 import requests
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from jwt import JWT, jwk_from_pem
 
 MAX_RETRIES = 3  # Maximum number of retries for each operation
@@ -250,9 +250,6 @@ class WebhookDeactivationError(Exception):
 
 def track_repo_for_user(repo_name: str, repo_github_id: str, repo_private: bool):
     logging.info(f"starting track_repo_for_user")
-    if not current_user.premium_subscription:
-        logging.info(f"User {current_user.github_login} does not have a premium subscription, cannot track repo")
-        return None
 
     webhook_url = f'{config.get("APP_URL")}/webhook'
     validate_user_access_token()
@@ -276,13 +273,6 @@ def track_repo_for_user(repo_name: str, repo_github_id: str, repo_private: bool)
     else:
         logging.error(f"Failed to retrieve webhooks for {repo_name}: {response.content}")
         return None
-
-    # check if hook is in our db
-    if hook_id:
-        repo = Repo.query.filter_by(webhook_id=hook_id).first()
-        if not repo:
-            logging.error(f"Webhook {hook_id} exists in github but not in our db")
-            hook_id = None
 
     # If the webhook does not exist, create a new one
     if not hook_id:
@@ -344,6 +334,7 @@ def track_repo_for_user(repo_name: str, repo_github_id: str, repo_private: bool)
     # Check if repo exists
     repo = Repo.query.filter_by(github_id=repo_github_id).first()
     # Create a new repo if it doesn't exist
+    
     if not repo:
         repo = Repo(name=repo_name, owner_github_id=current_user.github_id, \
                 owner_github_login=current_user.github_login, github_id=repo_github_id, \
@@ -758,9 +749,6 @@ def handle_commits(repo: Repo, commit_shas: list[str], branch_name: str):
             user = User.query.filter_by(github_id=repo.owner_github_id).first()
             if not user:
                 raise UserNotFoundError(f"User with github_login {repo.owner_github_login} not found for the incoming commit payload")
-            if not user.premium_subscription:
-                remove_premium_from_user(user)
-                raise UnauthorizedError(f"User with github_id {repo.owner_github_id} does not have a premium subscription but their commit payload came in")
 
             installation_access_token = validate_installation_access_token_for_user(user) 
             github.headers.update({'Authorization': f'Bearer {installation_access_token}',
@@ -913,7 +901,7 @@ def handle_payload(payload: dict):
 
         if not repo.webhook_active:
             user = User.query.filter_by(github_id=repo.owner_github_id).first()
-            if user and user.premium_subscription:
+            if user:
                 reactivate_webhook_for_user_repo_with_installation_token(repo)
             else:
                 deactivate_webhook_for_user_repo_with_installation_token(repo)
@@ -927,6 +915,11 @@ def handle_payload(payload: dict):
         logging.info(f"Received push payload for {repo_owner_github_login}/{repo_name} with {len(commit_shas)} commit(s) in branch {branch_name}")
 
         user = User.query.filter_by(github_id=repo.owner_github_id).first()
+        if user.suspended:
+            logging.info(f"User {user.github_login} is suspended, not processing the commits")
+            deactivate_webhook_for_user_repo_with_installation_token(repo)
+            create_admin_notification(f"User {user.github_login} is suspended, not processing the commits")
+            return False
         daily_post_count = Post.query.filter(Post.creation_timestamp > int(time.time())-86400, Post.user_id==user.id ).count()
         logging.info(f"User {user.github_login} has posted {daily_post_count} posts today")
         if daily_post_count > 3:
@@ -935,6 +928,7 @@ def handle_payload(payload: dict):
             repo.added_timestamp = time.time() # to reset the parent finding
             db.session.commit()
             return False
+        
 
         success = handle_commits(repo, commit_shas, branch_name)
         #log_the_push_context("Received push payload for {repo_owner_github_login}/{repo_name} with {len(commit_shas)} commit(s) in branch {branch_name}")

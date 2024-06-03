@@ -1,0 +1,17 @@
+{% if success %}
+<p>Feedback sent successfully!</p>
+{% if not limit %}
+<div hx-get="/get-feedback-form" hx-swap="outerHTML" hx-trigger="click" hx-target="#report-form" class="basic-button">Send new feedback</div>
+{% endif %}
+{% else %}
+<p>Feedback failed to send!</p>
+{% if message %}
+<p>{{message}}</p>
+{% endif %}
+{% if content %}
+<p>Here's what you wrote:</p>
+<p>{{content}}</p>
+{% endif %}
+{% endif %}
+<!--  here a button for new one which gets a form from /get-feedback-form-->
+{% include '_flash_messages.html' %}

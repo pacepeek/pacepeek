@@ -175,7 +175,7 @@ def admin():
 
 
 @login_required
-@views.route('/premium-to-user-<action>-<user_github_id>')
+@views.route('/user-account-<action>-<user_github_id>')
 def premium_to_user(action=None, user_github_id=None):
     if not current_user.is_admin:
         flash("Unauthorized", "danger")
@@ -194,11 +194,58 @@ def premium_to_user(action=None, user_github_id=None):
     if action == "give":
         logging.info(f"giving premium")
         give_premium_to_user(user)
-        return render_template_string("""<div class="basic-button button-sad" hx-get="/premium-to-user-remove-{{user.github_id}}"  hx-trigger="click" hx-swap="outerHTML" hx-confirm="you are removing premium from {{user.github_login}}?">remove premium</div>""",user=user)
+        create_user_notification(user, f"Your premium subscription has started.")
+        return render_template_string("""<div class="basic-button button-sad" hx-get="/user-account-remove-{{user.github_id}}"  hx-trigger="click" hx-swap="outerHTML" hx-confirm="you are removing premium from {{user.github_login}}?">remove premium</div>""",user=user)
     elif action == "remove":
         logging.info(f"removing premium")
         remove_premium_from_user(user)
-        return render_template_string("""<div class="basic-button button-happy" hx-get="/premium-to-user-give-{{user.github_id}}" hx-swap="outerHTML" hx-trigger="click" hx-confirm="you are removing premium from {{user.github_login}}?">give premium</div>""",user=user)
+        create_user_notification(user, f"Your premium subscription has ended.")
+        return render_template_string("""<div class="basic-button button-happy" hx-get="/user-account-give-{{user.github_id}}" hx-swap="outerHTML" hx-trigger="click" hx-confirm="you are removing premium from {{user.github_login}}?">give premium</div>""",user=user)
+    elif action == "suspend":
+        logging.info(f"suspending user")
+        remove_premium_from_user(user)
+        user.suspended = True
+        db.session.commit()
+        flash("User suspended", "success")
+        create_user_notification(user, f"Your account has been suspended. Please contact support for more information.")
+        return render_template_string("""<div class="basic-button button-happy" hx-get="/user-account-unsuspend-{{user.github_id}}" hx-swap="outerHTML" hx-trigger="click" hx-confirm="you are unsuspending {{user.github_login}}?">unsuspend</div>""",user=user)
+    elif action == "unsuspend":
+        logging.info(f"unsuspending user")
+        from .utils import reactivate_user_webhooks
+        reactivate_user_webhooks(user)
+        user.suspended = False
+        db.session.commit()
+        create_user_notification(user, f"Your account has been unsuspended. Welcome back!")
+        flash("User unsuspended", "success")
+        return render_template_string("""<div class="basic-button button-sad" hx-get="/user-account-suspend-{{user.github_id}}"  hx-trigger="click" hx-swap="outerHTML" hx-confirm="you are suspending {{user.github_login}}?">suspend</div>""",user=user)
+
+    else:
+        logging.info(f"Action {action} not recognized")
+        return "No action specified", 400
+
+@login_required
+@views.route('/suspend-user-<action>-<user_github_id>')
+def suspend_user(action=None, user_github_id=None):
+    if not current_user.is_admin:
+        flash("Unauthorized", "danger")
+        logging.info(f"User {current_user.github_login} tried to access the suspend_user endpoint")
+        return "Unauthorized", 403
+    if not action:
+        return "No action specified", 400
+    user = User.query.filter_by(github_id=user_github_id).first()
+    if not user:
+        logging.info(f"User not found")
+        return "User not found", 404
+    if action == "suspend":
+        logging.info(f"suspending user")
+        user.suspended = True
+        db.session.commit()
+        return render_template_string("""<div class="basic-button button-sad" hx-get="/suspend-user-unsuspend-{{user.github_id}}"  hx-trigger="click" hx-swap="outerHTML" hx-confirm="you are unsuspending {{user.github_login}}?">unsuspend</div>""",user=user)
+    elif action == "unsuspend":
+        logging.info(f"unsuspending user")
+        user.suspended = False
+        db.session.commit()
+        return render_template_string("""<div class="basic-button button-happy" hx-get="/suspend-user-suspend-{{user.github_id}}" hx-swap="outerHTML" hx-trigger="click" hx-confirm="you are suspending {{user.github_login}}?">suspend</div>""",user=user)
     else:
         logging.info(f"Action {action} not recognized")
         return "No action specified", 400
@@ -301,6 +348,30 @@ def load_user_info():
 
     commits = Commit.query.filter_by(author_github_id=user.id).all()
     posts = user.posts
+
+    # average lines changed per post(number)
+    avg_lines_changed_per_post = 0
+    if len(posts) > 0:
+        lines_changed_sum = 0
+        for post in posts:
+            lines_changed_sum += post.lines_changed
+        avg_lines_changed_per_post = lines_changed_sum / len(posts)
+
+    logging.info(f"avg_lines_changed_per_post: {avg_lines_changed_per_post}")
+
+    # average lines changed per day
+    lines_changed_sum = 0
+    for post in posts:
+        lines_changed_sum += post.lines_changed
+    avg_lines_changed_per_day = 0
+    if commits:
+        first_commit = commits[-1]
+        last_commit = commits[0]
+        total_days = (last_commit.creation_timestamp - first_commit.creation_timestamp) / 86400
+        if total_days == 0:
+            total_days = 1
+        avg_lines_changed_per_day = lines_changed_sum / total_days
+        logging.info(f"avg_lines_changed_per_day: {avg_lines_changed_per_day}")
     
     real_judging_token_count_sum = 0
     real_summary_token_count_sum = 0
@@ -316,16 +387,39 @@ def load_user_info():
     else:
         real_judging_token_count_avg = 0
         real_summary_token_count_avg = 0
-    real_cost_judging_post = real_judging_token_count_avg * (config.get('JUDGING_TOKEN_COST')/1000)
-    real_cost_summary_post = real_summary_token_count_avg * (config.get('SUMMARY_TOKEN_COST')/1000)
+    logging.info(f"real_judging_token_count_avg: {real_judging_token_count_avg}")
+    logging.info(f"real_summary_token_count_avg: {real_summary_token_count_avg}")
+    
+    # average posts per day per user when creation_timestamp is seconds
+    avg_posts_per_day = 0
+    if commits:
+        first_post = commits[-1]
+        last_post = commits[0]
+        logging.info(f"first_post: {first_post}")
+        total_days = (last_post.creation_timestamp - first_post.creation_timestamp) / 86400
+        logging.info(f"total_days: {total_days}")
+        if total_days == 0:
+            total_days = 1
+        logging.info(f"total_days: {total_days}")
+        avg_posts_per_day = len(posts) / total_days
+    logging.info(f"avg_posts_per_day: {avg_posts_per_day}")
+
+    # post to commit ratio
+    if posts and commits:
+        post_to_commit_ratio = len(posts) / len(commits)
+    else:
+        post_to_commit_ratio = 0
 
     return render_template('_user_info.html', user=user, commits=commits, 
-                           real_judging_token_count_sum=real_judging_token_count_sum,
-                           real_summary_token_count_sum=real_summary_token_count_sum,
                            real_judging_token_count_avg=real_judging_token_count_avg,
                            real_summary_token_count_avg=real_summary_token_count_avg,
-                           real_cost_judging_post=real_cost_judging_post,
-                           real_cost_summary_post=real_cost_summary_post)
+                           avg_posts_per_day=avg_posts_per_day,
+                           avg_lines_changed_per_day=avg_lines_changed_per_day,
+                           avg_lines_changed_per_post=avg_lines_changed_per_post,
+                           total_commit_count=len(commits),
+                           total_post_count=len(posts),
+                           post_to_commit_ratio=post_to_commit_ratio)
+                            
 
 @login_required
 @views.route('/change-feed-type-admin')
@@ -622,6 +716,14 @@ def load_more_notifications_admin():
         logging.info(f"no_more_notifications_html: {no_more_notifications_html}")
         return notifications_html + render_template_string(no_more_notifications_html)
 
+@login_required
+@views.route('/get-feedback-form')
+def get_feedback_form():
+    limit = False
+    if current_user.daily_report_count >= 5:
+        limit = True
+
+    return render_template('_feedback_report_form.html', limit=limit)
 
 @login_required
 @views.route('/submit-reports', methods=['POST'])
@@ -629,24 +731,17 @@ def submit_reports():
     message = request.form.get('feedback', None)
     if not message:
         return "Report is empty", 400
+    if not current_user.daily_report_count:
+        current_user.daily_report_count = 0
+    if current_user.daily_report_count >= 5:
+        return render_template('_feedback_report_results.html', success=False, message="You have reached the daily report limit of 5. Please use email.", content=message)
+    current_user.daily_report_count += 1
+    limit = False
+    if current_user.daily_report_count == 5:
+        limit = True
     create_report(message)
     flash("Report submitted!", category='success')
-
-    template_string = '''
-                <details id="report-form">
-                    <summary style="cursor:pointer;">Help make this app better!</summary>
-                    <form action="/submit-reports" method="post" class="feedback-form" hx-post="/submit-reports" hx-target="#report-form" hx-swap="outerHTML">
-                        <label for="feedback" class="form-label">{{gettext("Please be nice:)")}}</label><br>
-                        <textarea id="feedback" name="feedback" class="form-textarea" rows="4" cols="50" placeholder="{{gettext('Describe the bug found or suggest a feature...
-                        )}}"></textarea><br>
-                        <input type="submit" value="Submit" class="form-submit">
-                        <small><i>{{gettext("*we could ask you for more information through your email")}}</i></small>
-                    </form>
-                </details>
-
-                {% include '_flash_messages.html' %}
-                '''
-    return render_template_string(template_string)
+    return render_template('_feedback_report_results.html', success=True, limit=limit)
 
 @login_required
 @views.route('/load_more_notifications_report')
@@ -938,8 +1033,9 @@ def search_results():
 @login_required
 @views.route('/get-repos-user',methods=['GET'])
 def get_repos_user():
-    if not current_user.premium_subscription:
-        logging.info("not a premium user")
+    if current_user.suspended:
+        logging.info("suspended user")
+        flash("Your account is suspended", category='error')
         return "Unauthorized", 403
     selected_tab = request.args.get('selected_tab', 'Tracked repositories')
     
@@ -1095,12 +1191,6 @@ def handle_user_installation_event(payload, installation_id, account_github_logi
         logging.info(f"user not found when trying to create installation or update permissions")
         return '', 404
 
-    if not sender.premium_subscription:
-        remove_premium_from_user(sender)
-        create_user_notification(sender, f"You tried to install PacePeek GitHub App to your personal account, but since you don't have a premium, it cannot be added. Contact r@rasmusmultiverse.com")
-        logging.error(f"user not premium when trying to create installation or update permissions")
-        return '', 404
-
     logging.info(f"installation is for a user, updating user with id: {account_github_id} and name: {account_github_login}")
     sender.github_installation_id = installation_id
     token, expires_at = get_installation_access_token_and_expiration_time(installation_id)
@@ -1108,7 +1198,7 @@ def handle_user_installation_event(payload, installation_id, account_github_logi
     sender.github_installation_access_token_expires_at = expires_at
 
 
-    create_user_notification(sender, f"PacePeek has been installed to your GitHub account: {account_github_login} and you are ready to track your personal repos now!")
+    create_user_notification(sender, f"PacePeek has been installed to your GitHub account {account_github_login} and you are ready to track your personal repos now!")
     logging.info(f"Successfully created user app installation with id: {account_github_id} and name: {account_github_login}")
     db.session.commit()
 
@@ -1209,6 +1299,8 @@ def widget_svg(github_login=None, number_of_posts=3):
     user = User.query.filter_by(github_login=github_login).first()
     if not user:
         return '', 404
+    if user.suspended:
+        return '', 403
     fill_color = request.args.get('fill_color', None) 
     stroke_color = request.args.get('stroke_color', None)
     text_color = request.args.get('text_color', None)

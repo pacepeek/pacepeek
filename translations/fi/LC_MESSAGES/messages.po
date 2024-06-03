@@ -329,7 +329,7 @@ msgstr ""
 
 #: src/templates/_pricing.html:3
 msgid "PacePeek is currently free to use:)"
-msgstr ""
+msgstr "PacePeek on tällä hetkellä ilmainen:)"
 
 #: src/templates/_pricing.html:6
 msgid "Contact"

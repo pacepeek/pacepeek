@@ -1,25 +1,34 @@
 <h2>{{user.github_login}}</h2>
 {% if not user.premium_subscription %}
-<div class="basic-button button-happy" hx-get="/premium-to-user-give-{{user.github_id}}" hx-swap="outerHTML" hx-confirm="you are giving premium from {{user.github_login}}?" hx-trigger="click">give premium</div>
+<div class="basic-button button-happy" hx-get="/user-account-give-{{user.github_id}}" hx-swap="outerHTML" hx-confirm="you are giving premium from {{user.github_login}}?" hx-trigger="click">give premium</div>
 {% else %}
-<div class="basic-button button-sad" hx-get="/premium-to-user-remove-{{user.github_id}}" hx-swap="outerHTML" hx-confirm="you are removing premium from {{user.github_login}}?" hx-trigger="click">remove premium</div>
+<div class="basic-button button-sad" hx-get="/user-account-remove-{{user.github_id}}" hx-swap="outerHTML" hx-confirm="you are removing premium from {{user.github_login}}?" hx-trigger="click">remove premium</div>
 {% endif %}
-<p>commits len:{{commits|length}}</p>
-<p>posts len:{{user.posts|length}}</p>
+{% if user.suspended %}
+<div class="basic-button button-happy" hx-get="/user-account-unsuspend-{{user.github_id}}" hx-swap="outerHTML" hx-trigger="click" hx-confirm="you are unsuspending {{user.github_login}}?">unsuspend</div>
+{% else %}
+<div class="basic-button button-sad" hx-get="/user-account-suspend-{{user.github_id}}" hx-swap="outerHTML" hx-trigger="click" hx-confirm="you are suspending {{user.github_login}}?">suspend</div>
+{% endif %}
+<br>
+<h2>AVG posts per day</h2>
+<p>{{avg_posts_per_day}}</p>
+<h2>AVG lines changed per day</h2>
+<p>{{avg_lines_changed_per_day}}</p>
+<br>
+<h2>AVG lines changed per post</h2>
+<p>{{avg_lines_changed_per_post}}</p>
+<h2>Post-to-Commit Ratio</h2>
+<p>{{post_to_commit_ratio}}</p>
+<br>
+<h2>Total Post count</h2>
+<p>{{total_post_count}}</p>
+<h2>Total Commit count</h2>
+<p>{{total_commit_count}}</p>
 
-<h2>average per post</h2>
-<h4>judging</h4>
-<p>estimated tokens per post: {{estimate_judging_token_count_avg}}</p>
-<p>real tokens per post: {{real_judging_token_count_avg}}</p>
-<br>
-<p>estimated cost per post: {{estimate_cost_judging_post}}</p>
-<p>real cost per post: {{real_cost_judging_post}}e</p>
-<h4>summary</h4>
-<p>estimated tokens per post: {{estimate_summary_token_count_avg}}</p>
-<p>real tokens per post: {{real_summary_token_count_avg}}</p>
-<br>
-<p>estimated cost per post: {{estimate_cost_summary_post}}</p>
-<p>real cost per post: {{real_cost_summary_post}}e</p>
+
+<h2>Tokens per post</h2>
+<p>judging: {{real_judging_token_count_avg}}</p>
+<p>summary: {{real_summary_token_count_avg}}</p>
 
 
 

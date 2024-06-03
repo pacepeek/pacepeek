@@ -30,6 +30,8 @@
                     {% endif %}
                 {% endif %}
             </div>
+
+            {% if current_user.github_login == repo.owner_github_login %}
             <button type="button" class="basic-button untrack-button"
               hx-get="/untrack/{{ repo.owner_github_login }}/{{ repo.name }}"
               hx-target="closest .repo-item"
@@ -41,8 +43,11 @@
               title="Untrack? PacePeek will no longer track new incoming commits to this repository. Your repository data will remain unchanged.">
               Untrack
             </button>
+            {% endif %}
         </div>
 
+        <br>
+        <br>
         <div hx-get="/load_repo_info?repo_id={{repo.id}}" 
                  hx-trigger="click" 
                  hx-swap="outerHTML"

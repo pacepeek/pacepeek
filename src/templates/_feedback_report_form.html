@@ -1,0 +1,14 @@
+<details id="report-form">
+    {% if not limit %}
+    <summary style="cursor:pointer;">Help make this app better!</summary>
+    <form action="/submit-reports" method="post" class="feedback-form" hx-post="/submit-reports" hx-swap="outerHTML">
+        <label for="feedback" class="form-label">{{gettext("Please be nice:)")}}</label><br>
+        <textarea id="feedback" name="feedback" class="form-textarea" rows="4" cols="50" placeholder="{{gettext('Describe the bug found or suggest a feature...'
+        )}}"></textarea><br>
+        <input type="submit" value="Submit" class="form-submit">
+        <small><i>{{gettext("*we could ask you for more information through your email")}}</i></small>
+    </form>
+    {% else %}
+    <summary style="cursor:pointer;">You have reached the limit of 5 reports per day. Please user email.</summary>
+    {% endif %}
+</details>

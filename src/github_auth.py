@@ -50,7 +50,9 @@ def callback():
 
 
     user_data = requests.get('https://api.github.com/user', headers={'Authorization': f'token {access_token}'})
+    print("user_data:", user_data.json())
     github_id = user_data.json().get('id', None)
+    logging.info(f"GitHub ID: {github_id}")
 
     github_login = user_data.json().get('login', None)
     github_name = user_data.json().get('name', None)

@@ -44,12 +44,10 @@ def get_active_models_from_groq() -> list:
     print(response.json())
     return response.json()['models']
 
-
-def remove_premium_from_user(user: User):
-    """ removes premium from user and deactivates webhooks for their repos """
+def deactivate_user_webhooks(user: User):
+    """ deactivates webhooks for user's repos """
     from .github_utils import deactivate_webhook_for_user_repo_with_installation_token
-    user.premium_subscription = False
-    logging.info(f"removing premium from user {user.github_login}")
+    logging.info(f"deactivating webhooks for user {user.github_login}")
     for repo in Repo.query.filter_by(owner_github_id=user.github_id).all():
         if repo.webhook_id:
             if deactivate_webhook_for_user_repo_with_installation_token(repo):
@@ -58,22 +56,37 @@ def remove_premium_from_user(user: User):
                 logging.info(f"Could not deactivate webhook for repo {repo.name} since it probably was already deactivated")
         repo.webhook_active = False
     db.session.commit()
+    logging.info(f"deactivated webhooks for user {user.github_login}")
+
+def remove_premium_from_user(user: User):
+    """ removes premium from user and deactivates webhooks for their repos """
+    from .github_utils import deactivate_webhook_for_user_repo_with_installation_token
+    user.premium_subscription = False
+    logging.info(f"removing premium from user {user.github_login}")
+    deactivate_user_webhooks(user)
+    db.session.commit()
     logging.info(f"removed premium from user {user.github_login}")
 
+def reactivate_user_webhooks(user: User):
+    """ reactivates webhooks for user's repos """
+    from .github_utils import reactivate_webhook_for_user_repo_with_installation_token
+    logging.info(f"reactivating webhooks for user {user.github_login}")
+    for repo in Repo.query.filter_by(owner_github_id=user.github_id).all():
+        if repo.webhook_id:
+            if reactivate_webhook_for_user_repo_with_installation_token(repo):
+                logging.info(f"Deactivated webhook for repo {repo.name}")
+            else:
+                logging.info(f"Could not deactivate webhook for repo {repo.name} since it probably was already deactivated")
+        repo.webhook_active = True
+    db.session.commit()
+    logging.info(f"reactivated webhooks for user {user.github_login}")
 
 def give_premium_to_user(user: User):
     """ gives premium to user and reactivates webhooks for their repos """
     from .github_utils import reactivate_webhook_for_user_repo_with_installation_token
     user.premium_subscription = True
     logging.info(f"giving premium to user {user.github_login}")
-    if user.github_installation_id:
-        for repo in Repo.query.filter_by(owner_github_id=user.github_id).all():
-            repo.added_timestamp = int(time.time())
-            if repo.webhook_id:
-                if reactivate_webhook_for_user_repo_with_installation_token(repo):
-                    logging.info(f"Deactivated webhook for repo {repo.name}")
-                else:
-                    logging.info(f"Could not deactivate webhook for repo {repo.name} since it probably was already deactivated")
+    reactivate_user_webhooks(user)
     db.session.commit()
     logging.info(f"gave premium to user {user.github_login}")
 

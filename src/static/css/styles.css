@@ -1291,6 +1291,14 @@ th {
     color: var(--main-color-light);
 }
 
+.edit-buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+
 .repo-container {
     min-width: 100%;
     display: flex;

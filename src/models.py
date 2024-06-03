@@ -50,6 +50,10 @@ class User(db.Model,UserMixin):
     language = db.Column(db.String(50), default='en')
     joining_timestamp = db.Column(db.Integer, index=True)
 
+
+    # daily report limit is 5 reports
+    daily_report_count = db.Column(db.Integer, default=0)
+
     
     # access token
     github_user_access_token_encrypted = db.Column(db.String)
