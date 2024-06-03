@@ -277,6 +277,12 @@ def track_repo_for_user(repo_name: str, repo_github_id: str, repo_private: bool)
         logging.error(f"Failed to retrieve webhooks for {repo_name}: {response.content}")
         return None
 
+    # check if hook is in our db
+    if hook_id:
+        repo = Repo.query.filter_by(webhook_id=hook_id).first()
+        if not repo:
+            logging.error(f"Webhook {hook_id} exists in github but not in our db")
+            hook_id = None
 
     # If the webhook does not exist, create a new one
     if not hook_id:
