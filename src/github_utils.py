@@ -694,7 +694,7 @@ def handle_new_commit(repo: Repo, commit_sha: str, cdata: dict, current_branch: 
 
         sig = judge_significance(post_data, post, provider, model)
         logging.info(f"sig : {sig}")
-        if sig == "significant" or post.user.github_login == "rasmustestaccount":
+        if sig == "significant" or (post.user.github_login == "rasmustestaccount" and post.repo.name == "alwayssignificant"):
             logging.info("significant")
             post_content = post_post(post_data, post, provider, model)
             logging.info("post created")
