@@ -1118,10 +1118,8 @@ def add_user_repos_to_tracking():
 
         if not failure_repo_names:
             flash("Successfully added {} repositories to tracking!".format(len(selected_repos)), category='success')
-            create_user_notification(current_user, f"Successfully started tracking repos: {','.join(success_repo_names)}!")
         else:
             flash("Successfully added {} repositories to tracking, {} failed.".format(len(selected_repos) - fail, fail))
-            create_user_notification(current_user, f"Failed to track repos: {','.join(failure_repo_names)}")
 
         return redirect(url_for('views.get_profile', github_login=current_user.github_login, selected_tab='Tracked repositories'))
     except Exception as e:
