@@ -16,7 +16,7 @@ def every_minute():
     logging.info('every_minute**********************')
     #create_user_notification(User.query.filter_by(github_login='ahtavarasmus').first(), 'every_minute')
 
-@shared_task(bind=True, retry_backoff=True, retry_kwargs={'max_retries': 5, 'interval_start': 60, 'interval_step': 2})
+@shared_task
 def process_webhook_payload(payload_id):
     # TODO this retry logic is will not work yet and need to be tested and refactored
     try:
