@@ -58,8 +58,8 @@ def callback():
 
     access_token = token_data.get('access_token')
     refresh_token = token_data.get('refresh_token')
-    expires_in = int(token_data.get('expires_in'))
-    expires_at_timestamp = time.time() + expires_in
+    expires_in = int(token_data.get('expires_in', 0))
+    expires_at_timestamp = int(time.time()) + expires_in
     x_auth_type = session.get('x_auth_type',None)
     repo = None
     if x_auth_type == "user":

@@ -221,7 +221,7 @@ def get_judge_decision_without_tokens(client, commit_patches_data, model):
         max_tokens=1024,
         response_model=CommitAnalysis,
         messages=[
-                    {"role": "system", "content": f"""Your task is to analyze the provided commits and evaluate their significance. If there are multiple commits, analyze them collectively. Your response should indicate whether these commits are 'significant' or 'not significant'.
+                    {"role": "system", "content": f"""Your task is to analyze the provided commits and evaluate their significance. If there are multiple commits, analyze them collectively. 
 
                 A 'significant' commit could:
                 - Add a new feature or substantially progress a larger feature
@@ -232,14 +232,10 @@ def get_judge_decision_without_tokens(client, commit_patches_data, model):
                 - Involve minor tweaks or bug fixes that don't have a major impact
                 - Add comments or documentation
                 - Perform small refactoring tasks
+                - Add a file or files without significant changes
 
-                Special Consideration:
-                - Sometimes a change may look small but can have a significant impact, such as fixing a critical bug that has been causing stress in the product. These should also be considered 'significant'.
-
-                Please judge the following commit patches and determine their significance by outputing ONLY 'significant' or 'not significant'.:
-
-                {commit_patches_data}"""},
-                    {"role": "user","content": f"Please evaluate if the given commit patches are 'significant' or 'not significant'."},
+                """},
+                    {"role": "user","content": commit_patches_data},
                 ],
     )
     logging.info(f"response: {resp.decision}")
@@ -265,6 +261,7 @@ def get_judge_decision(client, commit_patches_data, model):
                 - Involve minor tweaks or bug fixes that don't have a major impact
                 - Add comments or documentation
                 - Perform small refactoring tasks
+                - Add a file or files without significant changes
 
                 Special Consideration:
                 - Sometimes a change may look small but can have a significant impact, such as fixing a critical bug that has been causing stress in the product. These should also be considered 'significant'.

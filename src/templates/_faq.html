@@ -7,7 +7,14 @@
                     <h2>{{gettext("What is PacePeek?")}}</h2>
                 </div>
             <div class="public-orgs-list">
-                <p><strong>{{gettext("PacePeek")}}</strong> {{gettext("is an automated social media platform for developers.")}}</p>
+                <p>{{gettext("PacePeek is a platform that helps developers showcase their coding progress and connect with others who share similar interests. By tracking your public repositories, PacePeek creates a personalized feed of your coding achievements, highlighting your significant progress and milestones. Imagine a social network where you can share your coding journey, follow others, and see what they're working on. PacePeek is designed to help you stay motivated, get feedback, and learn from others in the developer community. With PacePeek, you can:")}}</p>
+                <ul>
+                    <li>{{gettext("Track your public repositories and see your progress unfold")}}</li>
+                    <li>{{gettext("Share your coding achievements with others")}}</li>
+                    <li>{{gettext("Follow fellow developers and see their posts on your home page")}}</li>
+                    <li>{{gettext("Discover new projects and collaborations")}}</li>
+                </ul>
+                <p>{{gettext("PacePeek is all about celebrating your coding progress, no matter how big or small. Join our community today and start peeking into the pace of coding.")}}</p>
             </div>
     </div>
 </div>
@@ -17,16 +24,83 @@
         <details>
             <summary style="cursor: pointer; list-style:none;">
                 <div class="public-orgs-header">
-                    <h2>{{gettext("How does it work?")}}</h2>
+                    <h2>{{gettext("How to get started?")}}</h2>
                 </div>
             </summary>
             <div class="public-orgs-list">
-            <p>{{gettext("You can track your public repositories, and PacePeek will generate summaries from the changes you make. By installing PacePeek's GitHub app on your personal GitHub account, you enable PacePeek to fetch necessary commit data from your repositories. You can also add markdown and HTML widgets to showcase your latest posts elsewhere on the internet. Follow other users to see their posts on your home page. PacePeek waits for a significant enough changes across commits to be made before generating a progress summary post, ensuring that the posts reflect meaningful progress. All posts older than 2 months are deleted for keeping things fresh. Premium accounts(coming) can add one X account to their PacePeek account to repost every post to X.")}}</p>
-
+                <p>
+                <ul>
+                    <li>{{gettext("Sign in with your GitHub account.")}}</li>
+                    <li>{{gettext("Install PacePeek's GitHub app on your personal GitHub account.")}}</li>
+                    <li>{{gettext("Track your public repositories.")}}</li>
+                    <li>{{gettext("Make meaningful changes to your code.")}}</li>
+                    <li>{{gettext("PacePeek will generate posts to showcase your progress.")}}</li>
+                    <li>{{gettext("Follow other users to see their posts on your home page :)")}}</li>
+                </p>
             </div>
         </details>
     </div>
 </div>
+               
+<div class="public-orgs-container">
+    <div class="public-orgs">
+        <details>
+            <summary style="cursor: pointer; list-style:none;">
+                <div class="public-orgs-header">
+                    <h2>{{gettext("How does the algorithm work?")}}</h2>
+                </div>
+            </summary>
+            <div class="public-orgs-list">
+                <p>
+
+                <ul>
+                    <li>{{gettext("The algorithm analyzes your code changes to identify significant progress.")}}</li>
+                    <li>{{gettext("When you make meaningful changes, the algorithm creates a post to showcase your work.")}}</li>
+                    <li>{{gettext("It's not about the number of commits – it looks at the quality and quantity of your changes as a whole to determine what's significant.")}}</li>
+                    <li>{{gettext("If you make multiple commits, but they're not substantial enough, a post won't be created. However, if you make a series of commits that collectively represent significant progress, a post is created to highlight your achievement.")}}</li>
+                    <li>{{gettext("You can make up to 5 posts per day, so focus on making meaningful progress and PacePeek will take care of the rest!")}}</li>
+                </ul>
+                </p>
+                <br>
+                <h4>{{gettext("Here is the system prompt used to judge significance:")}}</h4>
+                <p>
+                """Your task is to analyze the provided commits and evaluate their significance. If there are multiple commits, analyze them collectively. 
+
+                A 'significant' commit could:
+                - Add a new feature or substantially progress a larger feature
+                - Perform a major refactor or significant code cleanup
+                - Resolve a critical bug or issue that has a major impact on the system or user experience
+
+                A 'not significant' commit could:
+                - Involve minor tweaks or bug fixes that don't have a major impact
+                - Add comments or documentation
+                - Perform small refactoring tasks
+                - Add a file or files without significant changes
+                """
+                </p>
+            </div>
+        </details>
+    </div>
+</div>
+<div class="public-orgs-container">
+    <div class="public-orgs">
+        <details>
+            <summary style="cursor: pointer; list-style:none;">
+                <div class="public-orgs-header">
+                    <h2>{{gettext("How to share my posts on the internet?")}}</h2>
+                </div>
+            </summary>
+            <div class="public-orgs-list">
+                <p>
+                {{gettext("PacePeek offers HTML and Markdown widgets that you can embed on your website or blog to showcase your coding progress.")}}
+                {{gettext("X Automation feature to automatically post your updates to your X account is possible. Send a message if you are interested.")}}
+                </p>
+            </div>
+        </details>
+    </div>
+</div>
+
+
 
 <div class="spacer"></div>
 <div class="spacer"></div>

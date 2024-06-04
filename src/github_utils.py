@@ -920,12 +920,25 @@ def handle_payload(payload: dict):
             deactivate_webhook_for_user_repo_with_installation_token(repo)
             create_admin_notification(f"User {user.github_login} is suspended, not processing the commits")
             return False
+
+        # TODO
+        # currently collaborators are not supported, but they can be in the future:
+        # /repos/{owner}/{repo}/collaborators endpoint gets us the collaborators and 
+        # we can allow user to also track repos they are collaborators of
+        # and just put the author of the commit as the user who is the collaborator
+        # and then when checking unsignificant commits, we must filter commits for that user only
+        if repo.owner_github_login != user.github_login:
+            logging.info(f"probably some other collaborator is pushing to the repo, not processing the commits")
+            repo.added_timestamp = int(time.time()) # to reset the parent finding
+            db.session.commit()
+            return False
+
         daily_post_count = Post.query.filter(Post.creation_timestamp > int(time.time())-86400, Post.user_id==user.id ).count()
         logging.info(f"User {user.github_login} has posted {daily_post_count} posts today")
-        if daily_post_count > 3:
-            logging.info(f"User {user.github_login} has reached the daily post limit of 4, not processing the commits")
-            create_admin_notification(f"User {user.github_login} has reached the daily post limit of 4, not processing the commits")
-            repo.added_timestamp = time.time() # to reset the parent finding
+        if daily_post_count >= 5:
+            logging.info(f"User {user.github_login} has reached the daily post limit of 5, not processing the commits")
+            create_admin_notification(f"User {user.github_login} has reached the daily post limit of 5, not processing the commits")
+            repo.added_timestamp = int(time.time()) # to reset the parent finding
             db.session.commit()
             return False
         
