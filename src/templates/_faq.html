@@ -7,7 +7,9 @@
                     <h2>{{gettext("What is PacePeek?")}}</h2>
                 </div>
             <div class="public-orgs-list">
-                <p>{{gettext("PacePeek is a platform that helps developers showcase their coding progress and connect with others who share similar interests. By tracking your public repositories, PacePeek creates a personalized feed of your coding achievements, highlighting your significant progress and milestones. Imagine a social network where you can share your coding journey, follow others, and see what they're working on. PacePeek is designed to help you stay motivated, get feedback, and learn from others in the developer community. With PacePeek, you can:")}}</p>
+                <p>{{gettext("PacePeek is a platform that helps developers showcase their coding progress and connect with others who share similar interests.")}}</p>
+                <p>{{gettext("By tracking your public repositories, PacePeek creates a personalized feed of your coding achievements, highlighting your significant progress and milestones.")}}</p>
+                <p>{{gettext("With PacePeek, you can:")}}</p>
                 <ul>
                     <li>{{gettext("Track your public repositories and see your progress unfold")}}</li>
                     <li>{{gettext("Share your coding achievements with others")}}</li>
@@ -19,6 +21,20 @@
     </div>
 </div>
 
+<div class="public-orgs-container">
+    <div class="public-orgs">
+        <details>
+            <summary style="cursor: pointer; list-style:none;">
+                <div class="public-orgs-header">
+                    <h2>{{gettext("Why PacePeek?")}}</h2>
+                </div>
+            </summary>
+            <div class="public-orgs-list">
+                <p>I created PacePeek because I liked to build projects and wanted to know what other people were working on. There was really no way of knowing that unless going through their code changes manually and reading their commit messages. And we all know how commit messages are on side projects XD. Sure some people share their progress on X by building in public but it requires effort. With the rise of better and cheaper llms, this kind of tracking is now possible. The turning point for this was Meta's llama3 which is reliable/cheap enough to do this job.</p>
+            </div>
+        </details>
+    </div>
+</div>
 <div class="public-orgs-container">
     <div class="public-orgs">
         <details>
@@ -63,20 +79,7 @@
                 </p>
                 <br>
                 <h4>{{gettext("Here is the system prompt used to judge significance:")}}</h4>
-                <p>
-                """Your task is to analyze the provided commits and evaluate their significance. If there are multiple commits, analyze them collectively. 
-
-                A 'significant' commit could:
-                - Add a new feature or substantially progress a larger feature
-                - Perform a major refactor or significant code cleanup
-                - Resolve a critical bug or issue that has a major impact on the system or user experience
-
-                A 'not significant' commit could:
-                - Involve minor tweaks or bug fixes that don't have a major impact
-                - Add comments or documentation
-                - Perform small refactoring tasks
-                - Add a file or files without significant changes
-                """
+                <p>Your task is to analyze the provided commits and evaluate their significance. If there are multiple commits, analyze them collectively.</p> <p>A 'significant' commit could:</p> <ul> <li>- Add a new feature or substantially progress a larger feature</li> <li>- Perform a major refactor or significant code cleanup</li> <li>- Resolve a critical bug or issue that has a major impact on the system or user experience</li> </ul> <p>A 'not significant' commit could:</p> <ul> <li>- Involve minor tweaks or bug fixes that don't have a major impact</li> <li>- Add comments or documentation</li> <li>- Perform small refactoring tasks</li> <li>- Add a file or files without significant changes</li> </ul>
                 </p>
             </div>
         </details>
