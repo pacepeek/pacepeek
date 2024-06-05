@@ -13,7 +13,8 @@ import requests
 
 
 class Summary(BaseModel):
-    summary: str = Field(description="This is a summary analysis that should be in the language given by the input")
+    summary: str = Field(description="This is a summary analysis of the commit patches")
+    programming_language_used: str = Field(description="The programming language used in the commit patches")
 
 def gpt_generate_summary_for_user_commits_openai(commit_patches_data: str, model: str):
 
@@ -63,7 +64,7 @@ def get_post_summary_local(client, repo_description, commit_patches_data, model)
         response_model=Summary,
     )
     logging.info(f"response: {resp.summary}")
-    return resp.summary
+    return resp.summary, resp.programming_language_used
 
 
 
@@ -86,7 +87,7 @@ def get_post_summary(client, commit_patches_data, model):
         response_model=Summary,
     )
     logging.info(f"response: {resp.summary}")
-    return resp.summary
+    return resp.summary, resp.programming_language_used
 
 
 class FileAnalysisCategory(str, Enum):

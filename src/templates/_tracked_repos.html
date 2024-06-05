@@ -1,4 +1,4 @@
-{% for repo in repos %}
+{% for repo, commit_count in repos %}
 <div class="repo-item">
     <div class="repo-container">
         <h2><u>
@@ -7,7 +7,13 @@
             </a>
             </u>
         </h2>
-        <small>{{repo.commits|commits_in_the_last_week}}</small>
+        {% if not commit_count %}
+            <small>no commits in the last week</small>
+        {% elif commit_count == 1 %}
+            <small>{{commit_count}} commit in the last week</small>
+        {% else %}
+            <small>{{commit_count}} commits in the last week</small>
+        {% endif %}
         {% if not repo.webhook_active and current_user.github_login == repo.owner_github_login %}
             (webhook deactivated)
         {% endif %}

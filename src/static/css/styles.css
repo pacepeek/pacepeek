@@ -263,6 +263,20 @@ button {
     padding: 10px;
 }
 
+.user-stats {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.user-stats h3 {
+    border-bottom: 1px solid var(--border-color);
+}
+
 .pricing-container {
     padding: 20px;
     margin: 20px;

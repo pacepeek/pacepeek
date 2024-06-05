@@ -234,6 +234,7 @@ class Post(db.Model):
     x_posting_status = db.Column(db.String(50), default='pending')  # 'pending', 'success', 'failed'
     x_error_message = db.Column(db.Text)
     error_message = db.Column(db.Text)
+    programming_language = db.Column(db.String(50))
 
     author_github_id = db.Column(db.String(300)) # in case user is not in the database
     author_github_login = db.Column(db.String(300)) # in case user is not in the database

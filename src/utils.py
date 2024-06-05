@@ -32,6 +32,12 @@ class GPTFileAnalysisError(Exception):
 class GPTJudgeError(Exception):
     pass
 
+def get_top_three_languages_for_user(user: User):
+    """ returns the top three languages for a user with a query """
+    """ uses the Post.programming_language column """
+    top_three_languages = db.session.query(Post.programming_language, db.func.count(Post.programming_language).label('count')).filter(Post.author_github_id == user.github_id, Post.programming_language != None).group_by(Post.programming_language).order_by(db.desc('count')).limit(3).all()
+    return top_three_languages
+
 
 def get_active_models_from_groq() -> list:
     url = "https://api.groq.com/openai/v1/models"

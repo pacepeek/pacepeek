@@ -10,6 +10,27 @@ import time
 
 template_filters = Blueprint('template_filters', __name__)
 
+@template_filters.app_template_filter('posts_in_the_last_month')
+def posts_in_the_last_month(posts):
+    c = len([post for post in posts if post.creation_timestamp > int(time.time()) - 60*60*24*30])
+    if c == 0:
+        return "No posts in the last month"
+    elif c == 1:
+        return "1 post in the last month"
+    else:
+        return f"{c} posts in the last month"
+
+@template_filters.app_template_filter('commits_in_the_last_month')
+def commits_in_the_last_month(commits):
+    c = len([commit for commit in commits if commit.creation_timestamp > int(time.time()) - 60*60*24*30])
+    if c == 0:
+        return "No commits in the last month"
+    elif c == 1:
+        return "1 commit in the last month"
+    else:
+        return f"{c} commits in the last month"
+
+
 @template_filters.app_template_filter('commits_in_the_last_week')
 def commits_in_the_last_week(commits):
     c = len([commit for commit in commits if commit.creation_timestamp > int(time.time()) - 604800])

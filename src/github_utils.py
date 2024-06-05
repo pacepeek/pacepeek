@@ -562,27 +562,30 @@ def analyze_post(post: Post, post_data: str, provider: str, model: str):
     logging.info("enter analyze_post")
     if provider == "openai":
         logging.info("provider is openai")
-        post_content, tokens = gpt_generate_summary_for_user_commits_openai(post_data, model)
-        if post.summary_token_count is None:
-            post.summary_token_count = 0
-        post.summary_token_count += int(tokens)
+        post_content, programming_language_used = gpt_generate_summary_for_user_commits_openai(post_data, model)
+        #if post.summary_token_count is None:
+        #    post.summary_token_count = 0
+        #post.summary_token_count += int(tokens)
+        post.programming_language = programming_language_used
         post.summary_provider = "openai"
         post.summary_model = model
         logging.info("leave analyze_post")
         return post_content
     elif provider == "groq":
         logging.info("provider is groq")
-        post_content = gpt_generate_summary_for_user_commits_groq(post_data, model)
+        post_content, programming_language_used = gpt_generate_summary_for_user_commits_groq(post_data, model)
         #if post.summary_token_count is None:
         #    post.summary_token_count = 0
         #post.summary_token_count += int(tokens)
+        post.programming_language = programming_language_used
         post.summary_provider = "groq"
         post.summary_model = model
         logging.info("leave analyze_post")
         return post_content
     elif provider == "local":
         logging.info("provider is local")
-        post_content = gpt_generate_summary_for_user_commits_local(post.repo.repo_description, post_data, model)
+        post_content, programming_language_used = gpt_generate_summary_for_user_commits_local(post.repo.repo_description, post_data, model)
+        post.programming_language = programming_language_used
         post.summary_provider = 'local'
         post.summary_model = model
         logging.info("leave analyze_post")

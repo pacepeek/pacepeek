@@ -1,4 +1,5 @@
 {% if not user.suspended %}
+    
     {% if current_user.github_login == user.github_login%}
 
         {% if not current_user.github_installation_id %}
@@ -20,10 +21,11 @@
             {% include '_tracked_repos.html' %}
         </div>
     {% else %}
-    <div class="repo-list">
+            <div class="repo-list">
         {% include '_tracked_repos.html' %}
     </div>
     {% endif %}
+    
 {% else %}
     {% if current_user.github_login == user.github_login%}
         <p style="padding: 10px;">{{gettext("Your account is suspended. Please contact the administrator.")}}</p>

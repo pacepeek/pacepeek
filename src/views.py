@@ -19,7 +19,7 @@ from sqlalchemy import func, desc
 from . import db,config, get_timezone
 from .models import User, Repo, Post, Month, Settings, UserRepoLastSeen, Commit, Branch, Notification, Payload
 from pprint import pprint
-from .utils import (create_admin_notification, create_user_notification, get_active_models_from_groq, get_last_four_parent_commits, get_last_four_posts, get_repos_for_user,get_next_posts, give_premium_to_user, log_the_error_context, make_widget, update_user_widget_settings,set_last_seen_posts_for_new_following, make_commit_tree,verify_signature,remove_premium_from_user, create_report)
+from .utils import (create_admin_notification, create_user_notification, get_active_models_from_groq, get_last_four_parent_commits, get_last_four_posts, get_repos_for_user,get_next_posts, get_top_three_languages_for_user, give_premium_to_user, log_the_error_context, make_widget, update_user_widget_settings,set_last_seen_posts_for_new_following, make_commit_tree,verify_signature,remove_premium_from_user, create_report)
                     
 from .github_utils import delete_user_profile, handle_payload, track_repo_for_user, get_installation_access_token_and_expiration_time, untrack_repo_for_user
 from datetime import datetime, timedelta
@@ -516,6 +516,7 @@ def get_search_view():
                             .group_by(User.id)\
                             .order_by(desc('post_count')).all()
     logging.info(f"users_ordered_by_posts: {users_ordered_by_posts}")
+
 
     rendered_search_page = render_template("_search.html", users=users, users_ordered_by_posts=users_ordered_by_posts, langlocale=locale, visible_page=visible_page)
 
@@ -1035,10 +1036,23 @@ def search_results():
 
     print("search term:", search_term)
     users = User.query.filter(User.github_login.like(f"%{search_term}%")).all()
+    lang = Post.query.filter(Post.programming_language.like(f"%{search_term}%")).first()
+    lang = lang.programming_language if lang else None
+    logging.info(f"lang: {lang}")
+    if lang:
+        users_with_most_posts_in_lang = (
+            db.session.query(User, func.count(Post.id).label('post_count'))
+            .join(Post, User.github_id == Post.author_github_id)
+            .filter(Post.programming_language == lang)
+            .group_by(User)
+            .order_by(db.desc('post_count')).limit(3).all()
+        )
+    else:
+        users_with_most_posts_in_lang = []
     if search_term == '':
         return render_template('_search_results.html', people=[])
 
-    return render_template('_search_results.html', people=users)
+    return render_template('_search_results.html', people=users, users_with_most_posts_in_lang=users_with_most_posts_in_lang, lang=lang)
 
 
 @login_required
@@ -1375,7 +1389,7 @@ def get_profile(github_login=None):
            .subquery()
         )
         repos = (
-            Repo.query
+                db.session.query(Repo, commit_count_subquery.c.commit_count)
            .filter_by(owner_github_id=user.github_id, deleted=False)
            .outerjoin(commit_count_subquery, Repo.id == commit_count_subquery.c.id)  # Changed to left_join
            .order_by(desc(commit_count_subquery.c.commit_count))  # Ordering remains the same
@@ -1388,22 +1402,25 @@ def get_profile(github_login=None):
         markdown_widget_svg = make_widget(user, 2, user.settings.markdown_widget_fill_color,user.settings.markdown_widget_stroke_color,user.settings.markdown_widget_text_color)
         session['selected_profile_tab'] = 'user_settings'
 
+
+    top_three_languages_for_user = get_top_three_languages_for_user(user)
     
+
     session['visible_page'] = 'profile'
     visible_page = 'profile'
 
     install_url = f'https://github.com/apps/{config.get("GITHUB_APP_NAME")}/installations/new'
     session['installation_reroute'] = f"/{github_login}"
 
+    rendered_profile_page = render_template("_profile_content.html", user=user, repos=repos, posts=posts, is_following=is_following, selected_profile_tab=selected_profile_tab, feed_type='profile', markdown_widget_svg=markdown_widget_svg, visible_page=visible_page, install_url=install_url, app_url=config.get('APP_URL'), top_three_languages_for_user=top_three_languages_for_user)
+
     # If this is an htmx request, only send back the profile content
     if 'HX-Request' in request.headers and request.headers['HX-Request'] == 'true':
-        return render_template("_profile_content.html", user=user, repos=repos, posts=posts, is_following=is_following, selected_profile_tab=selected_profile_tab, feed_type='profile', markdown_widget_svg=markdown_widget_svg, visible_page=visible_page, install_url=install_url, app_url=config.get('APP_URL'))
+        return rendered_profile_page
 
     # If this is a direct URL access, render the home.html and include the profile content in it
     else:
-        rendered_profile=render_template("_profile_content.html", user=user, repos=repos, posts=posts, is_following=is_following, selected_profile_tab=selected_profile_tab,feed_type='profile',markdown_widget_svg=markdown_widget_svg,install_url=install_url, app_url=config.get('APP_URL'))
-
-        return render_template("home.html", rendered_profile=rendered_profile, user=current_user, visible_page='profile')
+        return render_template("home.html", rendered_profile=rendered_profile_page, user=current_user, visible_page='profile')
 
 
 @views.route('/update_timezone', methods=['POST'])

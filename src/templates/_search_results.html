@@ -6,5 +6,11 @@
         </div>
     </a>
     {% endfor %}
+    {% for user,post_count in users_with_most_posts_in_lang %}
+    <a href="/{{user.github_login}}" class="person-link" tabindex="0">
+        <div class="person">
+            <h3>{{ user.github_login }}<small>({{post_count}} posts written with {{lang}})</small></h3>
+        </div>
+    {% endfor %}
 </div>
 

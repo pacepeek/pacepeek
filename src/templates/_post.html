@@ -48,6 +48,9 @@
             # for commit in post.commits 
                 <a href="{{commit.link}}" target="_blank">{{commit.sha}}</a>
             # endfor
+            {% if post.programming_language %}
+            <p>{{gettext("Programming language: ")}}{{post.programming_language}}</p>
+            {% endif %}
             {% if current_user_owner %}
             <br>
             <br>
