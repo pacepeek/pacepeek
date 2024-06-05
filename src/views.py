@@ -508,10 +508,21 @@ def get_search_view():
     users = User.query.all()
     locale = get_locale()
 
+    timestamp_30_days_ago = int(time.time()) - 30 * 24 * 60 * 60
+    # leaderboard
+    users_ordered_by_posts = db.session.query(User, func.count(Post.id).label('post_count'))\
+                            .join(User.posts)\
+                            .filter(Post.creation_timestamp >= timestamp_30_days_ago)\
+                            .group_by(User.id)\
+                            .order_by(desc('post_count')).all()
+    logging.info(f"users_ordered_by_posts: {users_ordered_by_posts}")
+
+    rendered_search_page = render_template("_search.html", users=users, users_ordered_by_posts=users_ordered_by_posts, langlocale=locale, visible_page=visible_page)
+
     if 'HX-Request' in request.headers and request.headers['HX-Request'] == 'true':
-        return render_template("_search.html", langlocale=locale, visible_page=visible_page, user=current_user, users=users)
+        return rendered_search_page
     else:
-        return render_template("home.html", langlocale=locale, visible_page=visible_page, rendered_search_page=render_template('_search.html', users=users), user=current_user)
+        return render_template("home.html", langlocale=locale, visible_page=visible_page, user=current_user, rendered_search_page=rendered_search_page)
 
 
 @views.route("/p/<post_id>", methods=['GET'])

@@ -244,6 +244,24 @@ button {
     text-decoration: underline;
 }
 
+.hacker-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.hacker {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.rank {
+    padding: 10px;
+}
 
 .pricing-container {
     padding: 20px;

@@ -1,0 +1,28 @@
+<div class="public-orgs-container">
+    <div class="public-orgs">
+        <div class="public-orgs-header">
+            <h2>{{gettext("Top hackers last 30 days")}}</h2>
+            <p>{{gettext("Ranked by post counts")}}</p>
+        </div>
+        <div class="public-orgs-list">
+            {% for user,post_count in users_ordered_by_posts %}
+                <div class="hacker-box">
+                    <div class="hacker">
+                        <div class="rank">{{loop.index}}</div>
+                        <img class="profile-image-post" src="{{ user.github_avatar_url}}" alt="Profile image">
+                        <a href="/{{user.github_login}}">
+                            <h3>{{user.github_login}}</h3>
+                        </a>
+                    </div>
+                    <div class="post-count">
+                        {% if post_count == 1 %}
+                             {{post_count}} post
+                        {% else %}
+                            {{post_count}} posts
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
