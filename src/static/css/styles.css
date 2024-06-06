@@ -1748,7 +1748,7 @@ section h2 {
 }
 
 .nav-item {
-    color: var(--main-color); /* White text color */
+    color: var(--second-color); /* White text color */
     text-decoration: none; /* Remove underline */
     padding: 10px 20px;
     padding-left: 60px;
