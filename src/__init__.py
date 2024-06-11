@@ -1,4 +1,4 @@
-
+import sentry_sdk
 from flask import Flask, current_app, request, session
 from flask_babel import Babel
 from flask_cors import CORS
@@ -32,6 +32,17 @@ babel = Babel()
 DB_NAME = config.get('DB_NAME')
 
 migrate = Migrate()
+
+sentry_sdk.init(
+    dsn="https://5d9dea42b50fd392f9e09da75acce9d4@o4507415184539648.ingest.de.sentry.io/4507415211868240",
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
+    # We recommend adjusting this value in production.
+    profiles_sample_rate=1.0,
+)
 
  
 def get_locale():

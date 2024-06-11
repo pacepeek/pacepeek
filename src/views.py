@@ -31,6 +31,10 @@ views = Blueprint('views', __name__)
 def server():
     return config.get('SERVER')
 
+@views.route('/error')
+def error():
+    1/0
+    return "error"
 
 @views.route('/', methods=['GET', 'POST'])
 def home():
