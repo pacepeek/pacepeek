@@ -21,7 +21,7 @@
         {% include '_flash_messages.html' %}
         <nav class="main-nav">
             <ul>
-                <li><a href="/" class="brand"><img src="{{ url_for('static', filename='photos/pacepeeklogomountainblue.png') }}">PacePeek</a>
+                <li><a href="/" class="brand"><img src="{{ url_for('static', filename='photos/pacepeeklogomountainblue.png') }}">PacePeek<div class="early-access-badge">{{gettext("Early Access")}}</div></a>
                 </li>
                 <div class="language-choice-container-desktop">
                     {% if not current_user.is_authenticated %}
