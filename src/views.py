@@ -276,7 +276,7 @@ def load_repo_info():
     current_user_owner = False
     if current_user.is_authenticated:
         current_user_owner = True if current_user.github_id == repo.owner_github_id else False
-    unfinished_post = Post.query.filter_by(author_github_id=repo.owner_github_id,not_finished=True).first()
+    unfinished_post = Post.query.filter_by(repo_id=repo.id, author_github_id=repo.owner_github_id,not_finished=True).first()
     return render_template('_repo_info.html', repo=repo, unfinished_post=unfinished_post, current_user_owner=current_user_owner)
 
 
