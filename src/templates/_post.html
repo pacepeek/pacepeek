@@ -48,6 +48,7 @@
             # for commit in post.commits 
                 <a href="{{commit.link}}" target="_blank">{{commit.sha}}</a>
             # endfor
+            <small>*newest commit on the bottom</small>
             {% if post.programming_language %}
             <p>{{gettext("Programming language: ")}}{{post.programming_language}}</p>
             {% endif %}
