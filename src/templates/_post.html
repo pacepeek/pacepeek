@@ -30,39 +30,40 @@
         {% else %}
             <p>no content.</p>
         {% endif %}
-        <small>{{post.lines_changed}} {{gettext("lines changed")}}</small>
-        <br>
         <br>
         <details>
-            {% if post.commits|length > 1 %}
             <summary>{{gettext("Details")}}..</summary>
-            {% else %}
-            <summary>{{gettext("Details")}}..</summary>
-            {% endif %}
-            {% if post.summary_provider == 'local' %}
-                <p>{{gettext("Summary made with")}} {{post.summary_model}}
-            {% else %}
-            <p>{{gettext("Summary made with model")}} {{post.summary_model}}
-            {% endif %}
-            from commits:</p>
-            # for commit in post.commits 
-            <span><small>{{commit.creation_timestamp|timestamp_to_user_localtime|pretty_time}}</small></span> <a href="{{commit.link}}" target="_blank"><u>{{commit.sha[:7]}}</u></a> <span>{{gettext("on branch")}} {{commit.branch.name}}</span>
-            <br>
-            # endfor
-            {% if post.programming_language %}
-            <p>{{gettext("Programming language: ")}}{{post.programming_language}}</p>
-            {% endif %}
-            {% if current_user_owner %}
-            <br>
-            <br>
-            <button 
-                type="button" 
-                class="basic-button" 
-                hx-get="/delete_post/{{post.id}}" 
-                hx-trigger="click once" 
-                hx-confirm="Are you sure you want to delete the post? This action is irreversible." 
-                title="Delete? This action is irreversible.">Delete</button>
-            {% endif %}
+            <div style="cursor: auto;">
+                {% if post.lines_changed == 1 %}
+                <small>{{post.lines_changed}} {{gettext("line changed")}}</small>
+                {% else %}
+                <small>{{post.lines_changed}} {{gettext("lines changed")}}</small>
+                {% endif %}
+                {% if post.summary_provider == 'local' %}
+                    <p>{{gettext("Summary made with")}} {{post.summary_model}}
+                {% else %}
+                <p>{{gettext("Summary made with model")}} {{post.summary_model}}
+                {% endif %}
+                from commits:</p>
+                # for commit in post.commits 
+                <span><small>{{commit.creation_timestamp|timestamp_to_user_localtime|pretty_time}}</small></span> <a href="{{commit.link}}" target="_blank"><u>{{commit.sha[:7]}}</u></a> <span>{{gettext("on branch")}} {{commit.branch.name}}</span>
+                <br>
+                # endfor
+                {% if post.programming_language %}
+                <p>{{gettext("Programming language: ")}}{{post.programming_language}}</p>
+                {% endif %}
+                {% if current_user_owner %}
+                <br>
+                <br>
+                <button 
+                    type="button" 
+                    class="basic-button" 
+                    hx-get="/delete_post/{{post.id}}" 
+                    hx-trigger="click once" 
+                    hx-confirm="Are you sure you want to delete the post? This action is irreversible." 
+                    title="Delete? This action is irreversible.">Delete</button>
+                {% endif %}
+            </div>
         </details>
         {% if post.creation_timestamp %}
             <small>{{post.creation_timestamp|timestamp_to_user_localtime|pretty_time}}</small>
@@ -74,8 +75,12 @@
 <!-- last four posts for context here -->
 <br>
 {% if last_four_posts %}
-<div class="last-posts">
-<h2>{{gettext("Last posts from repo")}} {{post.commits[0].repo.name}}</h2>
-{{ rendered_last_four_posts | safe }}
-</div>
+<details>
+    <summary style="padding: 20px; cursor: pointer;"><small>{{gettext("Previous posts from repo")}} {{post.commits[0].repo.name}}-></small></summary>
+    <div style="cursor: auto;">
+        <div class="last-posts">
+        {{ rendered_last_four_posts | safe }}
+        </div>
+    </div>
+</details>
 {% endif %}
