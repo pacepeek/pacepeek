@@ -708,6 +708,38 @@ def handle_new_commit(repo: Repo, commit_sha: str, cdata: dict, current_branch: 
     db.session.commit()
 
 
+def handle_existing_commit(repo: Repo, current_branch: Branch, current_commit: Commit):
+    with db.session.no_autoflush:
+
+        logging.info(f"current_commit is not None, must be a merge or push that corrects some before misbranched commits")
+
+        logging.info(f"repo.main_branch_name: {repo.main_branch_name}")
+        logging.info(f"repo.hotfix_branch_contains_name: {repo.hotfix_branch_contains_name}")
+        logging.info(f"repo.dev_branch_name: {repo.dev_branch_name}")
+        logging.info(f"current_commit.branch.name: {current_commit.branch.name}")
+        logging.info(f"repo.main_branch_in_use: {repo.main_branch_in_use}")
+        logging.info(f"repo.dev_branch_in_use: {repo.dev_branch_in_use}")
+        logging.info(f"repo.hotfix_branch_in_use: {repo.hotfix_branch_in_use}")
+        if repo.main_branch_in_use and current_commit.branch.name == repo.main_branch_name:
+            logging.info("current_commit's branch is main branch, we won't rebranch it")
+        elif repo.dev_branch_in_use and current_commit.branch.name == repo.dev_branch_name:
+            logging.info("current_commit's branch is dev branch, we won't rebranch it")
+        elif repo.hotfix_branch_in_use and repo.hotfix_branch_contains_name.lower() in current_commit.branch.name.lower():
+            logging.info("current_commit's branch is hotfix branch, we won't rebranch it")
+        elif (repo.main_branch_in_use and current_branch.name == repo.main_branch_name) \
+                or (repo.dev_branch_in_use and current_branch.name == repo.dev_branch_name) \
+                or (repo.hotfix_branch_in_use and repo.hotfix_branch_contains_name.lower() in current_branch.name.lower()):
+            logging.info("current_branch is main, dev or hotfix branch, we won't rebranch any of the commits hanging on it")
+        else:
+            logging.info("we will rebranch it")
+            previous_branch_name = current_commit.branch.name
+            logging.info(f"previous_branch_name: {previous_branch_name}")
+            current_commit.branch = current_branch
+            logging.info(f"current_commit.branch.name: {current_commit.branch.name}")
+            current_commit.previous_branch_name = previous_branch_name
+            logging.info(f"current_commit.previous_branch_name: {current_commit.previous_branch_name}")
+    db.session.commit()
+
 def handle_commit(repo: Repo, commit_sha: str, current_branch: Branch, github: requests.Session):
     """
     All the errors will go to handle_commits function which calls this exclusively.
@@ -722,6 +754,8 @@ def handle_commit(repo: Repo, commit_sha: str, current_branch: Branch, github: r
         current_commit = Commit.query.filter_by(sha=commit_sha).first()
         if current_commit is None:
             handle_new_commit(repo, commit_sha, cdata, current_branch, github)
+        else:
+            handle_existing_commit(repo, current_branch, current_commit)
             
         logging.info(f"FINALLY COMMITING THE CHANGES TO DB")
     db.session.commit()

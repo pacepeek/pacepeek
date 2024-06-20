@@ -42,13 +42,13 @@
             {% if post.summary_provider == 'local' %}
                 <p>{{gettext("Summary made with")}} {{post.summary_model}}
             {% else %}
-            <p>{{gettext("Summary made with model")}} {{post.summary_model}} {{gettext("using")}} {{post.summary_token_count+post.judging_token_count}} tokens 
+            <p>{{gettext("Summary made with model")}} {{post.summary_model}}
             {% endif %}
             from commits:</p>
             # for commit in post.commits 
-                <a href="{{commit.link}}" target="_blank">{{commit.sha}}</a>
+            <span><small>{{commit.creation_timestamp|timestamp_to_user_localtime|pretty_time}}</small></span> <a href="{{commit.link}}" target="_blank"><u>{{commit.sha[:7]}}</u></a> <span>{{gettext("on branch")}} {{commit.branch.name}}</span>
+            <br>
             # endfor
-            <small>*newest commit on the bottom</small>
             {% if post.programming_language %}
             <p>{{gettext("Programming language: ")}}{{post.programming_language}}</p>
             {% endif %}
