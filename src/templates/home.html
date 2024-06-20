@@ -52,11 +52,6 @@
         textarea.select();
         document.execCommand('copy');
     }
-    if (screen.orientation) {
-      screen.orientation.lock('portrait').catch((error) => {
-        console.error("Orientation lock failed:", error);
-      });
-    }
     document.addEventListener('DOMContentLoaded', function() {
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         fetch('/update_timezone', {
