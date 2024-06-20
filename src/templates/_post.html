@@ -67,6 +67,7 @@
                 {% endif %}
             </div>
         </details>
+        <br>
         {% if post.creation_timestamp %}
             <small>{{post.creation_timestamp|timestamp_to_user_localtime|pretty_time}}</small>
         {% else %}
