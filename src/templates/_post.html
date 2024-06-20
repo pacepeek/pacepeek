@@ -35,9 +35,9 @@
             <summary>{{gettext("Details")}}..</summary>
             <div style="cursor: auto;">
                 {% if post.lines_changed == 1 %}
-                <small>{{post.lines_changed}} {{gettext("line changed")}}</small>
+                <span>{{post.lines_changed}} {{gettext("line changed")}}</span>
                 {% else %}
-                <small>{{post.lines_changed}} {{gettext("lines changed")}}</small>
+                <span>{{post.lines_changed}} {{gettext("lines changed")}}</span>
                 {% endif %}
                 <br>
                 {% if post.summary_provider == 'local' %}
@@ -49,7 +49,6 @@
                 from commits:</p>
                 # for commit in post.commits 
                 <span><small>{{commit.creation_timestamp|timestamp_to_user_localtime|pretty_time}}</small></span> <a href="{{commit.link}}" target="_blank"><u>{{commit.sha[:7]}}</u></a> <span>{{gettext("on branch")}} {{commit.branch.name}}</span>
-                <br>
                 <br>
                 # endfor
                 {% if post.programming_language %}
