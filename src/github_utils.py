@@ -12,7 +12,7 @@ from pprint import pprint
 from . import config,db
 from .models import (User, Post, Commit, Repo, Branch, Notification)
 
-from .llms import gpt_generate_summary_for_user_commits_openai, gpt_generate_summary_for_user_commits_groq, gpt_generate_summary_for_user_commits_local, gpt_judge_with_openai, gpt_judge_with_groq, gpt_judge_with_local
+from .llms import gpt_generate_summary_for_user_commits_openai, gpt_generate_summary_for_user_commits_groq, gpt_generate_summary_for_user_commits_local, gpt_judge_with_openai, gpt_judge_with_groq, gpt_judge_with_local, gpt_judge_with_anthropic
 
 from .utils import GPTCreateSummaryError, create_admin_notification, log_the_error_context, create_user_notification
 
@@ -607,21 +607,31 @@ def judge_significance(post_data: str, post: Post, provider: str, model: str):
     if provider == "openai":
         logging.info("provider is openai")
         decision = gpt_judge_with_openai(post_data, model)
-        #if post.judging_token_count is None:
-        #    post.judging_token_count = 0
-        #post.judging_token_count += tokens
+        if post.judging_token_count is None:
+            post.judging_token_count = 0
+        
+        post.judging_token_count += count_tokens_improved(post_data)
         return decision
 
     elif provider == "groq":
         logging.info("provider is groq")
         decision = gpt_judge_with_groq(post_data, model)
-        #if post.judging_token_count is None:
-        #    post.judging_token_count = 0
-        #post.judging_token_count += tokens
+        if post.judging_token_count is None:
+            post.judging_token_count = 0
+        post.judging_token_count += count_tokens_improved(post_data)
         return decision
     elif provider == 'local':
         logging.info("provider is local")
+        if post.judging_token_count is None:
+            post.judging_token_count = 0
+        post.judging_token_count += count_tokens_improved(post_data)
         return gpt_judge_with_local(post_data, model)
+    elif provider == "anthropic":
+        logging.info("provider is anthropic")
+        if post.judging_token_count is None:
+            post.judging_token_count = 0
+        post.judging_token_count += count_tokens_improved(post_data)
+        return gpt_judge_with_anthropic(post_data, model)
         
     return None
 

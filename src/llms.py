@@ -6,6 +6,7 @@ from enum import Enum
 from .models import Repo, Post, Settings, get_default_daily_summary_prompt
 from groq import Groq
 from openai import OpenAI
+from anthropic import Anthropic
 import instructor
 import os
 import logging
@@ -22,7 +23,6 @@ def gpt_generate_summary_for_user_commits_openai(commit_patches_data: str, model
         api_key=config.get('OPENAI_API_KEY')
     ))
     return get_post_summary(client, commit_patches_data, model)
-
 def gpt_generate_summary_for_user_commits_groq(commit_patches_data: str, model: str):
 
     client = instructor.from_groq(Groq(
@@ -176,6 +176,21 @@ def gpt_judge_with_openai(commit_patches_data: str, model: str):
     """
     client = instructor.from_openai(OpenAI(
         api_key=config.get('OPENAI_API_KEY')
+    ))
+    return get_judge_decision(client, commit_patches_data, model)
+
+def gpt_judge_with_anthropic(commit_patches_data: str, model: str):
+    """
+    Uses openai GPT to judge the significance of a commit.
+
+    Args:
+        commit_patches_data (str): The commit patches data.
+
+    Returns:
+        significance (str): 'significant' or 'not significant'
+    """
+    client = instructor.from_anthropic(Anthropic(
+        api_key=config.get('ANTHROPIC_API_KEY')
     ))
     return get_judge_decision(client, commit_patches_data, model)
 
