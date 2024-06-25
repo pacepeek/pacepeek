@@ -982,9 +982,9 @@ def handle_payload(payload: dict):
 
         daily_post_count = Post.query.filter(Post.creation_timestamp > int(time.time())-86400, Post.user_id==user.id ).count()
         logging.info(f"User {user.github_login} has posted {daily_post_count} posts today")
-        if daily_post_count >= 5:
-            logging.info(f"User {user.github_login} has reached the daily post limit of 5, not processing the commits")
-            create_admin_notification(f"User {user.github_login} has reached the daily post limit of 5, not processing the commits")
+        if daily_post_count >= 10:
+            logging.info(f"User {user.github_login} has reached the daily post limit of 10, not processing the commits")
+            create_admin_notification(f"User {user.github_login} has reached the daily post limit of 10, not processing the commits")
             repo.added_timestamp = int(time.time()) # to reset the parent finding
             db.session.commit()
             return False
