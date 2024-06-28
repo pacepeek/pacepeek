@@ -1,4 +1,5 @@
 from flask import session
+import os
 import random,re,json, tiktoken
 from flask_login import current_user
 import sqlalchemy
@@ -500,6 +501,67 @@ def get_or_create_unfinished_post_for_user(repo: Repo, user: User, branch: Branc
     return post
 
 
+def should_analyze_file(filename: str) -> bool:
+    """
+    used to filter out the files that are cache or binary or not code files written by human
+    """
+    # Directory check
+    IGNORE_DIRS = {
+    # General
+    'dist', 'build', 'cache', 'tmp', 'temp', 'logs', 'coverage',
+    '.cache', '.sourcemaps', 'out', 'release', 'debug', '.docker', '.git', '.svn',
+    '__pycache__', '.pytest_cache', '.mypy_cache', 'venv', 'env', '.venv', '.eggs', '*.egg-info', # Python
+    '.next', '.nuxt', '.gatsby', 'bower_components', # JavaScript/TypeScript
+    'pkg', # Go
+    'target', '.gradle', 'build', # Java/Kotlin
+    'bin', 'obj', # C#
+    'vendor', # PHP
+    'Pods', 'Carthage', # Swift
+    '.Rproj.user', '.RData', '.Rhistory', # R
+    '.bundle', 'vendor/bundle', # Ruby
+    'CMakeFiles', 'CMakeCache.txt', # C/C++
+    '.metals', '.bloop', 'target', # Scala
+    'target', # Rust
+    '.dart_tool', '.pub-cache', # Dart
+    'blib', '_build', # Perl
+    'autom4te.cache', # Tcl
+    'luarocks', # Lua
+    '.stack-work', 'dist-newstyle', # Haskell
+    '.cpcache', 'target', # Lisp/Clojure
+    '.gradle', # Groovy
+    'deps', # Julia
+    'slprj', # MATLAB/Octave
+    'obj', 'bin', # Visual Basic
+    'lib', 'backup', # Pascal
+    'mod', # Fortran
+    'bin', 'obj', # COBOL
+    'obj', # Assembly
+    '.idea', '.vscode', '.vs', # IDE/Editor specific
+    'node_modules', 'bower_components', 'jspm_packages', '.sass-cache', # Web-specific (for HTML, CSS, SCSS)
+    'deps', 'lib', 'libs', 'external', 'externals', 'third-party', 'third_party', # General build/dependency management
+    '.git', '.svn', '.hg', # Version control
+    '.npm', '.yarn', # Package managers
+    'test-results', 'coverage', # Testing
+    'docs', 'doc', 'documentation', # Documentation
+    '.tmp', '.temp', '.cache', # Temporary/Cache
+}
+    if any(part in filename.split(os.path.sep) for part in IGNORE_DIRS):
+        return False
+
+    path, ext = os.path.splitext(filename)
+    possible_language_extensions = [".py", ".js", ".jsx", ".ts", ".tsx", ".go", ".java", ".kt", ".kts", ".cs", ".php", ".php3", ".php4", ".php5", ".phtml", ".swift", ".r", ".R", ".rb", ".ruby", ".c", ".h", ".cpp", ".cxx", ".cc", ".c++", ".h", ".hpp", ".hxx", ".hh", ".sql", ".nix", ".scala", ".sh", ".bash", ".zsh", ".rs", ".dart", ".dm", ".dme", ".pl", ".pm", ".tcl", ".lua", ".hs", ".lisp", ".cl", ".clj", ".groovy", ".jl", ".m", ".vb", ".vbs", ".pas", ".f", ".for", ".f90", ".cob", ".cpy", ".asm", ".s", ".perl", ".pro", ".asmx", ".ashx", ".axd", ".vbhtml", ".master", ".sitemap", ".skin", ".browser", ".xml", ".xaml", ".xoml", ".xsd", ".xsl", ".xslt", ".xamlx", ".xomlx", ".xsltx", ".xslttx", ".xamlts", ".xomlts", ".xslts", ".xsltts", ".xamlxt", ".xomlxt", ".xsltxt", ".xslttxxt", ".html", ".css", ".scss"]
+
+
+    if ext not in possible_language_extensions:
+        return False
+
+    # File size check (1MB limit)
+    if os.path.getsize(filename) > 1_000_000:
+        return False
+
+    return True
+
+
 def create_post_data(github_ses, post: Post):
     logging.info("enter create_post_data")
     if post.author_github_login:
@@ -525,14 +587,17 @@ def create_post_data(github_ses, post: Post):
             if 'patch' in file:
                 if file['changes'] is None:
                     file['changes'] = 0
+                filename = file['filename']
+                logging.info(f"filename: {filename}")
+                if not should_analyze_file(filename):
+                    logging.info(f"filename: {filename} should not be analyzed")
+                    continue
                 changes_across_all_files += int(file['changes'])
                 lines_in_patch = len(file['patch'].split("\n"))
                 if lines_in_patch > 150:
                     # cut the patch to 150 lines
                     file['patch'] = "\n".join(file['patch'].split("\n")[:150])
 
-                filename = file['filename']
-                logging.info(f"filename: {filename}")
                 # we have to filter out the files that are cache or binary or not code files written by human
                 #analysis_method = get_file_analysis_method(filename, file['patch'], post.repo)
                 analysis_method = "full"
