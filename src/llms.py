@@ -2,6 +2,7 @@ from litellm import completion
 from flask import flash
 from . import config
 from pydantic import BaseModel, Field
+from typing import Optional
 from enum import Enum
 from .models import Repo, Post, Settings, get_default_daily_summary_prompt
 from groq import Groq
@@ -15,7 +16,7 @@ import requests
 
 class Summary(BaseModel):
     summary: str = Field(description="This is a summary analysis of the commit patches")
-    programming_language_used: str = Field(description="The programming language used in the commit patches")
+    programming_language_used: Optional[str] = Field(description="The programming language used in the commit patches in case it is easily identifiable", default=None)
 
 def gpt_generate_summary_for_user_commits_openai(commit_patches_data: str, model: str):
 
