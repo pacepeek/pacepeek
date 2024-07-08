@@ -555,10 +555,6 @@ def should_analyze_file(filename: str) -> bool:
     if ext not in possible_language_extensions:
         return False
 
-    # File size check (1MB limit)
-    if os.path.getsize(filename) > 1_000_000:
-        return False
-
     return True
 
 
