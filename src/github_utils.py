@@ -591,7 +591,9 @@ def create_post_data(github_ses, post: Post):
                 logging.info(f"filename: {filename}")
                 if not should_analyze_file(filename):
                     logging.info(f"filename: {filename} should not be analyzed")
+                    create_admin_notification(f"File {filename} in commit {commit.sha} in repo {post.repo.name} should not be analyzed")
                     continue
+                logging.info(f"filename: {filename} should be analyzed")
                 changes_across_all_files += int(file['changes'])
                 lines_in_patch = len(file['patch'].split("\n"))
                 if lines_in_patch > 150:
