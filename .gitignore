@@ -5,6 +5,7 @@
 *.pyc*
 *migrations*
 *instance*
+*requirements.txt
 venv/
 */__pycache__/*
 *__pycache__*
