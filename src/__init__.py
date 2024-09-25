@@ -14,18 +14,9 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 import json
 
-if "pacepeek-social" in os.getcwd():
-    with open('/etc/pacepeek-social_config.json') as config_file:
-        config = json.load(config_file)
-else: # dev
-    if os.environ.get('IN_DOCKER') == 'true':
-        # Running in Docker environment
-        config_file_path = '/app/etc/pacepeek-social_config.json'
-    else:
-        # Running with flask run
-        config_file_path = '/etc/pacepeek-social_config.json'
-    with open(config_file_path) as config_file:
-        config = json.load(config_file)
+
+with open('/etc/pacepeek_config.json') as config_file:
+    config = json.load(config_file)
 
 db = SQLAlchemy()
 babel = Babel()
