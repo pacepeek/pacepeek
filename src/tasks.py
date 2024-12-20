@@ -12,7 +12,7 @@ import requests
 
 @shared_task
 def every_minute():
-    print('every_minute**********************')
+    print('eevery_minute**********************')
     logging.info('every_minute**********************')
     #create_user_notification(User.query.filter_by(github_login='ahtavarasmus').first(), 'every_minute')
 
