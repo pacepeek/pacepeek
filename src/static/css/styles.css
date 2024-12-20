@@ -66,41 +66,6 @@ button {
 }
 
 
-.groq-logo {
-    height: auto;
-    margin: 20px;
-    padding: 20px;
-    width: 50%;
-}
-
-.groq, .openai {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.api-key-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 80%;
-    left: 25vw;
-    padding: 20px;
-    margin: 20px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    background-color: var(--bg-color);
-}
-
-.selected-api-provider {
-    background-color: var(--dark-bg-color);
-    padding: 10px;
-    border-radius: 5px;
-    margin: 10px;
-}
-
 .selected-tag {
     background-color: var(--dark-bg-color);
     border: 1px solid var(--border-color);
