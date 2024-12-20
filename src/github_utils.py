@@ -13,7 +13,7 @@ from pprint import pprint
 from . import config,db
 from .models import (User, Post, Commit, Repo, Branch, Notification)
 
-from .llms import gpt_generate_summary_for_user_commits_openai, gpt_generate_summary_for_user_commits_groq, gpt_generate_summary_for_user_commits_local, gpt_judge_with_openai, gpt_judge_with_groq, gpt_judge_with_local, gpt_judge_with_anthropic
+from .llms import gpt_generate_summary_for_user_commits, gpt_judge
 
 from .utils import GPTCreateSummaryError, create_admin_notification, log_the_error_context, create_user_notification
 
@@ -595,22 +595,8 @@ def create_post_data(github_ses, post: Post):
                     # cut the patch to 150 lines
                     file['patch'] = "\n".join(file['patch'].split("\n")[:150])
 
-                # we have to filter out the files that are cache or binary or not code files written by human
-                #analysis_method = get_file_analysis_method(filename, file['patch'], post.repo)
-                analysis_method = "full"
-                logging.info(f"analysis_method: {analysis_method}")
-                if analysis_method == "full":
-                    logging.info("full")
-                    post_data += f"  in file {file['filename']}:\n"
-                    post_data += f"  {file['patch']}\n"
-                elif analysis_method == "never":
-                    logging.info("never")
-                    post_data += f"  file: {file['filename']} was added\n"
-                elif analysis_method == "beginning":
-                    logging.info("beginning of the file")
-                    first_ten_lines = file['patch'].split("\n")[:10]
-                    post_data += f"  in file {filename}:\n"
-                    post_data += f"  {first_ten_lines}\n"
+                post_data += f"  in file {file['filename']}:\n"
+                post_data += f"  {file['patch']}\n"
 
     if post.lines_changed is None:
         post.lines_changed = 0
@@ -620,44 +606,12 @@ def create_post_data(github_ses, post: Post):
     logging.info("leave create_post_data")
     return post_data
 
-def analyze_post(post: Post, post_data: str, provider: str, model: str):
-    logging.info("enter analyze_post")
-    if provider == "openai":
-        logging.info("provider is openai")
-        post_content, programming_language_used = gpt_generate_summary_for_user_commits_openai(post_data, model)
-        #if post.summary_token_count is None:
-        #    post.summary_token_count = 0
-        #post.summary_token_count += int(tokens)
-        post.programming_language = programming_language_used
-        post.summary_provider = "openai"
-        post.summary_model = model
-        logging.info("leave analyze_post")
-        return post_content
-    elif provider == "groq":
-        logging.info("provider is groq")
-        post_content, programming_language_used = gpt_generate_summary_for_user_commits_groq(post_data, model)
-        #if post.summary_token_count is None:
-        #    post.summary_token_count = 0
-        #post.summary_token_count += int(tokens)
-        post.programming_language = programming_language_used
-        post.summary_provider = "groq"
-        post.summary_model = model
-        logging.info("leave analyze_post")
-        return post_content
-    elif provider == "local":
-        logging.info("provider is local")
-        post_content, programming_language_used = gpt_generate_summary_for_user_commits_local(post.repo.repo_description, post_data, model)
-        post.programming_language = programming_language_used
-        post.summary_provider = 'local'
-        post.summary_model = model
-        logging.info("leave analyze_post")
-        return post_content
-    logging.info("provider is not openai or groq, returning None")
-    return None
 
-def post_post(post_data: str, post: Post, provider: str, model: str):
-    post_content = analyze_post(post, post_data, provider, model)
+def post_post(post_data: str, post: Post):
+    post_content, language, model = gpt_generate_summary_for_user_commits(post.repo.repo_description, post_data)
 
+    post.programming_language = language
+    post.summary_model = model
     post.not_finished = False
     # encrypting automatically if repo is private
     post.content_decrypted = post_content
@@ -665,37 +619,15 @@ def post_post(post_data: str, post: Post, provider: str, model: str):
     return post_content
 
 
-def judge_significance(post_data: str, post: Post, provider: str, model: str):
-    if provider == "openai":
-        logging.info("provider is openai")
-        decision = gpt_judge_with_openai(post_data, model)
-        if post.judging_token_count is None:
-            post.judging_token_count = 0
-        
-        post.judging_token_count += count_tokens_improved(post_data)
-        return decision
+def judge_significance(post_data: str, post: Post):
+    logging.info("enter judge_significance")
 
-    elif provider == "groq":
-        logging.info("provider is groq")
-        decision = gpt_judge_with_groq(post_data, model)
-        if post.judging_token_count is None:
-            post.judging_token_count = 0
-        post.judging_token_count += count_tokens_improved(post_data)
-        return decision
-    elif provider == 'local':
-        logging.info("provider is local")
-        if post.judging_token_count is None:
-            post.judging_token_count = 0
-        post.judging_token_count += count_tokens_improved(post_data)
-        return gpt_judge_with_local(post_data, model)
-    elif provider == "anthropic":
-        logging.info("provider is anthropic")
-        if post.judging_token_count is None:
-            post.judging_token_count = 0
-        post.judging_token_count += count_tokens_improved(post_data)
-        return gpt_judge_with_anthropic(post_data, model)
-        
-    return None
+    decision = gpt_judge(post_data)
+    if post.judging_token_count is None:
+        post.judging_token_count = 0
+    post.judging_token_count += count_tokens_improved(post_data)
+    logging.info(f"post.judging_token_count: {post.judging_token_count}")
+    return decision
 
 class ParentCommitNotFoundError(Exception):
     pass
@@ -758,20 +690,11 @@ def handle_new_commit(repo: Repo, commit_sha: str, cdata: dict, current_branch: 
         post_data = create_post_data(github,post)
         logging.info(f"post_data:{post_data}")
 
-        provider = 'groq'
-        model = ""
-        if provider == 'local':
-            model = config.get('DEFAULT_LLAMA_MODEL')
-        elif provider == 'openai':
-            model = config.get('NEWEST_OPENAI_MODEL')
-        elif provider == 'groq':
-            model = config.get('NEWEST_LLAMA_MODEL')
-
-        sig = judge_significance(post_data, post, provider, model)
+        sig = judge_significance(post_data, post)
         logging.info(f"sig : {sig}")
         if sig == "significant" or (post.user.github_login == "rasmustestaccount" and post.repo.name == "alwayssignificant"):
             logging.info("significant")
-            post_content = post_post(post_data, post, provider, model)
+            post_content = post_post(post_data, post)
             logging.info("post created")
             if author.post_to_x_active:
                 post_to_x(author, post)

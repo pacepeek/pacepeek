@@ -66,6 +66,13 @@ button {
 }
 
 
+.groq-logo {
+    height: auto;
+    margin: 20px;
+    padding: 20px;
+    width: 50%;
+}
+
 .groq, .openai {
     display: flex;
     flex-direction: row;

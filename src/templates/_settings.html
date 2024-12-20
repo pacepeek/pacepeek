@@ -56,8 +56,15 @@
             <footer class="footer-settings">
                 <div class="settings-logout-button"><a href="/logout"><button class="basic-button button-sad">{{gettext("Logout from")}} {{ current_user.github_login }}</button></a></div>
 
+
                 <a style="padding-top:10px;" href="/tos-and-privacy"><small>{{gettext("Terms of Service & Privacy Policy")}}</small></a>
                 <p>PacePeek by <a href="https://github.com/ahtavarasmus" target="_blank">ahtavarasmus</a> :)
+                <a href="https://groq.com" target="_blank" rel="noopener noreferrer">
+                  <img class="groq-logo" 
+                    src="https://groq.com/wp-content/uploads/2024/03/PBG-mark1-color.svg"
+                    alt="Powered by Groq for fast inference."
+                  />
+                </a>
             </footer>
         </div> 
         {% include '_sticky_main_tabs.html' %}
