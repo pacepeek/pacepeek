@@ -1163,7 +1163,7 @@ def untrack_repo(owner_github_login, repo_name):
     if current_user.github_login != owner_github_login:
         return "Unauthorized", 403
 
-    if not untrack_repo_for_user(current_user,repo_name):
+    if not untrack_repo_for_user(repo_name):
         flash("Error untracking the repo: {}".format(repo_name), category='error')
     else:
         flash(f"Removed {repo_name} from your tracking list, data for that repo is saved still.", category='success')
@@ -1284,12 +1284,80 @@ def handle_installation_event(payload, payload_body, signature_header):
 
     else:
         logging.info(f"action not recognized")
+
+
+
+def handle_repository_event(payload, payload_body, signature_header):
+    verify_signature(payload_body, config.get('GITHUB_APP_WEBHOOK_SECRET'), signature_header)
+    action = payload.get('action')
+
+    from .github_utils import untrack_repo_for_user_installation_token
+
+    if action in ['archived', 'deleted']:
+        repo = Repo.query.filter_by(github_id=payload['repository']['id']).first()
+        if not repo: 
+            return '', 200
+        user = User.query.filter_by(github_id=repo.owner_github_id).first()
+        if not user: 
+            return '', 200
+        repo.archived = True
+        db.session.commit()
+
+        untrack_repo_for_user_installation_token(repo, user)
+        logging.info(f"deactivated hooks for {repo.name} for user {user.name}")
+    elif action == 'renamed':
+        repo_github_id = payload['repository']['id']
+        repo = Repo.query.filter_by(github_id=repo_github_id).first()
+        if not repo: 
+            return '', 200
+        repo.name = payload['repository']['name']
+        db.session.commit()
+        logging.info(f"changed repository name from {payload['changes']['repository']['name']['from']} to {payload['repository']['name']}")
+    elif action == 'transferred':
+        repo_github_id = payload['repository']['id']
+        repo = Repo.query.filter_by(github_id=repo_github_id).first()
+        if not repo:
+            return '', 200
+        user = User.query.filter_by(github_id=repo.owner_github_id).first()
+        if not _user:
+            return '', 200
+        untrack_repo_for_user_installation_token(repo, user)
+        db.session.delete(repo)
+        db.session.commit()
+        logging.info(f"transferred repository {repo.name} from {user.name} to new owner so untracked")
+    elif action == 'unarchived':
+        repo_github_id = payload['repository']['id']
+        repo = Repo.query.filter_by(github_id=repo_github_id).first()
+        if not repo:
+            return '', 200
+        user = User.query.filter_by(github_id=repo.owner_github_id).first()
+        if user:
+            create_user_notification(user, f"Repo '{repo.name}' was unarchived, do you want to start tracking it?")
+        # TODO here we could send an email to the user if they want to start tracking it again
+    elif action == 'created':
+        repo_name = payload['repository']['name']
+        owner_github_id = payload['repository']['owner']['id']
+        user = User.query.filter_by(github_id=owner_github_id).first()
+        if user:
+            create_user_notification(user, f"You created a new repo '{repo_name}' in GitHub, do you want to start tracking it?")
+            # TODO make a notification button pressable
+        logging.info(f"created repo {repo_github_id} in {org.name}")
+
+    # left are:
+    # edited - The topics, default branch, description, or homepage of a repository was changed.
+    # publicized
+    # privatizec
+
+    return '', 200
+
+
                 
 
 event_handlers = {
     'ping': handle_ping_event, # for setting repo webhooks
     'push': handle_push_event, # for processing commits
     'installation': handle_installation_event, # for handling github app installations/deletions
+    'repository': handle_repository_event, # repos state is altered: archived, created, deleted, edited, renamed, transferred, unacrhived
 }
 
 @views.route('/webhook', methods=['POST'])

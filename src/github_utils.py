@@ -439,18 +439,43 @@ def reactivate_webhook_for_user_repo_with_installation_token(repo: Repo):
 class WebhookReactivationError(Exception):
     pass
 
+def untrack_repo_for_user_installation_token(repo: Repo, user: User):
+    
+    installation_access_token = validate_installation_access_token_for_user(user)
 
-def untrack_repo_for_user(user: User, repo_name: str):
+    hook_id = repo.webhook_id
+    headers = {'Authorization': f'token {installation_access_token}'}
+    response = requests.delete(f'https://api.github.com/repos/{user.github_login}/{repo.name}/hooks/{hook_id}', headers=headers)
+    
+    print(f"Response Status Code: {response.status_code}")
+    print(f"Response Content: {response.content}")
+    
+    if response.status_code == 204:
+        logging.info("Webhook deleted successfully")
+    elif response.status_code == 404:  # Not Found
+        logging.info("Webhook not found 404")
+    else:
+        logging.error("Failed to delete webhook status: {response.status_code}")
+        return False
 
-    repo = Repo.query.filter_by(name=repo_name, owner_github_login=user.github_login).first()
+    repo.deleted = True
+    repo.webhook_id = None
+    repo.webhook_active = False
+    db.session.commit()
+    return True
+
+
+def untrack_repo_for_user(repo_name: str):
+
+    validate_user_access_token()
+    repo = Repo.query.filter_by(name=repo_name, owner_github_login=current_user.github_login).first()
     if not repo:
         print("Repository not found in untrack_repo_for_user")
         return False
 
     hook_id = repo.webhook_id
-    validate_user_access_token()
-    headers = {'Authorization': f'token {user.github_user_access_token_decrypted}'}
-    response = requests.delete(f'https://api.github.com/repos/{user.github_login}/{repo_name}/hooks/{hook_id}', headers=headers)
+    headers = {'Authorization': f'token {current_user.github_user_access_token_decrypted}'}
+    response = requests.delete(f'https://api.github.com/repos/{current_user.github_login}/{repo_name}/hooks/{hook_id}', headers=headers)
     
     print(f"Response Status Code: {response.status_code}")
     print(f"Response Content: {response.content}")
