@@ -3,8 +3,8 @@
     {% if current_user.github_login == user.github_login%}
 
         {% if not current_user.github_installation_id %}
-        <p style="padding: 10px;">{{gettext("PacePeek Integration Installation is needed for tracking repositories:)")}}</p>
-        <a href="{{install_url}}" class="a-button basic-button">{{gettext("Install PacePeek Integration to your personal account")}} "{{current_user.github_login}}"</a>
+        <p style="padding: 10px;">PacePeek Integration Installation is needed for tracking repositories:)</p>
+        <a href="{{install_url}}" class="a-button basic-button">Install PacePeek Integration to your personal account "{{current_user.github_login}}"</a>
         {% else %}
             <button 
                 type="button" 
@@ -14,7 +14,7 @@
                 hx-indicator="#loadingIcon"
                 hx-target=".main-container"
                 hx-swap="innerHTML">
-                {{gettext("Find more repos to track")}}
+                Find more repos to track
             </button>
         {% endif %}
         <div class="repo-list border-on-top">
@@ -28,8 +28,8 @@
     
 {% else %}
     {% if current_user.github_login == user.github_login%}
-        <p style="padding: 10px;">{{gettext("Your account is suspended. Please contact the administrator.")}}</p>
+        <p style="padding: 10px;">Your account is suspended. Please contact the administrator.</p>
     {% else %}
-        <p style="padding: 10px;">{{gettext("This account is suspended.")}}</p>
+        <p style="padding: 10px;">This account is suspended.</p>
     {% endif %}
 {% endif %}

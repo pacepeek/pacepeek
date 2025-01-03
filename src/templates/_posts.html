@@ -24,7 +24,7 @@
                     {{ post.commits[0].author_github_login}}
                 </span>
                 {% endif %}
-                <span class="post-repo">{{gettext("in")}} <a href="https://github.com/{{post.commits[0].author_github_login}}/{{post.repo.name}}" target="_blank">{{ post.commits[0].repo.name }}</a></span>
+                <span class="post-repo">in <a href="https://github.com/{{post.commits[0].author_github_login}}/{{post.repo.name}}" target="_blank">{{ post.commits[0].repo.name }}</a></span>
             </div>
         </div>
         <p>{{post.content_decrypted|striptags}}</p>

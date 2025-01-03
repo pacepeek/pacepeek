@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from time import sleep
 from zoneinfo import ZoneInfo
 import subprocess
-from flask_babel import gettext, force_locale, get_locale, lazy_gettext
 from babel.dates import format_datetime
 import glob
 import os
@@ -36,6 +35,100 @@ def error():
     1/0
     return "error"
 
+@views.route("/order-webhook", methods=["POST"])
+def order_webhook():
+    print("in order webhook")
+    payload = request.json
+    payload_body = request.get_data()
+    print(payload)
+    print("headers")
+    print(request.headers)
+    # Get the signature from request headers
+    signature = request.headers.get("X-Signature", "")
+    
+    # Your webhook signing secret from Lemon Squeezy dashboard
+    signing_secret = config.get("LEMON_SQUEEZY_WEBHOOK_SECRET")
+
+    digest = hmac.new(signing_secret.encode(), payload_body, hashlib.sha256).hexdigest()
+    
+    # Compare signatures using secure comparison
+    if not hmac.compare_digest(digest, signature):
+        abort(401, "Invalid signature")
+
+    payload = request.json
+    event_name = payload["meta"]["event_name"]
+    print(f"event_name: {event_name}")
+    
+    if event_name == "order_created":
+        custom_data = payload["meta"]["custom_data"]
+        user_id = int(custom_data["user_id"])
+        print(f"user_id: {user_id}")
+        
+        user = User.query.get(user_id)
+        if user:
+            user.is_premium = True
+            db.session.commit()
+            logging.info(f"User {user.github_login} is now premium")
+            flash("You are now a premium user", "success")
+        else:
+            logging.error(f"User not found with id {user_id}")
+    else:
+        logging.error(f"Event name not recognized: {event_name}")
+    
+    return jsonify({"success": True})
+
+
+@login_required
+@views.route("/create-checkout", methods=["GET"])
+def create_checkout():
+    variant_id = "649498"
+    store_id = "85516"
+    user_id = str(current_user.id)
+    
+    payload = {
+        "data": {
+            "type": "checkouts",
+            "attributes": {
+                "checkout_data": {
+                    "custom": {
+                        "user_id": user_id
+                    }
+                },
+                "checkout_options": {
+                    "embed": True,
+                    "media": True,
+                    "logo": True
+                }
+            },
+            "relationships": {
+                "store": {
+                    "data": {"type": "stores", "id": store_id}
+                },
+                "variant": {
+                    "data": {"type": "variants", "id": variant_id}
+                }
+            }
+        }
+    }
+    
+    url = "https://api.lemonsqueezy.com/v1/checkouts"
+    import requests
+    response = requests.post(
+        url,
+        headers={
+            "Authorization": f"Bearer {config.get('LEMON_SQUEEZY_API_KEY')}",
+            "Content-Type": "application/json"
+        },
+        json=payload
+    )
+
+    print(response.json())
+    if response.status_code == 201:
+        checkout_url = response.json()["data"]["attributes"]["url"]
+        return redirect(checkout_url)
+    return "Error creating checkout", 400
+
+
 @views.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == "POST":
@@ -45,61 +138,33 @@ def home():
 
     session['visible_page'] = 'feed'
     visible_page = session.get('visible_page', 'feed')
-    locale = get_locale()
     if current_user.is_authenticated:
         noti_count = Notification.query.filter_by(user_id=current_user.id, seen=False, category='user').count()
-        return render_template("home.html", user=current_user, visible_page=visible_page, feed_type='main_feed_posts',noti_count=noti_count, langlocale=locale)
-    return render_template("home.html", user=current_user, visible_page=visible_page, feed_type='main_feed_posts',noti_count=0,langlocale=locale)
+        return render_template("home.html", user=current_user, visible_page=visible_page, feed_type='main_feed_posts',noti_count=noti_count)
+    return render_template("home.html", user=current_user, visible_page=visible_page, feed_type='main_feed_posts',noti_count=0,)
 
 
 @views.route('/landing', methods=['GET'])
 def landing():
     session['visible_page'] = visible_page = 'landing'
-    locale = get_locale()
-    return render_template("home.html", langlocale=locale, user=current_user, visible_page=visible_page, rendered_landing_page=render_template("_landing_page.html"))
+    return render_template("home.html", user=current_user, visible_page=visible_page, rendered_landing_page=render_template("_landing_page.html"))
 
 
 
 @views.route('/tos-and-privacy', methods=['GET', 'POST'])
 def tos_and_privacy():
     session['visible_page'] = visible_page = 'tos_and_privacy'
-    locale = get_locale()
-    return render_template("home.html", langlocale=locale, user=current_user, visible_page=visible_page, rendered_tos_and_privacy=render_template("_tos_and_privacy.html"))
-
-
-@login_required
-@views.route('/change_locale')
-def change_locale():
-    locale = request.args.get('locale')
-    current_user.locale = locale
-    db.session.commit()
-
-    return render_template_string('''
-                <button class="basic-button {{'button-disabled' if user.locale == 'en'}}" hx-get="/change_locale" hx-vals='{"locale":"en"}' hx-swap="innerHTML" hx-target=".language-options" hx-trigger="click">english</button>
-                <button class="basic-button {{'button-disabled' if user.locale == 'fi'}}" hx-get="/change_locale" hx-vals='{"locale":"fi"}' hx-swap="innerHTML" hx-target=".language-options" hx-trigger="click">finnish</button>
-    ''', user=current_user)
-
-
-@views.route('/change-language', methods=['POST'])
-def change_language():
-    locale = request.form.get('language')
-    session['locale'] = locale
-    logging.info(f"session['locale']: {session['locale']}")
-    locale = get_locale()
-    
-    return render_template("_home_body.html", langlocale=locale, visible_page='feed', user=current_user)
+    return render_template("home.html", user=current_user, visible_page=visible_page, rendered_tos_and_privacy=render_template("_tos_and_privacy.html"))
 
 
 #faq
 @views.route('/faq', methods=['GET', 'POST'])
 def faq():
     session['visible_page'] = visible_page = 'faq'
-    locale=get_locale()
-    logging.info(f"locale: {locale}")
     if 'HX-Request' in request.headers and request.headers['HX-Request'] == 'true':
-        return render_template("_faq.html", langlocale=locale, visible_page=visible_page)
+        return render_template("_faq.html", visible_page=visible_page)
     else:
-        return render_template("home.html", langlocale=locale, user=current_user, visible_page=visible_page, rendered_faq=render_template("_faq.html", visible_page=visible_page))
+        return render_template("home.html", user=current_user, visible_page=visible_page, rendered_faq=render_template("_faq.html", visible_page=visible_page))
 
 
 
@@ -109,9 +174,9 @@ def pricing():
     session['visible_page'] = visible_page = 'pricing'
 
     if 'HX-Request' in request.headers and request.headers['HX-Request'] == 'true':
-        return render_template("_pricing.html", langlocale=get_locale(), visible_page=visible_page)
+        return render_template("_pricing.html", visible_page=visible_page)
     else:
-        return render_template("home.html", langlocale=get_locale(), user=current_user, visible_page=visible_page, rendered_pricing=render_template("_pricing.html", visible_page=visible_page))
+        return render_template("home.html", user=current_user, visible_page=visible_page, rendered_pricing=render_template("_pricing.html", visible_page=visible_page))
 
 
 @login_required
@@ -510,7 +575,6 @@ def flash_messages():
 def get_search_view():
     session['visible_page'] = visible_page = 'search'
     users = User.query.all()
-    locale = get_locale()
 
     timestamp_30_days_ago = int(time.time()) - 30 * 24 * 60 * 60
     # leaderboard
@@ -522,12 +586,12 @@ def get_search_view():
     logging.info(f"users_ordered_by_posts: {users_ordered_by_posts}")
 
 
-    rendered_search_page = render_template("_search.html", users=users, users_ordered_by_posts=users_ordered_by_posts, langlocale=locale, visible_page=visible_page)
+    rendered_search_page = render_template("_search.html", users=users, users_ordered_by_posts=users_ordered_by_posts, visible_page=visible_page)
 
     if 'HX-Request' in request.headers and request.headers['HX-Request'] == 'true':
         return rendered_search_page
     else:
-        return render_template("home.html", langlocale=locale, visible_page=visible_page, user=current_user, rendered_search_page=rendered_search_page)
+        return render_template("home.html", visible_page=visible_page, user=current_user, rendered_search_page=rendered_search_page)
 
 
 @views.route("/p/<post_id>", methods=['GET'])
@@ -599,7 +663,7 @@ def unfollow(github_login):
         class="basic-button" 
         hx-get="/follow-{{github_login}}" 
         hx-swap="outerHTML">
-        {{gettext("Follow")}}
+        Follow
     </button>
     {% include '_flash_messages.html' %}
     ''', github_login=github_login)
@@ -618,7 +682,7 @@ def follow(github_login):
         class="basic-button button-happy" 
         hx-get="/unfollow-{{github_login}}" 
         hx-swap="outerHTML">
-        {{gettext("Following")}}
+        Following
     </button>
     {% include '_flash_messages.html' %}
     ''', github_login=github_login)
@@ -652,7 +716,7 @@ def load_more_users_admin():
                         '''
         return users_html + render_template_string(load_more_html)
     else:
-        no_more_users_html = '''<div id="loading-indicator" hx-swap-oob="true">{{gettext("End.")}}</div>'''
+        no_more_users_html = '''<div id="loading-indicator" hx-swap-oob="true">End.</div>'''
         # Return only the posts if no more pages are available and edit the indicator
         return users_html + render_template_string(no_more_users_html)
 
@@ -685,7 +749,7 @@ def load_more_payloads():
                         '''
         return payloads_html + render_template_string(load_more_html)
     else:
-        no_more_payloads_html = '''<div id="loading-indicator" hx-swap-oob="true">{{gettext("End.")}}</div>'''
+        no_more_payloads_html = '''<div id="loading-indicator" hx-swap-oob="true">End.</div>'''
         return payloads_html + render_template_string(no_more_payloads_html)
 
 
@@ -724,7 +788,7 @@ def load_more_notifications_admin():
     else:
         logging.info(f"len(next_notifications): {len(next_notifications)}")
         if len(next_notifications) == 0:
-            no_more_notifications_html = '''<div id="loading-indicator" hx-swap-oob="true">{{gettext("No more notifications")}}</div>'''
+            no_more_notifications_html = '''<div id="loading-indicator" hx-swap-oob="true">No more notifications</div>'''
         else:
             no_more_notifications_html = '''<div id="loading-indicator" hx-swap-oob="true"></div>'''
         # Return only the posts if no more pages are available and edit the indicator
@@ -800,7 +864,7 @@ def load_more_notifications_report():
     else:
         logging.info(f"len(next_notifications): {len(next_notifications)}")
         if len(next_notifications) == 0:
-            no_more_notifications_html = '''<div id="loading-indicator" hx-swap-oob="true">{{gettext("No more notifications")}}</div>'''
+            no_more_notifications_html = '''<div id="loading-indicator" hx-swap-oob="true">No more notifications</div>'''
         else:
             no_more_notifications_html = '''<div id="loading-indicator" hx-swap-oob="true"></div>'''
         # Return only the posts if no more pages are available and edit the indicator
@@ -851,7 +915,7 @@ def load_more_notifications():
     else:
         logging.info(f"len(next_notifications): {len(next_notifications)}")
         if len(next_notifications) == 0:
-            no_more_notifications_html = '''<div id="loading-indicator" hx-swap-oob="true">{{gettext("No more notifications")}}</div>'''
+            no_more_notifications_html = '''<div id="loading-indicator" hx-swap-oob="true">No more notifications</div>'''
         else:
             no_more_notifications_html = '''<div id="loading-indicator" hx-swap-oob="true"></div>'''
         # Return only the posts if no more pages are available and edit the indicator
@@ -933,7 +997,7 @@ def load_more_repo_updates():
         return updates_html + render_template_string(load_more_html)
     else:
         if len(updates) == 0:
-            no_more_posts_html = '''<div id="loading-indicator" hx-swap-oob="true">{{gettext("You are up to date :)")}}</div>'''
+            no_more_posts_html = '''<div id="loading-indicator" hx-swap-oob="true">You are up to date :)</div>'''
         else:
             no_more_posts_html = '''<div id="loading-indicator" hx-swap-oob="true"></div>'''
         # Return only the posts if no more pages are available and edit the indicator
@@ -1017,15 +1081,15 @@ def load_more_posts():
             user = User.query.filter_by(github_login=github_login).first()
             if len(user.posts) == 0:
                 if user.id == current_user.id:
-                    no_more_posts_html = '''<div id="loading-indicator" hx-swap-oob="true">{{gettext("You have no posts yet")}}</div>'''
+                    no_more_posts_html = '''<div id="loading-indicator" hx-swap-oob="true">You have no posts yet</div>'''
                 else:
-                    no_more_posts_html = '''<div id="loading-indicator" hx-swap-oob="true">{{gettext("This hacker has no posts yet")}}</div>'''
+                    no_more_posts_html = '''<div id="loading-indicator" hx-swap-oob="true">This hacker has no posts yet</div>'''
                 return posts_html+ render_template_string(no_more_posts_html)
 
         if user_ids == [] and feed_type == 'main_feed_posts':
-            no_more_posts_html = '''<div id="loading-indicator" hx-swap-oob="true">{{gettext("Start following some users and their posts will appear here!")}}</div>'''
+            no_more_posts_html = '''<div id="loading-indicator" hx-swap-oob="true">Start following some users and their posts will appear here!</div>'''
         else:
-            no_more_posts_html = '''<div id="loading-indicator" hx-swap-oob="true">{{gettext("You have reached the end!")}}</div>'''
+            no_more_posts_html = '''<div id="loading-indicator" hx-swap-oob="true">You have reached the end!</div>'''
         # Return only the posts if no more pages are available and edit the indicator
         return posts_html + render_template_string(no_more_posts_html)
 
@@ -1084,7 +1148,7 @@ def get_repos_user():
 
 
     form_html = '''
-    <div class="back-button" hx-trigger="click" hx-get="/{{current_user.github_login}}" hx-target=".main-container" style="cursor: pointer;">&#8592; {{gettext("Back")}}</div>
+    <div class="back-button" hx-trigger="click" hx-get="/{{current_user.github_login}}" hx-target=".main-container" style="cursor: pointer;">&#8592; Back</div>
     {% if repos %}
     <div class="repo-list-container">
         </form>
@@ -1098,10 +1162,10 @@ def get_repos_user():
                 hx-swap="innerHTML"
                 hx-target=".content"
                 hx-trigger="click once"
-                hx-indicator="#loadingIcon">{{gettext("Start Tracking")}}</button>
+                hx-indicator="#loadingIcon">Start Tracking</button>
     </div>
     {% else %}
-    <p class="no-repos">{{gettext("No repositories found")}}</p>
+    <p class="no-repos">No repositories found</p>
     {% endif %}
     '''
     logging.info(f"repos: {repos}")

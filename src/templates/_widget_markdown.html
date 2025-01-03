@@ -3,15 +3,15 @@
         {% include '_markdown_widget_preview.html' %}
     </div>
     <form id="customizationOptions" hx-post="/update-widget/markdown/user" hx-swap="innerHTML" hx-target="#markdown-widget-preview" hx-trigger="change">
-        <label for="fillColor">{{gettext("Fill Color:")}}</label>
+        <label for="fillColor">Fill Color:</label>
         <input type="color" id="fillColor" name="fillColor" value="#232626" hx-trigger="change">
         
-        <label for="strokeColor">{{gettext("Stroke Color:")}}</label>
+        <label for="strokeColor">Stroke Color:</label>
         <input type="color" id="strokeColor" name="strokeColor" value="#0a8eb0" hx-trigger="change">
         
-        <label for="textColor">{{gettext("Text Color:")}}</label>
+        <label for="textColor">Text Color:</label>
         <input type="color" id="textColor" name="textColor" value="#ffffff" hx-trigger="change">
-        <button type="reset" hx-get="/reset-colors/markdown/user" hx-swap="innerHTML" hx-target="#widget-container-markdown" hx-trigger="click">{{gettext("Reset")}}</button>
+        <button type="reset" hx-get="/reset-colors/markdown/user" hx-swap="innerHTML" hx-target="#widget-container-markdown" hx-trigger="click">Reset</button>
     </form>
 {% endif %}
 

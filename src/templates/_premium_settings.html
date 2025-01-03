@@ -1,4 +1,4 @@
-{% if current_user.premium_subscription %}
+{% if current_user.is_premium %}
     <h2>X Automation</h2>
     <div id="twitter-section">
         {% if current_user.x_access_token_encrypted %}

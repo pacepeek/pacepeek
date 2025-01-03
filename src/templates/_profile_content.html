@@ -21,7 +21,7 @@
                             hx-get="/unfollow-{{ user.github_login }}" 
                             title="Unfollow?"
                             hx-swap="outerHTML">
-                            {{gettext("Following")}}
+                            Following
                         </button>
                         {% else %}
                         <button 
@@ -29,7 +29,7 @@
                             class="basic-button" 
                             hx-get="/follow-{{ user.github_login }}" 
                             hx-swap="outerHTML">
-                            {{gettext("Follow")}}
+                            Follow
                         </button>
                         {% endif %}
                     </div>
@@ -39,16 +39,16 @@
                 <div id="tabs" hx-target=".content" hx-swap="innerHMTL">
                     <button class="tab-button {{ 'selected' if selected_profile_tab == 'user_posts' else '' }}"
                         hx-get="/{{user.github_login}}" 
-                        hx-vals='{"selected_profile_tab": "user_posts"}'>{{gettext("Posts")}}
+                        hx-vals='{"selected_profile_tab": "user_posts"}'>Posts
                     </button>
                     <button class="tab-button {{ 'selected' if selected_profile_tab == 'tracked_repos' else '' }}" 
                         hx-get="/{{user.github_login}}" 
-                        hx-vals='{"selected_profile_tab": "tracked_repos"}'>{{gettext("Repositories")}}
+                        hx-vals='{"selected_profile_tab": "tracked_repos"}'>Repositories
                     </button>
                     {% if current_user.is_authenticated and current_user.github_login == user.github_login %}
                     <button class="tab-button {{ 'selected' if selected_profile_tab == 'user_settings' else '' }}" 
                         hx-get="/{{user.github_login}}" 
-                        hx-vals='{"selected_profile_tab": "user_settings"}'>{{gettext("Integrations")}}
+                        hx-vals='{"selected_profile_tab": "user_settings"}'>Integrations
                     </button>
                     {% endif %}
                 </div>
@@ -70,16 +70,16 @@
 </div>
 <div class="sidebar sidebar-right"> 
     <div class="user-stats">
-        <h2>{{gettext("User Stats")}}</h2>
+        <h2>User Stats</h2>
         {% if top_three_languages_for_user %}
-            <h3>{{gettext("Languages")}}</h3>
+            <h3>Languages</h3>
             {% for language,count in top_three_languages_for_user %}
                 <span>{{loop.index}}. {{language}}</span>
             {% endfor %}
         {% endif %}
-        <h3>{{gettext("Commits")}}</h3>
+        <h3>Commits</h3>
         <span>{{user.commits|commits_in_the_last_month}}</span>
-        <h3>{{gettext("Posts")}}</h3>
+        <h3>Posts</h3>
         <span>{{user.posts|posts_in_the_last_month}}</span>
     </div>
 </div>

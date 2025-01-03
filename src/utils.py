@@ -67,7 +67,7 @@ def deactivate_user_webhooks(user: User):
 def remove_premium_from_user(user: User):
     """ removes premium from user and deactivates webhooks for their repos """
     from .github_utils import deactivate_webhook_for_user_repo_with_installation_token
-    user.premium_subscription = False
+    user.is_premium = False
     logging.info(f"removing premium from user {user.github_login}")
     deactivate_user_webhooks(user)
     db.session.commit()
@@ -90,7 +90,7 @@ def reactivate_user_webhooks(user: User):
 def give_premium_to_user(user: User):
     """ gives premium to user and reactivates webhooks for their repos """
     from .github_utils import reactivate_webhook_for_user_repo_with_installation_token
-    user.premium_subscription = True
+    user.is_premium = True
     logging.info(f"giving premium to user {user.github_login}")
     reactivate_user_webhooks(user)
     db.session.commit()

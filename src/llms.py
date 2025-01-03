@@ -1,4 +1,3 @@
-from litellm import completion
 from flask import flash
 from . import config
 from pydantic import BaseModel, Field
@@ -91,10 +90,17 @@ def analyze_first_25_lines_of_code(filename: str, code: str):
     """ Uses GPT to analyze first 50 lines to determine if the filetype
     should be marked as analyze_full, analyze_never(eg. binary files) or analyze_beginning(eg. certain data files to get the idea of the change) 
     """
- 
-    client = instructor.from_litellm(completion)
+    client = instructor.from_openai(
+            OpenAI(
+                base_url="https://openrouter.ai/api/v1",
+                api_key=config.get('OPENROUTER_API_KEY'),
+                ),
+            mode=instructor.Mode.JSON,
+        )
+    model = config.get('OPENROUTER_MODEL')
+
     resp = client.chat.completions.create(
-        model="gpt-4o",
+        model=model,
         max_tokens=1024,
         messages=[
             {

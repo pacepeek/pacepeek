@@ -50,7 +50,7 @@ def post_daily_summary_to_x(repo: Repo, summary: str):
 def post_to_x(user: User, post: Post):
     logging.info("Posting to X!")
 
-    if not user.premium_subscription:
+    if not user.is_premium:
         logging.info("User is not premium, not posting")
         return
 

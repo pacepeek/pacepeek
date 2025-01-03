@@ -93,8 +93,6 @@ def callback():
             user.timezone = session['user_timezone']
         else:
             user.timezone = 'UTC'
-        if 'locale' in session:
-            user.locale = session['locale']
         user.settings = Settings(user_id=user.id)
         db.session.add(user)
 
@@ -113,7 +111,7 @@ def callback():
         
     if user.github_login == "ahtavarasmus":
         user.is_admin = True
-        user.premium_subscription = True
+        user.is_premium = True
 
     db.session.commit()
     login_user(user, remember=True)

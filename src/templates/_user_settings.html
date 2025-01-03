@@ -2,19 +2,19 @@
     <br>
     <br>
     {% if not current_user.suspended %}
-        <h2><u>{{gettext("GitHub Integration")}}</u></h2>
+        <h2><u>GitHub Integration</u></h2>
         {% if current_user.github_installation_id %}
-        <span><a href="https://github.com/settings/installations/{{current_user.github_installation_id}}">Github App </a> {{gettext("is installed on your personal account! Go track some repositories! :)")}} <br><br><small><i>{{gettext("*installation is required for tracking your repositories")}}</i></small></span>
+        <span><a href="https://github.com/settings/installations/{{current_user.github_installation_id}}">Github App </a> is installed on your personal account! Go track some repositories! :) <br><br><small><i>*installation is required for tracking your repositories</i></small></span>
         {% else %}
-        <span>{{gettext("Install PacePeek App to your personal Github account")}}: '{{current_user.github_login}}' </span>
+        <span>Install PacePeek App to your personal Github account: '{{current_user.github_login}}' </span>
         <br>
         <br>
-        <a href="{{install_url}}" class="a-button basic-button">{{gettext("Install")}}</a>
-        <small><i>{{gettext("*installation is required for tracking your repositories")}}</i></small>
+        <a href="{{install_url}}" class="a-button basic-button">Install</a>
+        <small><i>*installation is required for tracking your repositories</i></small>
         <br>
         <br>
         {% endif %}
-        <h2><u>{{gettext("Widgets")}}</u></h2>
+        <h2><u>Widgets</u></h2>
         <div class="widget-workshop" id="widget-container-markdown">
             {% include '_widget_markdown.html' %}
         </div>
@@ -22,36 +22,36 @@
         <br>
 
 
-        <span><h2><u>{{gettext("X Automation")}}</u></h2>
+        <span><h2><u>X Automation</u></h2>
         <div id="twitter-section">
-            {% if current_user.premium_subscription %}
+            {% if current_user.is_premium %}
                 {% if current_user.x_access_token_encrypted %}
-                <span>{{gettext("Connected to X as")}} <a href="https://x.com/{{current_user.x_username}}" target="_blank">{{ current_user.x_username }}</a>!</span>
-                <a href="/x_deauth"><button class="basic-button button-sad">{{gettext("Disconnect")}}</button></a>
-                <a href="/x_auth"><button class="basic-button">{{gettext("Re-connect")}}</button></a>
+                <span>Connected to X as <a href="https://x.com/{{current_user.x_username}}" target="_blank">{{ current_user.x_username }}</a>!</span>
+                <a href="/x_deauth"><button class="basic-button button-sad">Disconnect</button></a>
+                <a href="/x_auth"><button class="basic-button">Re-connect</button></a>
                 {% else %}
-                <p><span class="status-icon inactive"></span> {{gettext("Enable X Automation")}}</p>
-                <a href="/x_auth"><button class="basic-button">{{gettext("Connect to X")}}</button></a>
+                <p><span class="status-icon inactive"></span> Enable X Automation</p>
+                <a href="/x_auth"><button class="basic-button">Connect to X</button></a>
                 {% endif %}
             {% else %}
-                <p><span class="status-icon inactive"></span> {{gettext("Enable X Automation")}}</p>
-                <a href="/pricing"><button class="basic-button">{{gettext("Upgrade to Premium")}}</button></a>
+                <p><span class="status-icon inactive"></span> Enable X Automation</p>
+                <a href="/pricing"><button class="basic-button">Upgrade to Premium</button></a>
             {% endif %}
         </div>
         <br>
         <details id="twitter-info-section">
-            <summary><small>{{gettext("Learn More About X Automation")}}</small></summary>
+            <summary><small>Learn More About X Automation</small></summary>
             <section>
-                <h3>{{gettext("What is X?")}}</h3>
-                <p>{{gettext("X is a social media platform where you can share your thoughts, news, and other content.")}}</p>
+                <h3>What is X?</h3>
+                <p>X is a social media platform where you can share your thoughts, news, and other content.</p>
                 
-                <h3>{{gettext("How Does Automation Work?")}}</h3>
-                <p>{{gettext("Once connected, our app will automatically post your updates to your X account. To get started, you'll need a X account to act as your bot.")}} <a href="http://x.com/signup" target="_blank">{{gettext("Create one here")}}</a>.</p>
-                <small>{{gettext("If you have trouble creating a new one, try doing it in a private window so your current account won't mess it up.")}}</small>
+                <h3>How Does Automation Work?</h3>
+                <p>Once connected, our app will automatically post your updates to your X account. To get started, you'll need a X account to act as your bot. <a href="http://x.com/signup" target="_blank">Create one here</a>.</p>
+                <small>If you have trouble creating a new one, try doing it in a private window so your current account won't mess it up.</small>
                 
-                <h3>{{gettext("How to Stop Automation?")}}</h3>
-                <p>{{gettext("If you wish to stop automatic posting, simply click the 'Disconnect' button above.")}}</p>
-                <p><i>{{gettext("*This automation only applies to your personal account and its posts from all your public repos.")}}</i></p>
+                <h3>How to Stop Automation?</h3>
+                <p>If you wish to stop automatic posting, simply click the 'Disconnect' button above.</p>
+                <p><i>*This automation only applies to your personal account and its posts from all your public repos.</i></p>
                 
             </section>
         </details>
@@ -61,9 +61,9 @@
         <br>
     {% else %}
         {% if current_user.github_login == user.github_login%}
-            <p style="padding: 10px;">{{gettext("Your account is suspended. Please contact the administrator.")}}</p>
+            <p style="padding: 10px;">Your account is suspended. Please contact the administrator.</p>
         {% else %}
-            <p style="padding: 10px;">{{gettext("This account is suspended.")}}</p>
+            <p style="padding: 10px;">This account is suspended.</p>
         {% endif %}
     {% endif %}
 </div>

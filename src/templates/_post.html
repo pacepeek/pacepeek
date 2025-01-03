@@ -1,4 +1,4 @@
-<div class="back-button" onclick="window.history.back()" hx-trigger="click" style="cursor: pointer;">&#8592; {{gettext("Back")}}</div>
+<div class="back-button" onclick="window.history.back()" hx-trigger="click" style="cursor: pointer;">&#8592; Back</div>
 <div class="single-post-container">
     <div class="post">
         <div class="post-header">
@@ -22,7 +22,7 @@
                     {{ post.commits[0].author_github_login}}
                 </span>
                 {% endif %}
-                <span class="post-repo">{{gettext("in")}} <a href="https://github.com/{{post.commits[0].author_github_login}}/{{post.repo.name}}" target="_blank">{{ post.commits[0].repo.name }}</a></span>
+                <span class="post-repo">in <a href="https://github.com/{{post.commits[0].author_github_login}}/{{post.repo.name}}" target="_blank">{{ post.commits[0].repo.name }}</a></span>
             </div>
         </div>
         {% if post.content_decrypted %}
@@ -32,27 +32,27 @@
         {% endif %}
         <br>
         <details>
-            <summary>{{gettext("Details")}}..</summary>
+            <summary>Details..</summary>
             <div style="cursor: auto;">
                 {% if post.lines_changed == 1 %}
-                <span>{{post.lines_changed}} {{gettext("line changed")}}</span>
+                <span>{{post.lines_changed}} line changed</span>
                 {% else %}
-                <span>{{post.lines_changed}} {{gettext("lines changed")}}</span>
+                <span>{{post.lines_changed}} lines changed</span>
                 {% endif %}
                 <br>
                 {% if post.summary_provider == 'local' %}
-                    <p>{{gettext("Summary made with")}} {{post.summary_model}}
+                    <p>Summary made with {{post.summary_model}}
                 {% else %}
-                <p>{{gettext("Summary made with model")}} {{post.summary_model}}
+                <p>Summary made with model {{post.summary_model}}
                 {% endif %}
                 <br>
                 from commits:</p>
                 # for commit in post.commits 
-                <span><small>{{commit.creation_timestamp|timestamp_to_user_localtime|pretty_time}}</small></span> <a href="{{commit.link}}" target="_blank"><u>{{commit.sha[:7]}}</u></a> <span>{{gettext("on branch")}} {{commit.branch.name}}</span>
+                <span><small>{{commit.creation_timestamp|timestamp_to_user_localtime|pretty_time}}</small></span> <a href="{{commit.link}}" target="_blank"><u>{{commit.sha[:7]}}</u></a> <span>on branch {{commit.branch.name}}</span>
                 <br>
                 # endfor
                 {% if post.programming_language %}
-                <p>{{gettext("Programming language: ")}}{{post.programming_language}}</p>
+                <p>Programming language: {{post.programming_language}}</p>
                 {% endif %}
                 {% if current_user_owner %}
                 <br>
@@ -79,7 +79,7 @@
 <br>
 {% if last_four_posts %}
 <details>
-    <summary style="padding: 20px; cursor: pointer;"><small>{{gettext("Previous posts from repo")}} {{post.commits[0].repo.name}}-></small></summary>
+    <summary style="padding: 20px; cursor: pointer;"><small>Previous posts from repo {{post.commits[0].repo.name}}-></small></summary>
     <div style="cursor: auto;">
         <div class="last-posts">
         {{ rendered_last_four_posts | safe }}

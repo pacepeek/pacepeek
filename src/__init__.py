@@ -1,6 +1,5 @@
 import sentry_sdk
 from flask import Flask, current_app, request, session
-from flask_babel import Babel
 from flask_cors import CORS
 from flask_login import LoginManager, current_user, login_user
 from flask_migrate import Migrate
@@ -19,7 +18,6 @@ with open('/etc/pacepeek_config.json') as config_file:
     config = json.load(config_file)
 
 db = SQLAlchemy()
-babel = Babel()
 DB_NAME = config.get('DB_NAME')
 
 migrate = Migrate()
@@ -35,17 +33,6 @@ sentry_sdk.init(
     profiles_sample_rate=1.0,
 )
 
- 
-def get_locale():
-    if current_user.is_authenticated:
-        logging.warning(f"User's locale: {current_user.locale}")
-        return current_user.locale if current_user.locale else request.accept_languages.best_match(['en', 'fi'])
-    elif 'locale' in session:
-        logging.warning(f"Locale in session: {session['locale']}")
-        return session['locale']
-    logging.warning("No locale in session, using best match")
-    return request.accept_languages.best_match(['en', 'fi'])
-
 def get_timezone():
     if current_user.is_authenticated:
         return current_user.timezone
@@ -60,17 +47,6 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app,db)
    
-    babel.init_app(app, default_locale="en", default_domain='messages', default_timezone='UTC', locale_selector=get_locale, default_translation_directories=config.get('DEFAULT_TRANSLATION_DIRECTORY'))
-    # commands to run for babel
-    # when adding new gettext strings:
-    # $ pybabel extract -F babel.cfg -o messages.pot .
-    # when adding new language DO THIS ONLY ONCE!!!:
-    # $ pybabel init -i messages.pot -d translations -l fi
-    # when updating translations:
-    # $ pybabel update -i messages.pot -d translations
-    # when compiling translations:
-    # $ pybabel compile -d translations
-    
     app.config['CELERY_BROKER_URL'] = 'amqp://localhost:5672'
     app.config.from_mapping(CELERY=dict(
             broker_url='amqp://localhost:5672',

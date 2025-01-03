@@ -41,7 +41,6 @@ class User(db.Model,UserMixin):
     name = db.Column(db.String(100), nullable=False, index=True)
     email_encrypted = db.Column(db.String,nullable=True)
     timezone = db.Column(db.String(100), nullable=True)
-    locale = db.Column(db.String(100), nullable=True)
     github_id = db.Column(db.String(120), unique=True, nullable=False)
     github_login = db.Column(db.String(120), unique=True, nullable=False, index=True)
     suspended = db.Column(db.Boolean, default=False)
@@ -67,9 +66,12 @@ class User(db.Model,UserMixin):
     github_installation_access_token_encrypted = db.Column(db.String, default=None)
     github_installation_access_token_expires_at_timestamp = db.Column(db.Integer, index=True)
 
-    # subscription
+    # subscription(not used)
     premium_subscription = db.Column(db.Boolean, default=False)
     premium_until_timestamp = db.Column(db.Integer, index=True)
+
+    # premium user
+    is_premium = db.Column(db.Boolean, default=False)
 
     # model
     model_provider = db.Column(db.String(50)) # 'openai', 'groq', 'local'

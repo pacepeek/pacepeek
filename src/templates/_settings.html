@@ -3,61 +3,54 @@
 
         <div class="sticky sticky-simple-header">
             <!-- Tab buttons -->
-            <h2>{{gettext("General Settings")}}</h2>
+            <h2>General Settings</h2>
         </div>
         <div class="settings-container">
             <div class="settings-content">
-                <h2><u>{{gettext("Timezone")}}</u></h2>
-                <p>{{gettext("Current")}}: {{current_user.timezone}}</p>
-                <small>{{gettext("*timezone is your browsers's timezone")}}</small>
+                <h2><u>Timezone</u></h2>
+                <p>Current: {{current_user.timezone}}</p>
+                <small>*timezone is your browsers's timezone</small>
                 <br>
                 <br>
-                <h2><u>{{gettext("Language")}}</u></h2>
-                <div class="language-options">
-                    <button class="basic-button {{'button-disabled' if current_user.locale == 'en'}}" hx-get="/change_locale" hx-vals='{"locale":"en"}' hx-swap="innerHTML" hx-target=".language-options" hx-trigger="click">english</button>
-                    <button class="basic-button {{'button-disabled' if current_user.locale == 'fi'}}" hx-get="/change_locale" hx-vals='{"locale":"fi"}' hx-swap="innerHTML" hx-target=".language-options" hx-trigger="click">finnish</button>
-                </div>
-                <br>
-                <br>
-                <h2><u>{{gettext("Model")}}</u></h2>
+                <h2><u>Model</u></h2>
                 <p>Currently using llama3 8B. If you are interested in paying a small amount(3e/month) to use better models, lmk.</p>
-                <small>{{gettext("*selected model is used to generate summaries of your commits")}}</small>
-                <h2><u>{{gettext("Info")}}</u></h2>
-                <div><a href="/faq">{{gettext("FAQ")}}-></a></div>
+                <small>*selected model is used to generate summaries of your commits</small>
+                <h2><u>Info</u></h2>
+                <div><a href="/faq">FAQ-></a></div>
                 <br>
-                <div><a href="/landing">{{gettext("Landing Page")}}-></a></div>
+                <div><a href="/landing">Landing Page-></a></div>
                 <br>
-                <div><a href="/pricing">{{gettext("Pricing")}}-></a></div>
+                <div><a href="/pricing">Pricing-></a></div>
                 <br>
 
 
                 {% if current_user.is_authenticated %}
                 <br>
                 <details id="report-form">
-                    <summary style="cursor:pointer;">{{gettext("Help make this app better!")}}</summary>
+                    <summary style="cursor:pointer;">Help make this app better!</summary>
                     <form action="/submit-reports" method="post" class="feedback-form" hx-post="/submit-reports" hx-target="#report-form" hx-swap="outerHTML">
-                        <label for="feedback" class="form-label">{{gettext("Please be nice:)")}}</label><br>
-                        <textarea id="feedback" name="feedback" class="form-textarea" rows="4" cols="50" placeholder="{{gettext('Describe the bug found or suggest a feature...')}}"></textarea><br>
-                        <input type="submit" value="{{gettext('Submit')}}" class="form-submit">
-                        <small><i>{{gettext("*we could ask you for more information through your email")}}</i></small>
+                        <label for="feedback" class="form-label">Please be nice:)</label><br>
+                        <textarea id="feedback" name="feedback" class="form-textarea" rows="4" cols="50" placeholder="Describe the bug found or suggest a feature..."></textarea><br>
+                        <input type="submit" value="Submit" class="form-submit">
+                        <small><i>*we could ask you for more information through your email</i></small>
                     </form>
                 </details>
                 {% endif %}
                 <br>
                 <br>
-                <h2><u>{{gettext("Manage User Profile")}}</u></h2>
+                <h2><u>Manage User Profile</u></h2>
                 <details>
-                    <summary style="cursor:pointer;">{{gettext("Delete user profile?")}}</summary>
-                    <p style="color:red;">{{gettext("Are you sure you want to delete your user profile? This action is irreversible and will delete all your data from PacePeek including all your posts/commits.")}}</p>
-                    <button class="basic-button button-sad" hx-post="/delete_user" hx-confirm="Are you sure you want to delete your profile?">{{gettext("Delete Your Profile")}}</button>
+                    <summary style="cursor:pointer;">Delete user profile?</summary>
+                    <p style="color:red;">Are you sure you want to delete your user profile? This action is irreversible and will delete all your data from PacePeek including all your posts/commits.</p>
+                    <button class="basic-button button-sad" hx-post="/delete_user" hx-confirm="Are you sure you want to delete your profile?">Delete Your Profile</button>
                 </details>
 
             </div>
             <footer class="footer-settings">
-                <div class="settings-logout-button"><a href="/logout"><button class="basic-button button-sad">{{gettext("Logout from")}} {{ current_user.github_login }}</button></a></div>
+                <div class="settings-logout-button"><a href="/logout"><button class="basic-button button-sad">Logout from {{ current_user.github_login }}</button></a></div>
 
 
-                <a style="padding-top:10px;" href="/tos-and-privacy"><small>{{gettext("Terms of Service & Privacy Policy")}}</small></a>
+                <a style="padding-top:10px;" href="/tos-and-privacy"><small>Terms of Service & Privacy Policy</small></a>
                 <p>PacePeek by <a href="https://github.com/ahtavarasmus" target="_blank">ahtavarasmus</a> :)
             </footer>
         </div> 

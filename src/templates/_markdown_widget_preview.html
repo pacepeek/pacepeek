@@ -1,19 +1,19 @@
-<h3>{{gettext("Markdown Widget")}}</h3>
+<h3>Markdown Widget</h3>
 <textarea id="markdownCode" readonly style="width: 75%; height: 50px; font-size:10px;">
 [![Recent Posts on PacePeek.com]({{app_url}}/widget_svg/{{user.github_login}}/3?fill_color={{user.settings.markdown_widget_fill_color[1:]}}&stroke_color={{user.settings.markdown_widget_stroke_color[1:]}}&text_color={{user.settings.markdown_widget_text_color[1:]}})]({{app_url}}/{{user.github_login}})
 </textarea>
-<button class="basic-button" onclick="copyMarkdownToClipboard()">{{gettext("Copy to Clipboard")}}</button>
+<button class="basic-button" onclick="copyMarkdownToClipboard()">Copy to Clipboard</button>
 <br><br>
-<h3>{{gettext("HTML Widget")}}</h3>
+<h3>HTML Widget</h3>
 <textarea id="htmlCode" readonly style="width: 75%; height: 50px; font-size:10px;">
 <!-- Include this in the HTML body where you want the widget to appear -->
 &lt;div id="pacepeek-widget" data-fill="{{user.settings.markdown_widget_fill_color[1:]}}" data-stroke="{{user.settings.markdown_widget_stroke_color[1:]}}" data-text="{{user.settings.markdown_widget_text_color[1:]}}" data-github_login="{{user.github_login}}"&gt;&lt;/div&gt;
 <!-- Include this at the end of your HTML body -->
 &lt;script src="{{app_url}}/static/js/widget.js"&gt;&lt;/script&gt;
 </textarea>
-<button class="basic-button" onclick="copyHtmlToClipboard()">{{gettext("Copy to Clipboard")}}</button>
+<button class="basic-button" onclick="copyHtmlToClipboard()">Copy to Clipboard</button>
 
-<h3>{{gettext("Preview")}}</h3>
+<h3>Preview</h3>
 <div id="previewPane">
     {{ markdown_widget_svg | safe }}
 </div>

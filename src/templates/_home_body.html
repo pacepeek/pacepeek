@@ -1,84 +1,52 @@
 <div id="flash-messages" style="display:none;">
     <!-- This will be filled with flash messages by HTMX -->
-    </div>
-    <div class="language-choice-container-mobile">
-        {% if not current_user.is_authenticated %}
-            {% if langlocale|string == 'fi' %}
-            <select id="languageChoice" name="language" hx-post="/change-language" hx-trigger="change" hx-swap="innerHTML" hx-target=".body">
-                <option value="fi" selected>Finnish</option>
-                <option value="en">English</option>
-            </select>
-            {% else %}
-            <select id="languageChoice" name="language" hx-post="/change-language" hx-trigger="change" hx-swap="innerHTML" hx-target=".body">
-                <option value="en" selected>English</option>
-                <option value="fi">Finnish</option>
-            </select>
-            {% endif %}
-        {% endif %}
-    </div>
+</div>
 
     <div class="sidebar sidebar-left">
         {% include '_flash_messages.html' %}
         <nav class="main-nav">
             <ul>
-                <li><a href="/" class="brand"><img src="{{ url_for('static', filename='photos/pacepeeklogomountainblue.png') }}">PacePeek<div class="early-access-badge">{{gettext("Early Access")}}</div></a>
+                <li><a href="/" class="brand"><img src="{{ url_for('static', filename='photos/pacepeeklogomountainblue.png') }}">PacePeek<div class="early-access-badge">Early Access</div></a>
                 </li>
-                <div class="language-choice-container-desktop">
-                    {% if not current_user.is_authenticated %}
-                        {% if langlocale|string == 'fi' %}
-                        <select id="languageChoice" name="language" hx-post="/change-language" hx-trigger="change" hx-swap="innerHTML" hx-target=".body">
-                            <option value="fi" selected>Finnish</option>
-                            <option value="en">English</option>
-                        </select>
-                        {% else %}
-                        <select id="languageChoice" name="language" hx-post="/change-language" hx-trigger="change" hx-swap="innerHTML" hx-target=".body">
-                            <option value="en" selected>English</option>
-                            <option value="fi">Finnish</option>
-                        </select>
-                        {% endif %}
-                    {% endif %}
-                </div>
-
-
                 {% if not rendered_error_page %}
                         {% if visible_page == 'feed' %}
                         <a href="/"><li class="nav-item nav-item-selected">
                                 <i class="fa-solid fa-house fa-lg" style="color: #0dbce9;"></i>
-                                {{gettext("Home")}}</li></a>
+                                Home</li></a>
                         {% else %}
                         <a href="/"><li class="nav-item">
                                 <i class="fa-solid fa-house fa-sm" style="color: #0dbce9;"></i>
-                                {{gettext("Home")}}</li></a>
+                                Home</li></a>
                         {% endif %}
                     {% if user.is_authenticated %}
                         {% if visible_page == 'profile' %}
                         <a href="/{{current_user.github_login}}"><li class="nav-item nav-item-selected">
                             <i class="fa-solid fa-user fa-lg" style="color: #0dbce9;"></i>
-                            {{gettext("Profile")}}</li></a>
+                            Profile</li></a>
                         {% else %}
                         <a href="/{{current_user.github_login}}"><li class="nav-item">
                             <i class="fa-solid fa-user fa-sm" style="color: #0dbce9;"></i>
-                            {{gettext("Profile")}}</li></a>
+                            Profile</li></a>
                         {% endif %}
                     {% endif %}
                         {% if visible_page == 'search' %}
                         <a href="/search"><li class="nav-item nav-item-selected">
                             <i class="fa-solid fa-magnifying-glass fa-lg" style="color: #0dbce9;"></i>
-                            {{gettext("Search")}}</li></a>
+                            Search</li></a>
                         {% else %}
                         <a href="/search"><li class="nav-item">
                             <i class="fa-solid fa-magnifying-glass fa-sm" style="color: #0dbce9;"></i>
-                            {{gettext("Search")}}</li></a>
+                            Search</li></a>
                         {% endif %}
                     {% if user.is_authenticated %}
                         {% if visible_page == 'settings' %}
                         <a href="/settings"><li class="nav-item nav-item-selected">
                             <i class="fa-solid fa-gear fa-lg" style="color: #0dbce9;"></i>
-                            {{gettext("Settings")}}</li></a>
+                            Settings</li></a>
                         {% else %}
                         <a href="/settings"><li class="nav-item">
                             <i class="fa-solid fa-gear fa-sm" style="color: #0dbce9;"></i>
-                            {{gettext("Settings")}}</li></a>
+                            Settings</li></a>
                         {% endif %}
 
                     {% else %}
@@ -121,7 +89,7 @@
             {% include '_feedback_report_form.html' %}
             {% endif %}
             <br>
-            <a style="padding-top:10px;" href="/tos-and-privacy"><small>{{gettext("Terms of Service & Privacy Policy")}}</small></a>
+            <a style="padding-top:10px;" href="/tos-and-privacy"><small>Terms of Service & Privacy Policy</small></a>
         </footer>
     </div>
     <div class="content">
