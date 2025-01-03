@@ -1,14 +1,32 @@
-<div class="pricing-container">
+<div class="pricing-wrapper">
 
-    <small>PacePeek is currently free to use:)</small>
-    <br>
-    <br>
-    <small>Would you be interested in having better models like gpt-4o to summarize your changes?</small>
-    <small>Or maybe you would like to have a bot that would automatically post your updates to your X account?</small>
-    <br>
-    <small>Let me know in the general feedback form below:)</small>
-    <br>
-    <br>
+    <div class="pricing-header">
+        <h1>Choose Your Plan</h1>
+        <p>Select the perfect plan for your needs</p>
+    </div>
+
+    <div class="pricing-container">
+        <div class="pricing-card">
+            <div class="plan-name">Free</div>
+            <div class="plan-price">€0</div>
+            <ul class="features-list">
+                <li>Track unlimited public repos</li>
+                <li>10 posts per day</li>
+                <li>Follow other users</li>
+            </ul>
+            <a href="/" class="cta-button free">Get Started</a>
+        </div>
+
+        <div class="pricing-card premium">
+            <div class="plan-name">Premium</div>
+            <div class="plan-price">€50</div>
+            <ul class="features-list">
+                <li>All Free features</li>
+                <li>Custom embeddable widgets</li>
+                <li>X (Twitter) bot account</li>
+            </ul>
+            <a href="{{app_url}}/create-checkout" class="cta-button premium">Upgrade Now</a>
+        </div>
     {% include '_feedback_report_form.html' %}
     <br>
     <a href="mailto:r@rasmusmultiverse.com"><button class="buy-button">Contact</button></a>

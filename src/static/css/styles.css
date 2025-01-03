@@ -249,30 +249,104 @@ button {
     border-bottom: 1px solid var(--border-color);
 }
 
-.pricing-container {
+.pricing-wrapper {
     padding: 20px;
     margin: 20px;
 }
 
-.pricing-section {
+.pricing-header {
+    text-align: center;
     margin-bottom: 40px;
 }
 
-.pricing-section ul {
-    padding-left: 20px;
-}
-
-.pricing-section ul li {
-    margin-bottom: 5px;
-}
-
-.plan-card {
-    border: 1px solid #ddd;
-    border-radius: 15px;
-    padding: 20px;
+.pricing-header h1 {
+    color: #333;
     margin-bottom: 10px;
-    background-color: var(--dark-bg-color); 
 }
+
+.pricing-container {
+    display: flex;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pricing-card {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    min-width: 300px;
+}
+
+.pricing-card.premium {
+    border: 2px solid #007bff;
+}
+
+.plan-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.plan-price {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #007bff;
+}
+
+.features-list {
+    list-style: none;
+    margin-bottom: 30px;
+}
+
+.features-list li {
+    margin-bottom: 10px;
+    padding-left: 25px;
+    position: relative;
+}
+
+.features-list li::before {
+    content: "✓";
+    color: #28a745;
+    position: absolute;
+    left: 0;
+}
+
+.cta-button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.cta-button.free {
+    background-color: #6c757d;
+    color: white;
+}
+
+.cta-button.premium {
+    background-color: #007bff;
+    color: white;
+}
+
+.cta-button:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .pricing-container {
+        flex-direction: column;
+    }
+}
+
 
 small {
     color: rgba(255, 255, 255, 0.7); /* Slightly faded text */

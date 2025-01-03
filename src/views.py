@@ -173,10 +173,12 @@ def faq():
 def pricing():
     session['visible_page'] = visible_page = 'pricing'
 
+    app_url = config.get("APP_URL")
+
     if 'HX-Request' in request.headers and request.headers['HX-Request'] == 'true':
-        return render_template("_pricing.html", visible_page=visible_page)
+        return render_template("_pricing.html", visible_page=visible_page, app_url=app_url)
     else:
-        return render_template("home.html", user=current_user, visible_page=visible_page, rendered_pricing=render_template("_pricing.html", visible_page=visible_page))
+        return render_template("home.html", user=current_user, visible_page=visible_page, rendered_pricing=render_template("_pricing.html", visible_page=visible_page, app_url=app_url))
 
 
 @login_required
@@ -934,6 +936,7 @@ def load_more_repo_updates():
 
     user_ids = [user[0] for user in current_user.followed.with_entities(User.id).all()]
 
+    print("user_ids:", user_ids)
     query = db.session.query(
         Repo.id, 
         func.max(Post.creation_timestamp)
