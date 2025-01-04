@@ -62,21 +62,12 @@ button {
     min-height: 100vh;
 }
 
-.top-nav {
+.github-login-wrapper {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    padding: 1rem 2rem;
     z-index: 100;
-}
+    top: 1rem;
+    right: 2rem;
 
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 .github-login {
@@ -112,7 +103,7 @@ button {
     font-size: 3rem;
     margin-bottom: 1rem;
     padding: 0 1rem;
-    padding-top: 15rem;
+    padding-top: 12rem;
 }
 
 .first-page h1 span {
@@ -229,6 +220,7 @@ button {
 }
 .faq-container {
     padding: 10px;
+    padding-top: 30px;
 }
 .faq-container strong {
     color: var(--main-color);
@@ -1490,6 +1482,7 @@ th {
     justify-content: center;
     align-items: center;
     padding: 20px;
+    padding-top: 50px;
 }
 
 #search-container input {

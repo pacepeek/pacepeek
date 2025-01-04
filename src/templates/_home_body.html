@@ -1,18 +1,11 @@
     {% include '_flash_messages.html' %}
 {% if not current_user.is_authenticated %}
-    <nav class="top-nav">
-        <div class="nav-container">
-            <!-- Left side empty for balance -->
-            <div></div>
-            <!-- Right side login button -->
-            <div class="auth-buttons">
-                <a href="/login" class="github-login">
-                    <i class="fab fa-github"></i> <!-- If using Font Awesome for GitHub icon -->
-                    Login with GitHub
-                </a>
-            </div>
-        </div>
-    </nav>
+<div class="github-login-wrapper">
+    <a href="/login" class="github-login">
+        <i class="fab fa-github"></i>
+        Login with GitHub
+    </a>
+</div>
     {% endif %}
     <div class="sidebar sidebar-left">
     
