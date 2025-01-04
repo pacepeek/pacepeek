@@ -1,36 +1,56 @@
-<div class="pricing-wrapper">
-
-    <div class="pricing-header">
-        <h1>Choose Your Plan</h1>
+<div class="pricing-container">
+    <div class="pricing-card">
+        <h2>Free Plan</h2>
+        <div class="price">
+          <span class="amount">0€</span>
+        </div>
+        <ul class="features">
+          <li>Track public repositories</li>
+          <li>Follow other users</li>
+          
+        </ul>
+        <a href="/"><button class="select-plan">Get Started</button></a>
     </div>
+    <div class="pricing-card">
+        <h2>Premium Plan</h2>
+        <div class="price">
+          <span class="amount">50€</span>
+          <span class="period">one-time</span>
+        </div>
+        <ul class="features">
+          <li>Track private repositories</li>
+          <li>Create customizable activity widgets</li>
+          <li>Automatic X (Twitter) integration</li>
+          <li>All future premium features included</li>
+        </ul>
+        <a href="/create-checkout"><button class="select-plan">Upgrade to Premium</button></a>
+    </div>
+</div>
 
-    <div class="pricing-container">
-        <div class="pricing-card">
-            <div class="plan-name">Free</div>
-            <div class="plan-price">€0</div>
-            <ul class="features-list">
-                <li>Track unlimited public repos</li>
-                <li>10 posts per day</li>
-                <li>Follow other users</li>
-            </ul>
-            <a href="/" class="cta-button free">Get Started</a>
+<div class="features-info">
+    <h3>More about the features</h3>
+    <div class="info-grid">
+        <div class="info-item">
+            <h4>Repository Tracking</h4>
+            <p>Track your progress in real-time. Free users can track public repositories, while Premium users get access to both public and private repository tracking.</p>
+        </div>
+        <div class="info-item">
+            <h4>Custom Widgets</h4>
+            <p>Premium users can create and customize embeddable widgets to showcase their progress on their portfolio, blog, or website.</p>
+        </div>
+        <div class="info-item">
+            <h4>X Integration</h4>
+            <p>Connect your X (Twitter) account to automatically share your progress also on X. Your posts will be shared to X in real-time automatically.</p>
+        </div>
+        <div class="info-item">
+            <h4>10 posts per day</h4>
+            <p>Every user gets up to 10 posts per day. Posts are made when there is enough progress. This is done to keep the leaderboard fair.</p>
         </div>
 
-        <div class="pricing-card premium">
-            <div class="plan-name">Premium</div>
-            <div class="plan-price">€50</div>
-            <ul class="features-list">
-                <li>All Free features</li>
-                <li>Custom embeddable widgets</li>
-                <li>X (Twitter) bot account</li>
-            </ul>
-            <a href="{{app_url}}/create-checkout" class="cta-button premium">Upgrade Now</a>
-        </div>
     </div>
-    <br>
-    <br>
-    <br>
-    {% include '_feedback_report_form.html' %}
-    <br>
-    <a href="mailto:r@rasmusmultiverse.com"><button class="buy-button">Contact</button></a>
+</div>
+
+
+<br>
+<a href="mailto:rasmus@ahtava.com"><button class="buy-button">Contact</button></a>
 {% include '_sticky_main_tabs.html' %}

@@ -249,102 +249,105 @@ button {
     border-bottom: 1px solid var(--border-color);
 }
 
-.pricing-wrapper {
-    padding: 20px;
-    margin: 20px;
-}
-
-.pricing-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.pricing-header h1 {
-    color: #333;
-    margin-bottom: 10px;
-}
 
 .pricing-container {
-    display: flex;
-    flex-direction: row;
-    gap: 30px;
-    margin: 0 auto;
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .pricing-card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    flex: 1;
+  background-color: #1e2327;
+  border: 1px solid #30363d;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  flex: 1;
+  min-width: 16rem;
+  max-width: 24rem;
 }
 
-.pricing-card.premium {
-    border: 2px solid #007bff;
+.pricing-card h2 {
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
 }
 
-.plan-name {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #333;
+.price {
+  margin: 1.5rem 0;
 }
 
-.plan-price {
-    font-size: 36px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #007bff;
+.amount {
+  color: #00b4d8;
+  font-size: 2.5rem;
+  font-weight: bold;
 }
 
-.features-list {
-    list-style: none;
-    margin-bottom: 30px;
+.period {
+  color: #8b949e;
 }
 
-.features-list li {
-    margin-bottom: 10px;
-    padding-left: 25px;
-    position: relative;
+.features {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+  color: #8b949e;
 }
 
-.features-list li::before {
-    content: "✓";
-    color: #28a745;
-    position: absolute;
-    left: 0;
+.features li {
+  margin: 0.75rem 0;
 }
 
-.cta-button {
-    display: block;
-    width: 100%;
-    padding: 15px;
-    border-radius: 5px;
+.select-plan {
+  width: 100%;
+  background-color: #00b4d8;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.select-plan:hover {
+  background-color: #0090ad;
+}
+
+.features-info {
+    margin-top: 3rem;
+    padding: 2rem;
+    border-radius: 0.5rem;
+}
+
+.features-info h3 {
+    color: #ffffff;
     text-align: center;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s;
+    margin-bottom: 2rem;
 }
 
-.cta-button.free {
-    background-color: #6c757d;
-    color: white;
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
 }
 
-.cta-button.premium {
-    background-color: #007bff;
-    color: white;
+.info-item {
+    padding: 1.5rem;
+    background-color: #252b32;
+    border-radius: 0.5rem;
+    border: 1px solid #30363d;
 }
 
-.cta-button:hover {
-    opacity: 0.9;
+.info-item h4 {
+    color: #00b4d8;
+    margin-bottom: 1rem;
 }
 
-@media (max-width: 768px) {
-    .pricing-container {
-        flex-direction: column;
-    }
+.info-item p {
+    color: #8b949e;
+    line-height: 1.5;
 }
-
 
 small {
     color: rgba(255, 255, 255, 0.7); /* Slightly faded text */
@@ -845,8 +848,8 @@ th {
 }
 
 .welcome {
-    padding: 20px;
-    margin: 20px;
+    padding: 10px;
+    margin: 10px;
 }
 .welcome span {
     color: var(--main-color);
@@ -1780,6 +1783,11 @@ section h2 {
 }
 
 
+.pacepeek-post-showcase {
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 20px;
+}
 
 .brand:hover {
     color: var(--main-color);
