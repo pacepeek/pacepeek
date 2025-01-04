@@ -68,6 +68,10 @@ def pretty_time(date_in_user_timezone):
 
 @template_filters.app_template_filter('time_ago')
 def time_ago(zone_aware_date_in_user_timezone):
+    if not current_user.is_authenticated:
+        timezone = ZoneInfo('UTC')
+    else:
+        timezone = ZoneInfo(current_user.timezone)
     diff = humanize.naturaltime(datetime.now(timezone) - zone_aware_date_in_user_timezone)
     _t = humanize.i18n.deactivate()
     return diff
