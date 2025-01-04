@@ -81,6 +81,10 @@ def order_webhook():
 @login_required
 @views.route("/create-checkout", methods=["GET"])
 def create_checkout():
+    if config.get("SERVER") != "dev":
+        flash("Sorry, you cannot buy this yet. Contact rasmus@ahtava.com and he will give you premium for free", "success")
+        return redirect(url_for('views.home'))
+
     variant_id = "649498"
     store_id = "85516"
     user_id = str(current_user.id)
