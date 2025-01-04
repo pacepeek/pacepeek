@@ -56,15 +56,58 @@ button {
     padding: 20px;
 }
 
+.welcome {
+    background-color: var(--bg-color); /* Dark background matching the app */
+    color: #ffffff; /* White text */
+    min-height: 100vh;
+}
+
 .welcome-container {
-    /* Make the container take up the full viewport height */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.first-page {
     text-align: center;
 }
 
+.first-page h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.first-page h1 span {
+    color: #00b7ff; /* Cyan accent color matching the app icons */
+}
+
+.first-page p {
+    font-size: 1.2rem;
+    color: #a0a0a0; /* Lighter gray for secondary text */
+}
+
+.pacepeek-post-showcase {
+    max-width: 800px;
+    width: 100%;
+    border: 1px solid #30363d; /* Subtle border like in the app */
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+
+.basic-button-landing {
+    background-color: #00b7ff;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.basic-button-landing:hover {
+    background-color: #0095d1;
+}
 
 .selected-tag {
     background-color: var(--dark-bg-color);
@@ -842,15 +885,6 @@ th {
     text-align: center;
     font-size: 10px;
 }
-
-.welcome {
-    padding: 10px;
-    margin: 10px;
-}
-.welcome span {
-    color: var(--main-color);
-}
-
 
 .right-sidebar-content section {
     overflow-y: auto;
@@ -2065,10 +2099,6 @@ footer details {
 
     #widget-org-repo-container {
         display: none;
-    }
-    .first-page h1 {
-        font-size: 30px; /* adjust font size to your liking */
-        margin-bottom: 20px; /* add some space between the tagline and paragraph */
     }
 }
 
