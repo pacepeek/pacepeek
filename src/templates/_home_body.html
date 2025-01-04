@@ -1,5 +1,21 @@
     {% include '_flash_messages.html' %}
+{% if not current_user.is_authenticated %}
+    <nav class="top-nav">
+        <div class="nav-container">
+            <!-- Left side empty for balance -->
+            <div></div>
+            <!-- Right side login button -->
+            <div class="auth-buttons">
+                <a href="/login" class="github-login">
+                    <i class="fab fa-github"></i> <!-- If using Font Awesome for GitHub icon -->
+                    Login with GitHub
+                </a>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
     <div class="sidebar sidebar-left">
+    
         <nav class="main-nav">
             <ul>
                 <li><a href="/" class="brand"><img src="{{ url_for('static', filename='photos/pacepeeklogomountainblue.png') }}">PacePeek<div class="early-access-badge">Early Access</div></a>
