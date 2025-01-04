@@ -1,7 +1,18 @@
 {% if current_user.github_login == user.github_login%}
     <div id="markdown-widget-preview">
+        {% if current_user.is_premium %}
         {% include '_markdown_widget_preview.html' %}
+        {% else %}
+            Buy PacePeek Premium and you can customize and embed the below widget into html or markdown pages!
+            <div><a href="/premium">Premium-></a></div>
+        {% endif %}
+        <br>
+        <h3>Preview</h3>
+        <div id="previewPane">
+            {{ markdown_widget_svg | safe }}
+        </div>
     </div>
+    {% if current_user.is_premium %}
     <form id="customizationOptions" hx-post="/update-widget/markdown/user" hx-swap="innerHTML" hx-target="#markdown-widget-preview" hx-trigger="change">
         <label for="fillColor">Fill Color:</label>
         <input type="color" id="fillColor" name="fillColor" value="#232626" hx-trigger="change">
@@ -13,5 +24,6 @@
         <input type="color" id="textColor" name="textColor" value="#ffffff" hx-trigger="change">
         <button type="reset" hx-get="/reset-colors/markdown/user" hx-swap="innerHTML" hx-target="#widget-container-markdown" hx-trigger="click">Reset</button>
     </form>
+    {% endif %}
 {% endif %}
 
