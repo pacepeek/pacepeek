@@ -7,22 +7,17 @@
         </div>
         <div class="settings-container">
             <div class="settings-content">
+            <div><a href="/premium">Premium-></a></div>
+            <div><a href="/faq">FAQ-></a></div>
+            <div><a href="/landing">Landing Page-></a></div>
+
+            <br>
                 <h2><u>Timezone</u></h2>
                 <p>Current: {{current_user.timezone}}</p>
                 <small>*timezone is your browsers's timezone</small>
                 <br>
                 <br>
-                <h2><u>Model</u></h2>
-                <p>Currently using llama3 8B. If you are interested in paying a small amount(3e/month) to use better models, lmk.</p>
-                <small>*selected model is used to generate summaries of your commits</small>
-                <h2><u>Info</u></h2>
-                <div><a href="/faq">FAQ-></a></div>
-                <br>
-                <div><a href="/landing">Landing Page-></a></div>
-                <br>
-                <div><a href="/pricing">Pricing-></a></div>
-                <br>
-
+                <h2><u>Feedback</u></h2>
 
                 {% if current_user.is_authenticated %}
                 <br>

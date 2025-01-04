@@ -249,75 +249,81 @@ button {
     border-bottom: 1px solid var(--border-color);
 }
 
-
-.pricing-container {
-  display: flex;
-  gap: 2rem;
-  justify-content: center;
-  flex-wrap: wrap;
+.premium-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
 }
 
-.pricing-card {
-  background-color: #1e2327;
-  border: 1px solid #30363d;
-  border-radius: 0.5rem;
-  padding: 2rem;
-  flex: 1;
-  min-width: 16rem;
-  max-width: 24rem;
+.premium-card {
+    background-color: #1e2327;
+    border: 1px solid #30363d;
+    border-radius: 0.5rem;
+    padding: 2.5rem;
+    max-width: 32rem;
+    width: 100%;
 }
 
-.pricing-card h2 {
-  color: #ffffff;
-  margin: 0 0 1rem 0;
-  font-size: 1.5rem;
+.premium-card h2 {
+    color: #ffffff;
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
 }
 
 .price {
-  margin: 1.5rem 0;
+    margin: 1.5rem 0;
 }
 
 .amount {
-  color: #00b4d8;
-  font-size: 2.5rem;
-  font-weight: bold;
+    color: #00b4d8;
+    font-size: 2.5rem;
+    font-weight: bold;
 }
 
 .period {
-  color: #8b949e;
+    color: #8b949e;
+    margin-left: 0.5rem;
 }
 
 .features {
-  list-style: none;
-  padding: 0;
-  margin: 2rem 0;
-  color: #8b949e;
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+    color: #8b949e;
 }
 
 .features li {
-  margin: 0.75rem 0;
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+    position: relative;
 }
 
-.select-plan {
-  width: 100%;
-  background-color: #00b4d8;
-  color: white;
-  border: none;
-  padding: 0.75rem;
-  border-radius: 0.25rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
+.features li:before {
+    content: "✓";
+    color: #00b4d8;
+    position: absolute;
+    left: 0;
 }
 
-.select-plan:hover {
-  background-color: #0090ad;
+.select-plan, .contact-button {
+    width: 100%;
+    background-color: #00b4d8;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.select-plan:hover, .contact-button:hover {
+    background-color: #0090ad;
 }
 
 .features-info {
     margin-top: 3rem;
     padding: 2rem;
-    border-radius: 0.5rem;
 }
 
 .features-info h3 {
@@ -334,7 +340,7 @@ button {
 
 .info-item {
     padding: 1.5rem;
-    background-color: #252b32;
+    background-color: #1e2327;
     border-radius: 0.5rem;
     border: 1px solid #30363d;
 }
@@ -349,43 +355,33 @@ button {
     line-height: 1.5;
 }
 
-small {
-    color: rgba(255, 255, 255, 0.7); /* Slightly faded text */
+.contact-section {
+    text-align: center;
+    margin: 3rem 0;
+    color: #8b949e;
 }
 
-.pricing-container small {
-    color: rgba(255, 255, 255, 0.7); /* Slightly faded text */
+.contact-section p {
+    margin-bottom: 1rem;
 }
 
-.plan-card h2, .plan-card h1 {
-    margin-top: 0;
-    border-top: 0;
-    color: var(--main-color);
+.contact-button {
+    max-width: 200px;
 }
 
-.price {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 10px 0;
-    color: var(--main-color);
-}
-
-.buy-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    display: inline-block;
+a {
     text-decoration: none;
 }
 
-.buy-button:hover {
-    background-color: #0056b3;
+@media (max-width: 768px) {
+    .premium-container {
+        padding: 1rem;
+    }
+    
+    .premium-card {
+        padding: 1.5rem;
+    }
 }
-
 
 .alert {
     padding:  10px;
@@ -1782,6 +1778,11 @@ section h2 {
     vertical-align: middle;
 }
 
+.widget-example {
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 20px;
+}
 
 .pacepeek-post-showcase {
     width: 100%;

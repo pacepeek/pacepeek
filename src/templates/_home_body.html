@@ -18,6 +18,29 @@
                                 <i class="fa-solid fa-house fa-sm" style="color: #0dbce9;"></i>
                                 Home</li></a>
                         {% endif %}
+
+                        {% if visible_page == 'search' %}
+                        <a href="/search"><li class="nav-item nav-item-selected">
+                            <i class="fa-solid fa-magnifying-glass fa-lg" style="color: #0dbce9;"></i>
+                            Search</li></a>
+                        {% else %}
+                        <a href="/search"><li class="nav-item">
+                            <i class="fa-solid fa-magnifying-glass fa-sm" style="color: #0dbce9;"></i>
+                            Search</li></a>
+                        {% endif %}
+
+                    {% if user.is_authenticated %}
+                        {% if visible_page == 'premium' %}
+                        <a href="/premium"><li class="nav-item nav-item-selected">
+                        <img src="{{ url_for('static', filename='photos/pacepeeklogomountainblue.png') }}" style="width: 24px; height: 24px; vertical-align: middle; margin-bottom: 4px;">
+    Premium</li></a>
+                        {% else %}
+                            <a href="/premium"><li class="nav-item">
+    <img src="{{ url_for('static', filename='photos/pacepeeklogomountainblue.png') }}" style="width: 22px; height: 22px; vertical-align: middle; margin-bottom: 4px;">
+    Premium</li></a>
+                        {% endif %}
+                    {% endif %}
+                        
                     {% if user.is_authenticated %}
                         {% if visible_page == 'profile' %}
                         <a href="/{{current_user.github_login}}"><li class="nav-item nav-item-selected">
@@ -28,17 +51,6 @@
                             <i class="fa-solid fa-user fa-sm" style="color: #0dbce9;"></i>
                             Profile</li></a>
                         {% endif %}
-                    {% endif %}
-                        {% if visible_page == 'search' %}
-                        <a href="/search"><li class="nav-item nav-item-selected">
-                            <i class="fa-solid fa-magnifying-glass fa-lg" style="color: #0dbce9;"></i>
-                            Search</li></a>
-                        {% else %}
-                        <a href="/search"><li class="nav-item">
-                            <i class="fa-solid fa-magnifying-glass fa-sm" style="color: #0dbce9;"></i>
-                            Search</li></a>
-                        {% endif %}
-                    {% if user.is_authenticated %}
                         {% if visible_page == 'settings' %}
                         <a href="/settings"><li class="nav-item nav-item-selected">
                             <i class="fa-solid fa-gear fa-lg" style="color: #0dbce9;"></i>
@@ -48,7 +60,6 @@
                             <i class="fa-solid fa-gear fa-sm" style="color: #0dbce9;"></i>
                             Settings</li></a>
                         {% endif %}
-
                     {% else %}
                          {% if visible_page == 'faq' %}
                             <a href="/faq"><li class="nav-item nav-item-selected">
@@ -143,11 +154,11 @@
             <div class="sidebar sidebar-right"> 
             </div>
 
-        {% elif rendered_pricing %}
+        {% elif rendered_premium %}
             <div class="feed">
                 <div class="main-container">
 
-                    {{ rendered_pricing | safe }}
+                    {{ rendered_premium | safe }}
 
                 </div>
             </div>

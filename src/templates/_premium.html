@@ -1,0 +1,45 @@
+<div class="premium-container">
+    <div class="premium-card">
+        <h2>Premium Plan</h2>
+        <div class="price">
+          <span class="amount">50€</span>
+          <span class="period">lifetime access</span>
+        </div>
+        <ul class="features">
+          <li>Track private repositories</li>
+          <li>Create customizable activity widgets</li>
+          <li>Automatic X (Twitter) integration</li>
+          <li>All future premium features included</li>
+        </ul>
+        {% if current_user.is_authenticated %}
+        {% if current_user.is_premium %}
+        <a href="/"><button class="select-plan">You have Premium!</button></a>
+        {% else %}
+        <a href="/create-checkout"><button class="select-plan">Upgrade to Premium</button></a>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="features-info">
+    <h3>Premium Features Explained</h3>
+    <div class="info-grid">
+        <div class="info-item">
+            <h4>Private Repository Tracking</h4>
+            <p>Track your progress across all your repositories, including private ones.</p>
+        </div>
+        <div class="info-item">
+            <h4>Customizable Widgets</h4>
+            <p>Create personalized widgets to showcase your progress anywhere. Perfect for portfolios, blogs, and websites.</p>
+            <img src="{{ url_for('static', filename='photos/widget_showcase.png')}}" alt="Widget Example" class="widget-example">
+        </div>
+        <div class="info-item">
+            <h4>X Integration</h4>
+            <p>Automatically share your coding journey on X (Twitter). Keep your followers updated with your progress in real-time.</p>
+        </div>
+    </div>
+</div>
+
+<br>
+<a href="mailto:rasmus@ahtava.com"><button class="buy-button">Contact</button></a>
+{% include '_sticky_main_tabs.html' %}

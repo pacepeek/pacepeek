@@ -167,18 +167,16 @@ def faq():
         return render_template("home.html", user=current_user, visible_page=visible_page, rendered_faq=render_template("_faq.html", visible_page=visible_page))
 
 
-
-
-@views.route('/pricing', methods=['GET', 'POST'])
-def pricing():
-    session['visible_page'] = visible_page = 'pricing'
+@views.route('/premium', methods=['GET', 'POST'])
+def premium():
+    session['visible_page'] = visible_page = 'premium'
 
     app_url = config.get("APP_URL")
 
     if 'HX-Request' in request.headers and request.headers['HX-Request'] == 'true':
-        return render_template("_pricing.html", visible_page=visible_page, app_url=app_url)
+        return render_template("_premium.html", visible_page=visible_page, app_url=app_url)
     else:
-        return render_template("home.html", user=current_user, visible_page=visible_page, rendered_pricing=render_template("_pricing.html", visible_page=visible_page, app_url=app_url))
+        return render_template("home.html", user=current_user, visible_page=visible_page, rendered_premium=render_template("_premium.html", visible_page=visible_page, app_url=app_url))
 
 
 @login_required

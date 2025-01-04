@@ -9,8 +9,8 @@ from . import config, db
 from .utils import get_latest_post
 from .models import Repo
 
-auth_url = "https://twitter.com/i/oauth2/authorize"
-token_url = "https://api.twitter.com/2/oauth2/token"
+auth_url = "https://x.com/i/oauth2/authorize"
+token_url = "https://api.x.com/2/oauth2/token"
 
 
 x_auth = Blueprint('x_auth', __name__)
