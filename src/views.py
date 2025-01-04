@@ -85,6 +85,9 @@ def create_checkout():
         flash("Sorry, you cannot buy this yet. Contact rasmus@ahtava.com and he will give you premium for free", "success")
         return redirect(url_for('views.home'))
 
+    flash("Remember, this is a test environment. Do not use real credit card information", "warning")
+    return redirect(url_for('views.home'))
+
     variant_id = "649498"
     store_id = "85516"
     user_id = str(current_user.id)

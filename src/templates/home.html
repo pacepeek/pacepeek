@@ -83,31 +83,24 @@
         }
       }
     }
-    document.addEventListener('htmx:afterSwap', function() {
+    function handleFlashMessage() {
         const flashMessages = document.getElementById('flash-messages');
         if (flashMessages) {
             setTimeout(function() {
-                flashMessages.style.display = "none"; // Hide after 5 seconds
+                flashMessages.style.opacity = '0';
+                setTimeout(() => {
+                    flashMessages.style.display = 'none';
+                }, 500); // Wait for fade out before hiding
             }, 5000);
+            console.log('Flash message will disappear in 5 seconds');
         }
-    });
-    window.onload = function() {
-        const flashMessages = document.getElementById('flash-messages');
-        if (flashMessages) {
-            setTimeout(function() {
-                flashMessages.style.display = "none"; // Hide after  5 seconds
-            },  5000);
-        }
-    };
-    document.addEventListener('DOMContentLoaded', function() {
-        const flashMessages = document.getElementById('flash-messages');
-        if (flashMessages) {
-            setTimeout(function() {
-                flashMessages.style.display = "none"; // Hide after  5 seconds
-            },  5000);
-        }
-    });
-   window.addEventListener("DOMContentLoaded", function() {
+    }
+    // Handle initial page load
+    document.addEventListener('DOMContentLoaded', handleFlashMessage);
+
+    // Handle HTMX content swaps
+    document.addEventListener('htmx:afterSwap', handleFlashMessage);
+    window.addEventListener("DOMContentLoaded", function() {
         // Function to add hex input field for a given color input
         function addHexInput(colorInputId) {
             const colorInput = document.querySelector("#" + colorInputId);

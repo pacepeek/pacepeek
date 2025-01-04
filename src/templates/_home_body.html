@@ -2,8 +2,8 @@
     <!-- This will be filled with flash messages by HTMX -->
 </div>
 
+    {% include '_flash_messages.html' %}
     <div class="sidebar sidebar-left">
-        {% include '_flash_messages.html' %}
         <nav class="main-nav">
             <ul>
                 <li><a href="/" class="brand"><img src="{{ url_for('static', filename='photos/pacepeeklogomountainblue.png') }}">PacePeek<div class="early-access-badge">Early Access</div></a>
