@@ -1058,8 +1058,11 @@ def get_repos_for_user():
                 'owner_id': repo['owner']['id'],
                 'private': repo['private'],
             }
-            if repo['name'] not in existing_repos and repo['private'] == False:
-                repos_list.append(repo_details)
+            if repo['name'] not in existing_repos:
+                if current_user.is_premium:
+                    repos_list.append(repo_details)
+                elif repo['private'] == False: # not premium users can only track public repos
+                    repos_list.append(repo_details)
 
         # Check if there are more pages
         link_header = response.headers.get('Link', '')
