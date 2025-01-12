@@ -1071,10 +1071,6 @@ th {
     height: auto;
 }
 
-.follow-button.hidden {
-    visibility: hidden;
-    opacity: 0;
-}
 
 .profile-info h2 {
     font-size: 1.7em;

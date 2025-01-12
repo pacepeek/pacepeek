@@ -14,6 +14,8 @@
         {% if current_user.is_authenticated %}
         {% if current_user.is_premium %}
         <a href="/"><button class="select-plan">You have Premium!</button></a>
+        {% elif current_user.wants_premium %}
+        <a href="/"><button class="select-plan">You are on the waitlist!</button></a>
         {% else %}
         <a href="/create-checkout"><button class="select-plan">Upgrade to Premium</button></a>
         {% endif %}

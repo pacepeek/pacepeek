@@ -17,6 +17,18 @@
                 <small>*timezone is your browsers's timezone</small>
                 <br>
                 <br>
+                <h2><u>Repo Settings</u></h2>
+                <h4>Automatically start tracking new repositories</h4>
+                <button 
+                    type="button" 
+                    class="basic-button"
+                    hx-get="/toggle-autom-repo-tracking" 
+                    hx-swap="outerHTML">
+                    {% if current_user.settings.automatic_new_repo_tracking %}On{% else %}Off{% endif %}
+                </button>
+                {% include '_user_settings.html' %}
+                <br>
+                <br>
                 <h2><u>Feedback</u></h2>
 
                 {% if current_user.is_authenticated %}
@@ -37,7 +49,7 @@
                 <details>
                     <summary style="cursor:pointer;">Delete user profile?</summary>
                     <p style="color:red;">Are you sure you want to delete your user profile? This action is irreversible and will delete all your data from PacePeek including all your posts/commits.</p>
-                    <button class="basic-button button-sad" hx-post="/delete_user" hx-confirm="Are you sure you want to delete your profile?">Delete Your Profile</button>
+                    /<button class="basic-button button-sad" hx-post="/delete_user" hx-confirm="Are you sure you want to delete your profile?">Delete Your Profile</button>
                 </details>
 
             </div>

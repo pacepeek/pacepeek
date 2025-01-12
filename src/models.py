@@ -72,6 +72,7 @@ class User(db.Model,UserMixin):
 
     # premium user
     is_premium = db.Column(db.Boolean, default=False)
+    wants_premium = db.Column(db.Boolean, default=False)
 
     # model
     model_provider = db.Column(db.String(50)) # 'openai', 'groq', 'local'
@@ -191,6 +192,8 @@ class Settings(db.Model):
 
     email = db.Column(db.String(150))
     email_notifications = db.Column(db.Boolean, default=False)
+
+    automatic_new_repo_tracking = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return '<Settings %r' % self.id

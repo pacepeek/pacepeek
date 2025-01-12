@@ -1,3 +1,15 @@
+<h2>Users wanting premium</h2>
+<div id="load-more-container" 
+     hx-get="/get_premium_wanters" 
+     hx-trigger="click" 
+     hx-indicator="#loading-indicator"
+     hx-swap="outerHTML"
+     style="cursor:pointer;">
+    load users
+</div>
+
+
+
 <h2>Last 100 lines from the error log file</h2>
 <div id="load-more-container" 
      hx-get="/admin-error-logfile" 

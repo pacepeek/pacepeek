@@ -150,6 +150,15 @@ def log_the_error_context(e: Exception, line_count: int = 200,  context: str = "
             f.write(f"Error: {e}\n")
         create_admin_notification(f"Error: {e} with context: {context}  and traceback: {recent_traceback_lines[:5]} has been logged to {context_filename}\n")
 
+def send_user_email(user: User, topic: str, message: str):
+  	return requests.post(
+  		"https://api.mailgun.net/v3/sandbox06acda4d8b5546ad89902875a26f604e.mailgun.org/messages",
+  		auth=("api", config.get("MAILGUN_API_KEY")),
+  		data={"from": f"Excited User <mailgun@sandbox06acda4d8b5546ad89902875a26f604e.mailgun.org>",
+  			"to": ["rasmus@ahtava.com", "YOU@sandbox06acda4d8b5546ad89902875a26f604e.mailgun.org"],
+  			"subject": topic,
+  			"text": message})
+
 def create_report(message: str):
     if not current_user.is_authenticated:
         logging.error(f"User is not authenticated when trying to create a report")

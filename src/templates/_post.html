@@ -46,11 +46,15 @@
                 <p>Summary made with model {{post.summary_model}}
                 {% endif %}
                 <br>
+                {% if post.repo.private %}
+                from {{post.commits|length}} commits</p>
+                {% else %}
                 from commits:</p>
                 # for commit in post.commits 
                 <span><small>{{commit.creation_timestamp|timestamp_to_user_localtime|pretty_time}}</small></span> <a href="{{commit.link}}" target="_blank"><u>{{commit.sha[:7]}}</u></a> <span>on branch {{commit.branch.name}}</span>
                 <br>
                 # endfor
+                {% endif %}
                 {% if post.programming_language %}
                 <p>Programming language: {{post.programming_language}}</p>
                 {% endif %}

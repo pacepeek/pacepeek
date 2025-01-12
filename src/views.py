@@ -35,6 +35,16 @@ def error():
     1/0
     return "error"
 
+@views.route('/test')
+def test():
+    msg = "moi this is message"
+    topic = "tpot"
+    from .utils import send_user_email
+    resp = send_user_email(current_user, topic, msg)
+    print(resp)
+    return resp
+
+
 @views.route("/order-webhook", methods=["POST"])
 def order_webhook():
     print("in order webhook")
@@ -67,6 +77,7 @@ def order_webhook():
         user = User.query.get(user_id)
         if user:
             user.is_premium = True
+            user.wants_premium = False
             db.session.commit()
             logging.info(f"User {user.github_login} is now premium")
             flash("You are now a premium user", "success")
@@ -82,7 +93,9 @@ def order_webhook():
 @views.route("/create-checkout", methods=["GET"])
 def create_checkout():
     if config.get("SERVER") != "dev":
-        flash("Sorry, you cannot buy this yet. Contact rasmus@ahtava.com and he will give you premium for free", "success")
+        current_user.wants_premium = True
+        db.session.commit()
+        flash("Sorry, this is still under works, but added you to waitlist!")
         return redirect(url_for('views.home'))
 
     variant_id = "649498"
@@ -333,6 +346,39 @@ def admin_home():
     session['visible_page'] = visible_page = 'admin'
     return render_template("_admin_home.html", visible_page=visible_page)
 
+@login_required
+@views.route("/get-premium-wanters")
+def get_premium_wanters():
+    if not current_user.is_admin:
+        flash("Unauthorized", "danger")
+        return "Unauthorized", 403
+
+    users = User.query.filter_by(wants_premium=True).all()
+
+    return render_template_string('''
+    <ul>
+    {% for user in users %}
+        <li><a href="/{{user.github_login}}>{{user.github_login}}</a><div class="basic-button" hx-get="/user-account-give-{{user.github_id}} hx-swap="outerHTML" hx-trigger="click">give</div></li>
+    {% endfor %}
+    </ul>
+    ''', users=users)
+
+
+# TODO REMOVE THIS WHEN DONE
+@login_required
+@views.route("/removewanters")
+def removewanters():
+    if not current_user.is_admin:
+        flash("Unauthorized", "danger")
+        return "Unauthorized", 403
+
+
+    for user in User.query.all():
+        user.wants_premium = False
+        db.session.commit()
+
+    return "success", 200
+
 
 @views.route('/load_repo_info')
 def load_repo_info():
@@ -550,12 +596,14 @@ def settings():
     groq_models = config.get('GROQ_MODELS')
     openai_models = config.get('OPENAI_MODELS')
 
+    markdown_widget_svg = make_widget(current_user, 2, current_user.settings.markdown_widget_fill_color,current_user.settings.markdown_widget_stroke_color,current_user.settings.markdown_widget_text_color)
+
     if 'HX-Request' in request.headers and request.headers['HX-Request'] == 'true':
-        return render_template("_settings.html", visible_page=visible_page, install_url=install_url, newest_gpt=newest_gpt, newest_llama=newest_llama, newest_mixtral=newest_mixtral, groq_models=groq_models, openai_models=openai_models)
+        return render_template("_settings.html", visible_page=visible_page, install_url=install_url, newest_gpt=newest_gpt, newest_llama=newest_llama, newest_mixtral=newest_mixtral, groq_models=groq_models, openai_models=openai_models, markdown_widget_svg=markdown_widget_svg)
 
     # If this is a direct URL access, render the home.html and include the profile content in it
     else:
-        return render_template("home.html", user=current_user, visible_page='settings',rendered_settings=render_template("_settings.html", install_url=install_url,visible_page='settings', newest_gpt=newest_gpt, newest_llama=newest_llama, newest_mixtral=newest_mixtral, groq_models=groq_models, openai_models=openai_models))
+        return render_template("home.html", user=current_user, visible_page='settings',rendered_settings=render_template("_settings.html", install_url=install_url,visible_page='settings', newest_gpt=newest_gpt, newest_llama=newest_llama, newest_mixtral=newest_mixtral, groq_models=groq_models, openai_models=openai_models, markdown_widget_svg=markdown_widget_svg))
 
 @login_required
 @views.route('/remove-data-<repo_github_id>', methods=['GET'])
@@ -651,6 +699,27 @@ def change_feed_type():
                            feed_type=feed_type,
                            noti_count=noti_count,
                            visible_page='feed')
+
+
+@login_required
+@views.route('/toggle-autom-repo-tracking')
+def toggle_autom_repo_tracking():
+    if current_user.settings.automatic_new_repo_tracking:
+        current_user.settings.automatic_new_repo_tracking = False
+    else:
+        current_user.settings.automatic_new_repo_tracking = True
+    db.session.commit()
+    return render_template_string('''
+                    <button 
+                        type="button" 
+                        class="basic-button"
+                        hx-get="/toggle-autom-repo-tracking" 
+                        hx-swap="outerHTML">
+                        {% if current_user.settings.automatic_new_repo_tracking %}On{% else %}Off{% endif %}
+                    </button>
+    {% include '_flash_messages.html' %}
+    ''')
+
 
 
 @login_required
@@ -1182,6 +1251,27 @@ def get_repos_user():
 
 
 @login_required
+@views.route('/add-repo-to-tracking')
+def add_repo_to_tracking():
+    repo_github_id = request.args.get("repo_github_id")
+    repo_name = request.args.get("repo_name")
+    repo_private = request.args.get("repo_private")
+    user_id = request.args.get("user_id")
+    if current_user.id != user_id:
+        flash("Unauthorized", "warning")
+        return redirect(url_for('views.home'))
+    hook_id = track_repo_for_user(repo_name, repo_github_id, repo_private)
+    if not hook_id:
+        flash("Sorry something went wrong", "error")
+        abort(401, "Couldn't add single repo to tracking")
+
+    flash(f"Success! {repo_name} is now being tracked.")
+    return redirect(url_for('views.home'))
+
+
+    
+
+@login_required
 @views.route('/add-user-repos-to-tracking', methods=['POST'])
 def add_user_repos_to_tracking():
     try:
@@ -1395,27 +1485,39 @@ def handle_repository_event(payload, payload_body, signature_header):
         db.session.commit()
         logging.info(f"transferred repository {repo.name} from {user.name} to new owner so untracked")
     elif action == 'unarchived':
+        repo_name = payload['repository']['name']
         repo_github_id = payload['repository']['id']
+        repo_private = payload['repository']['private']
+        owner_github_id = payload['repository']['owner']['id']
         repo = Repo.query.filter_by(github_id=repo_github_id).first()
         if not repo:
             return '', 200
-        user = User.query.filter_by(github_id=repo.owner_github_id).first()
-        if user:
-            create_user_notification(user, f"Repo '{repo.name}' was unarchived, do you want to start tracking it?")
-        # TODO here we could send an email to the user if they want to start tracking it again
+        user = User.query.filter_by(github_id=repo.owner_github_id).first_or_404()
+        create_user_notification(user, f"Repo '{repo.name}' was unacrhived. Click to start tracking it again!", f"{config.get('APP_URL')}/add-repo-to-tracking?repo_github_id={repo_github_id}&repo_name={repo_name}&repo_private={repo_private}&user_id={user.id}")
     elif action == 'created':
         repo_name = payload['repository']['name']
+        repo_github_id = payload['repository']['id']
+        repo_private = payload['repository']['private']
         owner_github_id = payload['repository']['owner']['id']
-        user = User.query.filter_by(github_id=owner_github_id).first()
-        if user:
-            create_user_notification(user, f"You created a new repo '{repo_name}' in GitHub, do you want to start tracking it?")
-            # TODO make a notification button pressable
-        logging.info(f"created repo {repo_github_id} in {org.name}")
-
+        user = User.query.filter_by(github_id=owner_github_id).first_or_404()
+        if user.settings.automatic_new_repo_tracking:
+            hook_id = track_repo_for_user(repo_name, repo_github_id, repo_private)
+            if not hook_id:
+                create_user_notification(user, f"Failed to start tracking the new repo '{repo_name}'. Try again by clicking this notification.", f"{config.get('APP_URL')}/add-repo-to-tracking?repo_github_id={repo_github_id}&repo_name={repo_name}&repo_private={repo_private}&user_id={user.id}")
+            else:
+                create_user_notification(user, f"Started tracking the new repo '{repo_name}'!")
+        else:
+            create_user_notification(user, f"You created a new repo '{repo_name}' in GitHub. Click to start tracking it!", f"{config.get('APP_URL')}/add-repo-to-tracking?repo_github_id={repo_github_id}&repo_name={repo_name}&repo_private={repo_private}&user_id={user.id}")
+    elif action == "publicized" or action == "privatized":
+        repo_github_id = payload['repository']['id']
+        repo_private = payload['repository']['private']
+        repo = Repo.query.filter_by(github_id=repo_github_id).first_or_404()
+        if repo.private != repo_private:
+            repo.private = repo_private
+            db.session.commit()
+       
     # left are:
     # edited - The topics, default branch, description, or homepage of a repository was changed.
-    # publicized
-    # privatizec
 
     return '', 200
 

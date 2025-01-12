@@ -34,7 +34,6 @@
                             Search</li></a>
                         {% endif %}
 
-                    {% if user.is_authenticated %}
                         {% if visible_page == 'premium' %}
                         <a href="/premium"><li class="nav-item nav-item-selected">
                         <img src="{{ url_for('static', filename='photos/pacepeeklogomountainblue.png') }}" style="width: 24px; height: 24px; vertical-align: middle; margin-bottom: 4px;">
@@ -44,7 +43,6 @@
     <img src="{{ url_for('static', filename='photos/pacepeeklogomountainblue.png') }}" style="width: 22px; height: 22px; vertical-align: middle; margin-bottom: 4px;">
     Premium</li></a>
                         {% endif %}
-                    {% endif %}
                         
                     {% if user.is_authenticated %}
                         {% if visible_page == 'profile' %}

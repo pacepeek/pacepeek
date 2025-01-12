@@ -1,4 +1,5 @@
 <h3>Markdown Widget</h3>
+{% set user = current_user %}
 <textarea id="markdownCode" readonly style="width: 75%; height: 50px; font-size:10px;">
 [![Recent Posts on PacePeek.com]({{app_url}}/widget_svg/{{user.github_login}}/3?fill_color={{user.settings.markdown_widget_fill_color[1:]}}&stroke_color={{user.settings.markdown_widget_stroke_color[1:]}}&text_color={{user.settings.markdown_widget_text_color[1:]}})]({{app_url}}/{{user.github_login}})
 </textarea>
