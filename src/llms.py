@@ -20,13 +20,53 @@ class Summary(BaseModel):
 
 def gpt_generate_summary_for_user_commits(repo_description: str, commit_patches_data: str) -> (str, str):
 
-    provider = "openrouter"
+    provider = "server"
     model = ""
     if provider == "groq":
         client = instructor.from_groq(Groq(api_key=config.get('GROQ_API_KEY')))
         model = config.get('NEWEST_LLAMA_MODEL')
         content, language = get_post_summary(client, repo_description, commit_patches_data, model)
         return content, language, model
+
+    elif provider == "server":
+        url = "http://173.212.244.238:8000/summary"
+        headers = {
+            "Content-Type": "application/json",
+            "api-key": config.get("LLM_SERVER_API_KEY")
+        }
+
+        messages = [
+            {
+                "role": "system",
+                "content": f"""Your task is to summarize the following commit patches into a concise, easily readable message that describes the functional changes made. Do not just state what files were changed or added, but explain the changes in terms of their functionality and impact. For instance, if an algorithm was implemented, describe which algorithm it is and what problem it solves. If there are no patches or data to summaries just say 'no changes'. The summary should be brief, like a Tweet (max 280 characters). 
+
+        For context, here is the repo owner's description of the whole repo:
+
+                {repo_description}
+
+                    Here are the commit patches:
+                    
+                    {commit_patches_data}"""
+            },
+            {
+                "role": "user",
+                "content": "Please generate a brief summary of these commit patches, focusing on the functionality of the changes."
+            }
+        ]
+        
+        payload = {
+            "messages": messages,
+        }
+        
+        response = requests.post(url, headers=headers, json=payload)
+        if response.status_code != 200:
+            raise Exception(f"Server request failed with status code {response.status_code}")
+            
+        result = response.json()
+        model = "server-model"
+        return result["summary"], result["programming_language_used"], model
+
+
 
     elif provider == "local":
         client = instructor.from_openai(OpenAI(base_url="http://localhost:11434/v1",api_key="ollama"),mode=instructor.Mode.JSON)
