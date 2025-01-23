@@ -247,11 +247,7 @@ def gpt_judge(commit_patches_data: str):
 def get_judge_decision(client, commit_patches_data, model):
 
     logging.info(f"starting judge with model: {model}")
-    resp = client.chat.completions.create(
-        model=model,
-        max_tokens=1024,
-        response_model=CommitAnalysis,
-        messages=[
+    messages = [
                     {"role": "system", "content": f"""Your task is to analyze the provided commits and evaluate their significance. If there are multiple commits, analyze them collectively. Your response should indicate whether these commits are 'significant' or 'not significant'.
 
                 A 'significant' commit could:
@@ -272,7 +268,13 @@ def get_judge_decision(client, commit_patches_data, model):
 
                 {commit_patches_data}"""},
                     {"role": "user","content": f"Please evaluate if the given commit patches are 'significant' or 'not significant'."},
-                ],
+                ]
+    logging.info(messages)
+    resp = client.chat.completions.create(
+        model=model,
+        max_tokens=1024,
+        response_model=CommitAnalysis,
+        messages=messages,
     )
     logging.info(f"response: {resp.decision}")
     return resp.decision
