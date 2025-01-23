@@ -21,6 +21,7 @@ def process_webhook_payload(payload_id):
     # TODO this retry logic is will not work yet and need to be tested and refactored
     try:
         # Retrieve the payload from the database using payload_id
+        from . import db
         payload = Payload.query.get(payload_id)
         # Process the payload
         success = handle_payload(payload.content)
