@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 from enum import Enum
 from .models import Repo, Post, Settings, get_default_daily_summary_prompt
+import json
 from groq import Groq
 from openai import OpenAI
 from anthropic import Anthropic
