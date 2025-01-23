@@ -61,7 +61,6 @@ def gpt_generate_summary_for_user_commits(repo_description: str, commit_patches_
         payload = {
             "messages": messages
         }
-
         try:
             logging.info("Final payload: ")
             logging.info(json.dumps(payload, indent=2, ensure_ascii=False))
@@ -74,10 +73,21 @@ def gpt_generate_summary_for_user_commits(repo_description: str, commit_patches_
             programming_language = result.get("programming_language_used")
             return summary, programming_language, "server-model"
             
-        except requests.exceptions.HTTPError as err:
-            raise Exception(f"LLM Server request failed with status code {response.status_code}: {err}")
-        except ValueError as err:
-            raise Exception(f"Failed to parse JSON response: {err}")
+        except (requests.exceptions.HTTPError, ValueError) as err:
+            logging.error(f"LLM Server error: {err}")
+            create_admin_notification(f"LLM Server error: {err}")
+            
+            client = instructor.from_openai(
+                OpenAI(
+                    base_url="https://openrouter.ai/api/v1", 
+                    api_key=config.get('OPENROUTER_API_KEY'),
+                ),
+                mode=instructor.Mode.JSON,
+            )
+            model = config.get('OPENROUTER_MODEL')
+            content, language = get_post_summary(client, repo_description, commit_patches_data, model)
+            return content, language, model
+            
 
     elif provider == "local":
         client = instructor.from_openai(OpenAI(base_url="http://localhost:11434/v1",api_key="ollama"),mode=instructor.Mode.JSON)
