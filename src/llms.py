@@ -29,6 +29,7 @@ def gpt_generate_summary_for_user_commits(repo_description: str, commit_patches_
         return content, language, model
 
     elif provider == "server":
+        logging.info("making summary with server")
         from textwrap import dedent
         url = "http://173.212.244.238:8000/summary"
         headers = {
