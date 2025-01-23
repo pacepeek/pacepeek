@@ -673,7 +673,8 @@ def handle_new_commit(repo: Repo, commit_sha: str, cdata: dict, current_branch: 
             author_github_login = cdata['author']['login']
             author = User.query.filter_by(github_id=author_github_id).first()
         if not author:
-            raise UserNotFoundError(f"author is None when creating new commit, this should not happen")
+            logging.info("Author not found so not processing this commit")
+            return
 
         current_commit = Commit(sha=commit_sha, branch=current_branch, repo=repo,
                 author_github_id=author_github_id,author_github_login=author_github_login,
