@@ -61,7 +61,10 @@ def gpt_generate_summary_for_user_commits(repo_description: str, commit_patches_
         }
 
         try:
+            logging.info("Final payload: ")
+            logging.info(json.dumps(payload, indent=2, ensure_ascii=False))
             response = requests.post(url, headers=headers, json=payload)
+            logging.info("Raw Response:", response.text)  # Add this line
             response.raise_for_status()  
             
             result = response.json()
