@@ -152,7 +152,13 @@ def celery_init_app(app: Flask) -> Celery:
 
     celery_app.set_default()
 
+    celery_app.conf.task_routes = {
+        'src.tasks.process_webhook_payload': {'queue': 'webhooks'},
+        'src.tasks.*': {'queue': 'periodic'}  # Separate queue for scheduled tasks
+    }
+
     celery_app.conf.beat_schedule = {
+
         'every_minute_task': {
             'task':'src.tasks.every_minute',
             'schedule': crontab(minute='*')
