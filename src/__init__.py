@@ -47,7 +47,10 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app,db)
    
-    app.config['CELERY_BROKER_URL'] = 'amqp://rasmus:password@localhost:5672/pacepeek_vhost'
+    app.config['CELERY_BROKER_URL'] = (
+        f"amqp://{os.getenv('RABBITMQ_USER')}:{os.getenv('RABBITMQ_PASSWORD')}"
+        f"@localhost:5672/{os.getenv('RABBITMQ_VHOST')}"
+    )
     app.config.from_mapping(CELERY=dict(
             broker_url='amqp://localhost:5672',
             task_ignore_result=True,
