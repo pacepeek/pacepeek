@@ -88,16 +88,14 @@ def order_webhook():
     
     return jsonify({"success": True})
 
-
 @login_required
 @views.route("/create-checkout", methods=["GET"])
 def create_checkout():
     if config.get("SERVER") != "dev":
-        current_user.wants_premium = True
+        current_user.is_premium = True
         db.session.commit()
-        flash("Sorry, this is still under works, but added you to waitlist!")
+        flash("You have been granted premium access for free! We're currently in beta and all features are available to everyone. Thanks for being an early supporter!", "success")
         return redirect(url_for('views.home'))
-
     variant_id = "649498"
     store_id = "85516"
     user_id = str(current_user.id)
@@ -1351,7 +1349,7 @@ def handle_push_event(payload, payload_body, signature_header):
         db.session.add(payload_obj)
         db.session.commit()
         logging.info(f"payload stored successfully")
-        process_webhook_payload.delay(payload_obj.id)
+        process_webhook_payload.apply_async(args=[payload_obj.id], countdown=2)
         logging.info(f"payload sent to celery")
         return {'message': f'Processed push event with {len(payload["commits"])} commits'}
     else:

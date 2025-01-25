@@ -16,34 +16,34 @@ def every_minute():
     logging.info('every_minute**********************')
     #create_user_notification(User.query.filter_by(github_login='ahtavarasmus').first(), 'every_minute')
 
-@shared_task
-def process_webhook_payload(payload_id):
+@shared_task(bind=True, autoretry_for=(Exception,), max_retries=3, retry_backoff=True)
+def process_webhook_payload(self, payload_id):
     # TODO this retry logic is will not work yet and need to be tested and refactored
     try:
         # Retrieve the payload from the database using payload_id
         from . import db
-        payload = Payload.query.get(payload_id)
-        # Process the payload
-        success = handle_payload(payload.content)
-        logging.info(f'payload processed with success: {success}')
-        if success:
-            payload.status = 'success'
-            # remove the payload from the db
-            db.session.delete(payload)
-            db.session.commit()
-            logging.info('payload processed successfully and removed from db')
-        else:
-            logging.error('payload processing failed')
+        with db.session.begin():
+            payload = Payload.query.get(payload_id)
+
+            # Process the payload
+            success = handle_payload(payload.content)
+            logging.info(f'payload processed with success: {success}')
+            if success:
+                payload.status = 'success'
+                # remove the payload from the db
+                db.session.delete(payload)
+                db.session.commit()
+                logging.info('payload processed successfully and removed from db')
+            else:
+                logging.error('payload processing failed')
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 429:
-            # Retry the task with exponential backoff
             raise self.retry(exc=e, countdown=2 ** self.request.retries)
         else:
-            # Reraise the exception for other HTTP errors
             raise e
     except Exception as e:
-        # Reraise the exception for other errors
-        raise e
+        # Retry on other exceptions, e.g., database issues
+        raise self.retry(exc=e, countdown=60, max_retries=3)
 
 @shared_task
 def beginning_of_month():

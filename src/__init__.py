@@ -50,7 +50,7 @@ def create_app():
     app.config['CELERY_BROKER_URL'] = 'amqp://localhost:5672'
     app.config.from_mapping(CELERY=dict(
             broker_url='amqp://localhost:5672',
-            task_ignore_result=False,
+            task_ignore_result=True,
         ),
     )
 
@@ -148,6 +148,7 @@ def celery_init_app(app: Flask) -> Celery:
     celery_app = Celery(app.name, task_cls=FlaskTask)
     celery_app.config_from_object(app.config['CELERY'])
     celery_app.conf.update(timezone='UTC')
+    celery_app.conf.task_acks_late = True
 
     celery_app.set_default()
 
