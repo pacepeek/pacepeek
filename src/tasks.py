@@ -22,22 +22,19 @@ def process_webhook_payload(self, payload_id):
     try:
         # Retrieve the payload from the database using payload_id
         from . import db
-        payload = None
-        # Use a transaction only for fetching and deleting the payload
-        with db.session.begin():
-            payload = db.session.query(Payload).get(payload_id)
-            if not payload:
-                logging.info(f"No payload found with id {payload_id}")
-                return False
+        payload = db.session.query(Payload).get(payload_id)
+        if not payload:
+            logging.info(f"No payload found with id {payload_id}")
+            return False
 
         # Process the payload outside the transaction
         success = handle_payload(payload.content)
 
         # Use another transaction for deletion
         if success:
-            with db.session.begin():
-                db.session.delete(payload)
-                logging.info(f"Successfully processed and deleted payload {payload_id}")
+            db.session.delete(payload)
+            logging.info(f"Successfully processed and deleted payload {payload_id}")
+            db.session.commit()
         else:
             logging.error(f"Failed to process payload {payload_id}")
         return success
