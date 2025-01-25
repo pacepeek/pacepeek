@@ -21,7 +21,7 @@ class Summary(BaseModel):
 
 def gpt_generate_summary_for_user_commits(repo_description: str, commit_patches_data: str) -> (str, str):
 
-    provider = "server"
+    provider = "groq"
     model = ""
     if provider == "groq":
         client = instructor.from_groq(Groq(api_key=config.get('GROQ_API_KEY')))
