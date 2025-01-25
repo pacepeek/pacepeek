@@ -47,7 +47,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app,db)
    
-    app.config['CELERY_BROKER_URL'] = 'amqp://localhost:5672'
+    app.config['CELERY_BROKER_URL'] = 'amqp://rasmus:password@localhost:5672/pacepeek_vhost'
     app.config.from_mapping(CELERY=dict(
             broker_url='amqp://localhost:5672',
             task_ignore_result=True,
