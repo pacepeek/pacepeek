@@ -41,7 +41,7 @@ def gpt_generate_summary_for_user_commits(repo_description: str, commit_patches_
         system_message = dedent(f"""\
             Your task is to summarize the following commit patches into a concise, easily readable message that describes the functional changes made. Do not just state what files were changed or added, but explain the changes in terms of their functionality and impact. For instance, if an algorithm was implemented, describe which algorithm it is and what problem it solves. If there are no patches or data to summaries just say 'no changes'. The summary should be brief, like a Tweet (max 280 characters). 
 
-            For context, here is the repo owner's description of the whole repo:
+            For context, here is the repo owner's description of the repo:
             {repo_description}
 
             Here are the commit patches:
@@ -120,7 +120,7 @@ def get_post_summary(client, repo_description, commit_patches_data, model):
                 {
                 "role": "system", "content": f"""Your task is to summarize the following commit patches into a concise, easily readable message that describes the functional changes made. Do not just state what files were changed or added, but explain the changes in terms of their functionality and impact. For instance, if an algorithm was implemented, describe which algorithm it is and what problem it solves. If there are no patches or data to summaries just say 'no changes'. The summary should be brief, like a Tweet (max 280 characters). 
 
-    For context, here is the repo owner's description of the whole repo:
+    For context, here is the repo owner's description of the repo:
     
     {repo_description}
 
@@ -136,79 +136,6 @@ def get_post_summary(client, repo_description, commit_patches_data, model):
     )
     logging.info(f"response: {resp.summary}")
     return resp.summary, resp.programming_language_used
-
-
-class FileAnalysisCategory(str, Enum):
-    """ enum for file analysis decision """
-    full = "full"
-    beginning = "beginning"
-    never = "never"
-
-class FileAnalysis(BaseModel):
-    decision: FileAnalysisCategory = Field(description="The decision on how to analyze the file")
-
-def analyze_first_25_lines_of_code(filename: str, code: str):
-    """ Uses GPT to analyze first 50 lines to determine if the filetype
-    should be marked as analyze_full, analyze_never(eg. binary files) or analyze_beginning(eg. certain data files to get the idea of the change) 
-    """
-    client = instructor.from_openai(
-            OpenAI(
-                base_url="https://openrouter.ai/api/v1",
-                api_key=config.get('OPENROUTER_API_KEY'),
-                ),
-            mode=instructor.Mode.JSON,
-        )
-    model = config.get('OPENROUTER_MODEL')
-
-    resp = client.chat.completions.create(
-        model=model,
-        max_tokens=1024,
-        messages=[
-            {
-              "role": "system",
-              "content": "Analyze the provided filename and the first 25 lines of its content to determine the appropriate level of analysis for files with this extension. Make your decision based on the content's potential importance, the predictability of the file's content from its name, and its readability. Output should be one of the following decisions: \"full\", \"beginning\", \"never\".\n\nInput:\n\n    Filename: example.extension\n    Content:\n\n[First 25 lines of the file]\n\nOutput Decision Criteria:\n\n    \"full\": The file's content is crucial for understanding changes, and missing details could lead to overlooking important information. Applicable to source code, significant configuration changes, etc.\n    \"beginning\": The file's format is repetitive, and understanding the first 10 lines provides sufficient context. Suitable for large data files with a consistent format.\n    \"never\": The file's content is predictable from its name, non-human-readable, or generally contains no relevant information for analysis (e.g., binary, media files).\n\nOutput:\n\n    [The one word decision here]\n"
-            },
-            {
-              "role": "user",
-              "content": "\n    Filename: update_log.md\n    Content:\n\n# Update Log\n- Fixed issue #224\n- Improved performance of data processing module\n...\n\n"
-            },
-            {
-              "role": "assistant",
-              "content": "full"
-            },
-            {
-              "role": "user",
-              "content": "\n    Filename: data_2023.csv\n    First 50 Lines:\n\nid,name,value\n1,Item A,100\n2,Item B,150\n3,Item C,200\n...\n"
-            },
-            {
-              "role": "assistant",
-              "content": "beginning"
-            },
-            {
-              "role": "user",
-              "content": "    Filename: company_logo.png\n    Content:\n\n�PNG\n..."
-            },
-            {
-              "role": "assistant",
-              "content": "never"
-            },
-            {
-              "role": "user",
-              "content": "\n    Filename: database_migration.sql\n    Content:\n\n-- Migration: Add new column to users table\nALTER TABLE users ADD COLUMN last_login TIMESTAMP;\n-- Add index for the new column\nCREATE INDEX idx_users_last_login ON users(last_login);"
-            },
-            {
-              "role": "assistant",
-              "content": "full"
-            }, 
-            {
-                "role": "user",
-                "content": f"    Filename: {filename}\n    Content:\n\n{code}"
-            }
-          ],
-        response_model=FileAnalysis,
-    )
-
-    return resp.decision, 2
 
 
 class CommitSignifiganceCategory(str, Enum):

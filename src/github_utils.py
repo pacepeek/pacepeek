@@ -582,52 +582,100 @@ def should_analyze_file(filename: str) -> bool:
 
     return True
 
+def try_fitting_new_commit(commit_data: dict, tokens_used: int) -> (str, int, int):
+    """
+    commit_data: a dict of file patches in current commit
+    tokens_used: current tokens used until this commit
 
-def create_post_data(github_ses, post: Post):
-    logging.info("enter create_post_data")
-    if post.author_github_login:
-        post_data = f"Author: {post.author_github_login}\n"
-    else:
-        post_data = "Author: Unknown\n"
-    changes_across_all_files = 0
-    sorted(post.commits, key=lambda x: x.creation_timestamp)
-    for commit in post.commits:
-        logging.info(f"commit: {commit}")
-        commitdata, url = fetch_commit_data(github_ses, post.repo, commit.sha)
+    full_text: full text that we tried hard fitting inside the ctx window along with the existing commits. 
+    new_total_tokens: total token amount used across files until this point
+    lines_changed: amount of lines that were changed in this commit
+    """
+    tl = config.get("OPENROUTER_MODEL_TOKEN_LIMIT")
+    token_limit = tl if tl else 7500 
+    full_text = build_full_text(commit_data)  # Include all patches
+    current_tokens = count_tokens(full_text) 
 
-        commit.message = commitdata['commit']['message']
-        logging.info(f"commit.message: {commit.message}")
-        post_data += f"Commit Message: {commit.message}:\n"
-        date_str = commitdata['commit']['committer']['date']
-        logging.info(f"date_str: {date_str}")
-        commit.creation_timestamp = int(parse_to_utc_from_github_iso(date_str.rstrip("Z")).timestamp())
-        logging.info(f"commit.creation_timestamp: {commit.creation_timestamp}")
-        post_data += " Files:\n"
-        for file in commitdata['files']:
-            # Check if 'patch' exists in the file dictionary
+    # we try to fit this commit into the post
+    for i in range(3):
+        if current_tokens + tokens_used <= token_limit:
+            break;
+        # Calculate how much to truncate
+        excess_tokens = current_tokens + tokens_used - token_limit
+        truncate_ratio = min(0.9, excess_tokens / current_tokens)  # Max 10% cut per iteration
+        
+        # Truncate patch proportionally
+        if 'files' in commit_data:
+            for file in commit_data['files']:
+                if 'patch' in file:
+                    lines = file['patch'].split('\n')
+                    num_to_keep = int(len(lines) * (1 - truncate_ratio))
+                    file['patch'] = '\n'.join(lines[:max(num_to_keep, 3)])  # Keep at least 3 lines
+        
+        # Rebuild and recheck
+        full_text = build_full_text(commit_data)
+        current_tokens = count_tokens(full_text)
+
+    # if weren't able to fit this commit into the post anymore
+    if current_tokens + tokens_used > token_limit:
+        return "", tokens_used, 0
+    else: # we were able to fit the commit to the payload!
+        new_total_tokens = current_tokens + tokens_used
+        lines_changed = len(full_text.split("\n"))
+        return full_text, new_total_tokens, lines_changed
+
+def build_full_text(commit_data):
+    text = ""
+    if 'files' in commit_data:
+        for file in commit_data['files']:
             if 'patch' in file:
-                if file['changes'] is None:
-                    file['changes'] = 0
                 filename = file['filename']
                 logging.info(f"filename: {filename}")
                 if not should_analyze_file(filename):
                     logging.info(f"filename: {filename} should not be analyzed")
                     continue
-                logging.info(f"filename: {filename} should be analyzed")
-                changes_across_all_files += int(file['changes'])
-                lines_in_patch = len(file['patch'].split("\n"))
-                if lines_in_patch > 150:
-                    # cut the patch to 150 lines
-                    file['patch'] = "\n".join(file['patch'].split("\n")[:150])
+                text += f"File: {filename}\n"
+                text += f"{file['patch']}\n"
+    return text
 
-                post_data += f"  in file {file['filename']}:\n"
-                post_data += f"  {file['patch']}\n"
+
+def create_post_data(github_ses, post: Post):
+    logging.info("enter create_post_data")
+
+    post_data = f"Author: {post.author_github_login}\n" if post.author_github_login else "Author: Unknown\n"
+
+    lines_changed_total = 0
+    tokens_used_total = count_tokens(post_data)
+
+    post.commits.sort(key=lambda x: x.creation_timestamp)
+    for commit in post.commits:
+        tokens_used_commit = 0
+        commitdata, url = fetch_commit_data(github_ses, post.repo, commit.sha)
+
+        commit_message = commitdata['commit']['message']
+        commit_header = f"Commit Message: {commit.message}\n\n"
+        tokens_used_commit += count_tokens(commit_header)
+        commit.message = commit_message
+        commit.creation_timestamp = int(parse_to_utc_from_github_iso(commitdata['commit']['committer']['date'].rstrip("Z")).timestamp())
+
+        file_data, tokens_used, lines = try_fitting_new_commit(commitdata, tokens_used_total + tokens_used_commit)
+
+        # TODO this might not be accurate if there was commit or two that were left 
+        # out since they didn't fit into the context window (when below 'if' was true)
+        lines_changed_total += lines 
+
+        if not file_data:
+            logging.warning(f"Token limit reached for post, truncating at commit {commit.sha}")
+            break
+
+        post_data += f"Commit Message: {commit.message}\n\n"
+        post_data += file_data
+        tokens_used_total = tokens_used
 
     if post.lines_changed is None:
         post.lines_changed = 0
-    logging.info(f"post.lines_changed before: {post.lines_changed}")
-    post.lines_changed = int(post.lines_changed) + int(changes_across_all_files)
-    logging.info(f"post.lines_changed after: {post.lines_changed}")
+    post.lines_changed = int(post.lines_changed) + int(lines_changed_total)
+    post.summary_token_count = tokens_used_total
     logging.info("leave create_post_data")
     return post_data
 
@@ -924,8 +972,10 @@ def count_tokens_improved(text):
 
     return len(tokens) + newline_count + space_count + punctuation_count
    
-def count_tokens(text):
-    return len(text.split()) + text.count('\n') + text.count(' ') + sum(1 for char in text if char in string.punctuation)
+def count_tokens(text, model="gpt-3.5-turbo"):
+    encoding = tiktoken.encoding_for_model(model)
+    tokens = encoding.encode(text)
+    return len(tokens)
 
 class RepoNotFoundError(Exception):
     pass

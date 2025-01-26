@@ -12,3 +12,5 @@ Ideas:
 
 maybe:
 - add ability for other than the owner of the repo to make contributions. like collaborators could make commits, but only if the repo exists already since only owner and admin level collaborators can add webhooks to the repository on github.
+
+- if there is a huge commit that could be split into many posts, it might be just good to first check if commit's tokens are over some limit and then if they are do the following:

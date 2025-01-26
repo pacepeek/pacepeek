@@ -362,7 +362,7 @@ class Repo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     github_id = db.Column(db.String(300))
     name = db.Column(db.String(300))
-    repo_description = db.Column(db.String)
+    repo_description = db.Column(db.String(150))
     owner_github_login = db.Column(db.String(300))
     owner_github_id = db.Column(db.String(300))
     webhook_id = db.Column(db.Integer)

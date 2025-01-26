@@ -8,7 +8,6 @@ from celery.schedules import crontab
 import logging
 from logging.handlers import RotatingFileHandler
 
-
 import os
 from flask_sqlalchemy import SQLAlchemy
 import json
@@ -76,10 +75,13 @@ def create_app():
     app.register_blueprint(template_filters)
 
 
-    if not os.path.exists(config.get('SQLITE_DATABASE_PATH')):
+    db_path = config.get('SQLITE_DATABASE_PATH')
+    db_dir = os.path.dirname(db_path)
+    if not os.path.exists(db_dir):
+        os.makedirs(db_dir, exists_ok=True)
         with app.app_context():
             db.create_all()
-        logging.info('Created Database!')
+            logging.info('Created Database!')
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'

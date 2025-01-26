@@ -1,0 +1,3 @@
+create_post_data: 
+- commits that are larger than token limit:
+    - simple_truncate cuts lines from the end of each file patch procentually until they altogether fit into the context window
