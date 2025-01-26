@@ -144,8 +144,7 @@ class CommitSignifiganceCategory(str, Enum):
     not_significant = "not significant"
 
 class CommitAnalysis(BaseModel):
-    decision: CommitSignifiganceCategory = Field(description="The decision on the commit analysis")
-
+    decision: CommitSignifiganceCategory = Field(description="The decision on the commit analysis. Have to be either 'significant' or 'not significant'.")
 
 def gpt_judge(commit_patches_data: str):
 
