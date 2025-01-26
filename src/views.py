@@ -595,13 +595,14 @@ def settings():
     openai_models = config.get('OPENAI_MODELS')
 
     markdown_widget_svg = make_widget(current_user, 2, current_user.settings.markdown_widget_fill_color,current_user.settings.markdown_widget_stroke_color,current_user.settings.markdown_widget_text_color)
+    app_url = config.get("APP_URL")
 
     if 'HX-Request' in request.headers and request.headers['HX-Request'] == 'true':
-        return render_template("_settings.html", visible_page=visible_page, install_url=install_url, newest_gpt=newest_gpt, newest_llama=newest_llama, newest_mixtral=newest_mixtral, groq_models=groq_models, openai_models=openai_models, markdown_widget_svg=markdown_widget_svg)
+        return render_template("_settings.html", app_url=app_url,visible_page=visible_page, install_url=install_url, newest_gpt=newest_gpt, newest_llama=newest_llama, newest_mixtral=newest_mixtral, groq_models=groq_models, openai_models=openai_models, markdown_widget_svg=markdown_widget_svg)
 
     # If this is a direct URL access, render the home.html and include the profile content in it
     else:
-        return render_template("home.html", user=current_user, visible_page='settings',rendered_settings=render_template("_settings.html", install_url=install_url,visible_page='settings', newest_gpt=newest_gpt, newest_llama=newest_llama, newest_mixtral=newest_mixtral, groq_models=groq_models, openai_models=openai_models, markdown_widget_svg=markdown_widget_svg))
+        return render_template("home.html", user=current_user, visible_page='settings',rendered_settings=render_template("_settings.html", app_url=app_url, install_url=install_url,visible_page='settings', newest_gpt=newest_gpt, newest_llama=newest_llama, newest_mixtral=newest_mixtral, groq_models=groq_models, openai_models=openai_models, markdown_widget_svg=markdown_widget_svg))
 
 @login_required
 @views.route('/remove-data-<repo_github_id>', methods=['GET'])
