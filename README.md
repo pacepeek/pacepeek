@@ -1,5 +1,5 @@
 
-PacePeek will be social media for coders, where people can come to see updates on other peoples projects. posts are greated automatically by analyzing your incoming github commits.
+PacePeek will is social media for coders, where people can come to see updates on other peoples projects. posts are greated automatically by analyzing your incoming github commits.
 
 Ideas:
 - find other users by their location and similar coding projects? a map of users and you can see who have signed up and are creating stuff near you.
