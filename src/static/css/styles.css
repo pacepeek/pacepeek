@@ -112,8 +112,6 @@ button {
 
 .feature {
     flex: 1;
-    min-width: 250px;
-    max-width: 400px;
     padding: 1.5rem;
     background-color: var(--dark-bg-color);
     border: 1px solid var(--border-color);
@@ -143,7 +141,7 @@ button {
 /* Responsive Design */
 @media (max-width: 768px) {
     .welcome {
-        padding: 5rem 0 2rem; /* Extra padding on top for mobile */
+        padding: 15rem 0 2rem; /* Extra padding on top for mobile */
     }
 
     .first-page h1 {
@@ -157,7 +155,6 @@ button {
     }
 
     .feature {
-        width: 100%;
         margin-bottom: 1rem;
     }
 
@@ -165,7 +162,6 @@ button {
         max-width: 95%;
     }
 }
-
 
 .github-login-wrapper {
     position: fixed;
