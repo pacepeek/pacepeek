@@ -138,13 +138,17 @@ def get_post_summary(client, repo_description, commit_patches_data, model):
     return resp.summary, resp.programming_language_used
 
 
-class CommitSignifiganceCategory(str, Enum):
+class CommitSignificanceCategory(str, Enum):
     """ enum for commit analysis decision """
     significant = "significant"
     not_significant = "not significant"
 
+    @classmethod
+    def _missing_(cls, value):
+        return cls.significant  # Default value for invalid entries
+
 class CommitAnalysis(BaseModel):
-    decision: CommitSignifiganceCategory = Field(description="The decision on the commit analysis. Have to be either 'significant' or 'not significant'.")
+    decision: CommitSignificanceCategory = Field(description="Decision: 'significant' or 'not significant'", default=CommitSignificanceCategory.significant)
 
 def gpt_judge(commit_patches_data: str):
 
@@ -205,12 +209,34 @@ def get_judge_decision(client, commit_patches_data, model):
                 {commit_patches_data}"""},
                     {"role": "user","content": f"Please evaluate if the given commit patches are 'significant' or 'not significant'."},
                 ]
+    system_prompt = f"""Your task is to analyze commits and output JSON strictly following this format:
+            {{
+              "decision": "significant" | "not significant"
+            }}
+
+            Evaluation criteria:
+            Significant if:
+            - New features/major progress
+            - Major refactors
+            - Critical bug fixes
+
+            Not significant if:
+            - Minor tweaks/docs
+            - Small refactors
+            - Non-impactful changes
+
+            Example valid response: {{"decision": "significant"}}
+
+            Commit patches:
+            {commit_patches_data}"""
+
     logging.info(messages)
     resp = client.chat.completions.create(
         model=model,
         max_tokens=1024,
         response_model=CommitAnalysis,
         messages=messages,
+        max_retries=5  # Add automatic validation retries
     )
     logging.info(f"response: {resp.decision}")
     return resp.decision
