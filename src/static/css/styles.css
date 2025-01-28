@@ -52,6 +52,32 @@ button {
     min-height:30px;
 }
 
+.opensource-link {
+    color: #6c757d !important; /* Muted color */
+    text-decoration: none;
+    padding: 8px;
+    display: block;
+    transition: color 0.2s;
+}
+
+.opensource-link:hover {
+    color: #0dbce9 !important; /* Your accent color */
+    text-decoration: underline;
+}
+
+.opensource-link i {
+    font-size: 0.9em; /* Smaller than login button's icon */
+    margin-right: 5px;
+}
+
+/* Differentiate from GitHub login button */
+.github-login {
+    background-color: #24292e; /* GitHub black */
+    color: white !important;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
 .padding-container {
     padding: 20px;
 }
