@@ -17,7 +17,7 @@ maybe:
 
 ## License
 
-This entire codebase, including all historical commits, is licensed under the GNU Affero General Public License Version 3 (AGPLv3). This applies retroactively to all previous versions and commits of this software[1].
+This entire codebase, including all historical commits, is licensed under the GNU Affero General Public License Version 3 (AGPLv3). This applies retroactively to all previous versions and commits of this software.
 
 The full text of the license can be found in the [LICENSE](LICENSE) file.
 
