@@ -792,6 +792,7 @@ def load_more_users_admin():
         # Return only the posts if no more pages are available and edit the indicator
         return users_html + render_template_string(no_more_users_html)
 
+
 @login_required
 @views.route('/load_more_payloads')
 def load_more_payloads():

@@ -14,3 +14,11 @@ maybe:
 - add ability for other than the owner of the repo to make contributions. like collaborators could make commits, but only if the repo exists already since only owner and admin level collaborators can add webhooks to the repository on github.
 
 - if there is a huge commit that could be split into many posts, it might be just good to first check if commit's tokens are over some limit and then if they are do the following:
+
+## License
+
+This entire codebase, including all historical commits, is licensed under the GNU Affero General Public License Version 3 (AGPLv3). This applies retroactively to all previous versions and commits of this software[1].
+
+The full text of the license can be found in the [LICENSE](LICENSE) file.
+
+Copyright (C) 2025 Rasmus Ähtävä
