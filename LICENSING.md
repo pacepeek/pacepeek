@@ -1,6 +1,6 @@
 # Licensing Declaration
 
-I, [Your Name], as the sole author and copyright holder of all code in this repository, hereby declare that:
+I, Rasmus Ähtävä, as the copyright holder of all code in this repository, hereby declare that:
 
 1. All code in this repository, including all historical commits and versions, is licensed under the GNU Affero General Public License Version 3 (AGPLv3).
 2. This declaration applies retroactively to all previous versions of the code.
