@@ -210,27 +210,6 @@ def get_judge_decision(client, commit_patches_data, model):
                 {commit_patches_data}"""},
                     {"role": "user","content": f"Please evaluate if the given commit patches are 'significant' or 'not significant'."},
                 ]
-    system_prompt = f"""Your task is to analyze commits and output JSON strictly following this format:
-            {{
-              "decision": "significant" | "not significant"
-            }}
-
-            Evaluation criteria:
-            Significant if:
-            - New features/major progress
-            - Major refactors
-            - Critical bug fixes
-
-            Not significant if:
-            - Minor tweaks/docs
-            - Small refactors
-            - Non-impactful changes
-
-            Example valid response: {{"decision": "significant"}}
-
-            Commit patches:
-            {commit_patches_data}"""
-
     logging.info(messages)
     resp = client.chat.completions.create(
         model=model,

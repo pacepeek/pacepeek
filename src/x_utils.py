@@ -34,7 +34,7 @@ def post_daily_summary_to_x(repo: Repo, summary: str):
     
     response = requests.request(
         "POST",
-        "https://api.twitter.com/2/tweets",
+        "https://api.x.com/2/tweets",
         json=payload,
         headers={
             "Authorization": "Bearer {}".format(access_token),
@@ -60,12 +60,13 @@ def post_to_x(user: User, post: Post):
     response = None
     try:
         validate_access_token_from_x(user)
+        logging.info("X user access token validated successfully")
 
         access_token = user.x_access_token_decrypted
         
         response = requests.request(
             "POST",
-            "https://api.twitter.com/2/tweets",
+            "https://api.x.com/2/tweets",
             json=payload,
             headers={
                 "Authorization": "Bearer {}".format(access_token),
@@ -92,7 +93,7 @@ def validate_access_token_from_x(user: User):
         
 
 def refresh_access_token_from_x(user: User):
-    url = "https://api.twitter.com/2/oauth2/token"
+    url = "https://api.x.com/2/oauth2/token"
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     data = {
         'refresh_token': user.x_refresh_token_decrypted,
@@ -127,7 +128,7 @@ def revoke_access_token_from_x(user: User):
     print("Revoking token")
     response = None
     try:
-        url = "https://api.twitter.com/2/oauth2/revoke"
+        url = "https://api.x.com/2/oauth2/revoke"
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         basic_auth_str = f"{config.get('X_CLIENT_ID')}:{config.get('X_CLIENT_SECRET')}"
         basic_auth_encoded = base64.b64encode(basic_auth_str.encode('utf-8')).decode('utf-8')
