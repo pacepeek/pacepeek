@@ -63,9 +63,8 @@ def post_to_x(user: User, post: Post):
         logging.info("X user access token validated successfully")
 
         access_token = user.x_access_token_decrypted
-        
         response = requests.request(
-            "POST",
+            "POST", 
             "https://api.x.com/2/tweets",
             json=payload,
             headers={
@@ -73,10 +72,14 @@ def post_to_x(user: User, post: Post):
                 "Content-Type": "application/json",
             },
         )
+        logging.info(f"Response status code: {response.status_code}")
+        logging.info(f"Response headers: {response.headers}")
+        logging.info(f"Raw response content: {response.content}")
+        response_data = response.json()
+        logging.info(f"Response data from X: {response_data}")
         response.raise_for_status()  # Will raise an HTTPError for bad responses
         post.status = 'success'
-        create_user_notification(user, "Your post was successfully posted to X!", f"https://x.com/{user.x_username}/status/{response.json()['data']['id']}")
-
+        create_user_notification(user, "Your post was successfully posted to X!", f"https://x.com/{user.x_username}/status/{response_data['data']['id']}")
         db.session.commit()
         return response
 
