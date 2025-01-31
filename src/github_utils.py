@@ -732,7 +732,6 @@ def handle_new_commit(repo: Repo, commit_sha: str, cdata: dict, current_branch: 
         current_commit.user = author
 
         db.session.add(current_commit)
-
         logging.info(f"starting to go through parents")
         for parent in cdata['parents']:
             parent_sha = parent['sha']
@@ -745,7 +744,10 @@ def handle_new_commit(repo: Repo, commit_sha: str, cdata: dict, current_branch: 
                 parentdata,url = fetch_commit_data(github, repo, parent_sha)
                 parent_timestamp = int(parse_to_utc_from_github_iso(parentdata['commit']['committer']['date'].rstrip("Z")).timestamp())
                 if parent_timestamp < repo.added_timestamp:
-                    logging.info("went under repos added_timestamp, leaving parent as none")
+                    logging.info(f"parent commit {parent_sha} timestamp {parent_timestamp} went under repos added_timestamp {repo.added_timestamp}")
+                    logging.info(f"parent commit date: {parentdata['commit']['committer']['date']}")
+                    logging.info(f"repo added date: {datetime.fromtimestamp(repo.added_timestamp)}")
+                    logging.info(f"difference in seconds: {repo.added_timestamp - parent_timestamp}")
                     continue
 
                 handle_new_commit(repo, parent_sha, parentdata, current_branch, github)
