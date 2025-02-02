@@ -46,6 +46,36 @@ def post_daily_summary_to_x(repo: Repo, summary: str):
 
     return response
 
+def truncate_post_content(user_name, repo_name, content, max_length=280):
+    prefix = f"{user_name} in repo {repo_name}:\n"
+    remaining_chars = max_length - len(prefix)
+    if len(content) > remaining_chars:
+        return prefix + content[:remaining_chars-3] + "..."
+    return prefix + content
+
+
+def make_post_request(access_token: str, payload: dict) -> requests.Response:
+    """
+    Make a POST request to X API with the given payload and access token.
+    Returns the response object.
+    """
+    response = requests.request(
+        "POST",
+        "https://api.x.com/2/tweets",
+        json=payload,
+        headers={
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        },
+    )
+    
+    logging.info(f"Response status code: {response.status_code}")
+    logging.info(f"Response headers: {response.headers}")
+    logging.info(f"Raw response content: {response.content}")
+    logging.info(f"Response data from X: {response.json()}")
+    
+    response.raise_for_status()
+    return response
 
 def post_to_x(user: User, post: Post):
     logging.info("Posting to X!")
@@ -55,36 +85,38 @@ def post_to_x(user: User, post: Post):
         return
 
 
-    post_content = prevent_twitter_links(post.content)
-    payload = {"text": "{} in repo {}:\n {}".format(post.user.name,post.repo.name,post_content)}
-    response = None
     try:
         validate_access_token_from_x(user)
         logging.info("X user access token validated successfully")
 
-        access_token = user.x_access_token_decrypted
-        response = requests.request(
-            "POST", 
-            "https://api.x.com/2/tweets",
-            json=payload,
-            headers={
-                "Authorization": "Bearer {}".format(access_token),
-                "Content-Type": "application/json",
-            },
-        )
-        logging.info(f"Response status code: {response.status_code}")
-        logging.info(f"Response headers: {response.headers}")
-        logging.info(f"Raw response content: {response.content}")
-        response_data = response.json()
-        logging.info(f"Response data from X: {response_data}")
-        response.raise_for_status()  # Will raise an HTTPError for bad responses
+        # Make initial post
+        post_content = prevent_twitter_links(post.content)
+        initial_payload = {
+            "text": truncate_post_content(post.user.name, post.repo.name, post_content)
+        }
+
+        initial_response = make_post_request(user.x_access_token_decrypted, initial_payload)
+        initial_tweet_data = initial_response.json()
+        tweet_id = initial_tweet_data['data']['id']
+
+        # Make reply with link
+        reply_payload = {
+            "reply": {"in_reply_to_tweet_id": tweet_id},
+            "text": f"Read the full post here: https://pacepeek.com/p/{post.id}"
+        }
+        reply_response = make_post_request(user.x_access_token_decrypted, reply_payload)
+
         post.status = 'success'
-        create_user_notification(user, "Your post was successfully posted to X!", f"https://x.com/{user.x_username}/status/{response_data['data']['id']}")
+        create_user_notification(
+            user, 
+            "Your post was successfully posted to X!", 
+            f"https://x.com/{user.x_username}/status/{tweet_id}"
+        )
         db.session.commit()
-        return response
+        return initial_response
 
     except Exception as e:
-        logging.error(f"An error occurred while posting the tweet: {e}")  # Debugging line
+        logging.error(f"An error occurred while posting the tweet: {e}")
         post.status = 'failed'
         post.error_message = str(e)
         db.session.commit()
