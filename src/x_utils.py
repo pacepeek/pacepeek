@@ -47,7 +47,7 @@ def post_daily_summary_to_x(repo: Repo, summary: str):
     return response
 
 def truncate_post_content(user_name, repo_name, content, max_length=280):
-    prefix = f"{user_name} in repo {repo_name}:\n"
+    prefix = f"repo {repo_name}:\n"
     remaining_chars = max_length - len(prefix)
     if len(content) > remaining_chars:
         return prefix + content[:remaining_chars-3] + "..."
