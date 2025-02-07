@@ -100,6 +100,7 @@ def post_to_x(user: User, post: Post):
         tweet_id = initial_tweet_data['data']['id']
 
         # Make reply with link
+        logging.info("POST.ID: ", post.id)
         reply_payload = {
             "reply": {"in_reply_to_tweet_id": tweet_id},
             "text": f"Read the full post here: https://pacepeek.com/p/{post.id}"

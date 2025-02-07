@@ -1,0 +1,224 @@
+{
+  "messageResponse": {
+    "destination": {
+      "type": "sip",
+      "message": "destination",
+      "sipUri": "destination",
+      "transferPlan": {
+        "mode": "blind-transfer"
+      },
+      "sipHeaders": {
+        "key": "value"
+      },
+      "description": "destination"
+    },
+    "assistantId": "assistantId",
+    "assistant": {
+      "transcriber": {
+        "provider": "talkscriber"
+      },
+      "model": {
+        "provider": "xai",
+        "model": "grok-beta"
+      },
+      "voice": {
+        "provider": "tavus",
+        "voiceId": "r52da2535a"
+      },
+      "firstMessage": "Hello! How can I help you today?",
+      "firstMessageMode": "assistant-speaks-first",
+      "hipaaEnabled": false,
+      "clientMessages": [
+        "conversation-update",
+        "function-call",
+        "hang",
+        "model-output",
+        "speech-update",
+        "status-update",
+        "transfer-update",
+        "transcript",
+        "tool-calls",
+        "user-interrupted",
+        "voice-input"
+      ],
+      "serverMessages": [
+        "conversation-update",
+        "end-of-call-report",
+        "function-call",
+        "hang",
+        "speech-update",
+        "status-update",
+        "tool-calls",
+        "transfer-destination-request",
+        "user-interrupted"
+      ],
+      "silenceTimeoutSeconds": 30,
+      "maxDurationSeconds": 600,
+      "backgroundSound": "off",
+      "backgroundDenoisingEnabled": false,
+      "modelOutputInMessagesEnabled": false,
+      "transportConfigurations": [
+        {
+          "provider": "twilio",
+          "timeout": 60,
+          "record": false
+        }
+      ],
+      "credentials": [
+        {
+          "provider": "xai",
+          "apiKey": "credentials"
+        }
+      ],
+      "name": "name",
+      "voicemailDetection": {
+        "provider": "twilio"
+      },
+      "voicemailMessage": "voicemailMessage",
+      "endCallMessage": "endCallMessage",
+      "endCallPhrases": [
+        "endCallPhrases"
+      ],
+      "metadata": {
+        "key": "value"
+      },
+      "artifactPlan": {
+        "recordingEnabled": true,
+        "videoRecordingEnabled": false
+      },
+      "startSpeakingPlan": {
+        "waitSeconds": 0.4,
+        "smartEndpointingEnabled": false
+      },
+      "stopSpeakingPlan": {
+        "numWords": 0,
+        "voiceSeconds": 0.2,
+        "backoffSeconds": 1
+      },
+      "monitorPlan": {
+        "listenEnabled": false,
+        "controlEnabled": false
+      },
+      "credentialIds": [
+        "credentialIds"
+      ],
+      "server": {
+        "timeoutSeconds": 20,
+        "url": "url"
+      }
+    },
+    "assistantOverrides": {
+      "transcriber": {
+        "provider": "talkscriber"
+      },
+      "model": {
+        "provider": "xai",
+        "model": "grok-beta"
+      },
+      "voice": {
+        "provider": "tavus",
+        "voiceId": "r52da2535a"
+      },
+      "firstMessage": "Hello! How can I help you today?",
+      "firstMessageMode": "assistant-speaks-first",
+      "hipaaEnabled": false,
+      "clientMessages": [
+        "conversation-update",
+        "function-call",
+        "hang",
+        "model-output",
+        "speech-update",
+        "status-update",
+        "transfer-update",
+        "transcript",
+        "tool-calls",
+        "user-interrupted",
+        "voice-input"
+      ],
+      "serverMessages": [
+        "conversation-update",
+        "end-of-call-report",
+        "function-call",
+        "hang",
+        "speech-update",
+        "status-update",
+        "tool-calls",
+        "transfer-destination-request",
+        "user-interrupted"
+      ],
+      "silenceTimeoutSeconds": 30,
+      "maxDurationSeconds": 600,
+      "backgroundSound": "off",
+      "backgroundDenoisingEnabled": false,
+      "modelOutputInMessagesEnabled": false,
+      "transportConfigurations": [
+        {
+          "provider": "twilio",
+          "timeout": 60,
+          "record": false
+        }
+      ],
+      "credentials": [
+        {
+          "provider": "xai",
+          "apiKey": "credentials"
+        }
+      ],
+      "variableValues": {
+        "key": "value"
+      },
+      "name": "name",
+      "voicemailDetection": {
+        "provider": "twilio"
+      },
+      "voicemailMessage": "voicemailMessage",
+      "endCallMessage": "endCallMessage",
+      "endCallPhrases": [
+        "endCallPhrases"
+      ],
+      "metadata": {
+        "key": "value"
+      },
+      "artifactPlan": {
+        "recordingEnabled": true,
+        "videoRecordingEnabled": false
+      },
+      "startSpeakingPlan": {
+        "waitSeconds": 0.4,
+        "smartEndpointingEnabled": false
+      },
+      "stopSpeakingPlan": {
+        "numWords": 0,
+        "voiceSeconds": 0.2,
+        "backoffSeconds": 1
+      },
+      "monitorPlan": {
+        "listenEnabled": false,
+        "controlEnabled": false
+      },
+      "credentialIds": [
+        "credentialIds"
+      ],
+      "server": {
+        "timeoutSeconds": 20,
+        "url": "url"
+      }
+    },
+    "squadId": "squadId",
+    "squad": {
+      "name": "name",
+      "members": [
+        {}
+      ],
+      "membersOverrides": {
+        "firstMessage": "Hello! How can I help you today?",
+        "hipaaEnabled": false,
+        "silenceTimeoutSeconds": 30,
+        "maxDurationSeconds": 600,
+        "backgroundDenoisingEnabled": false,
+        "modelOutputInMessagesEnabled": false
+      }
+    },
+    "error": "error"
+  }
+}
