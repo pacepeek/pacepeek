@@ -177,8 +177,8 @@ def gpt_judge(commit_patches_data: str):
             mode=instructor.Mode.JSON,
         )
         model = config.get('OPENROUTER_MODEL')
-        return "significant"
-        #return get_judge_decision(client, commit_patches_data, model)
+        #return "significant"
+        return get_judge_decision(client, commit_patches_data, model)
 
     else:
         create_admin_notification(f"Invalid provider: {provider}")
