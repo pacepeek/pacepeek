@@ -771,6 +771,7 @@ def handle_new_commit(repo: Repo, commit_sha: str, cdata: dict, current_branch: 
         if sig == "significant" or (post.user.github_login == "rasmustestaccount" and post.repo.name == "alwayssignificant"):
             logging.info("significant")
             post_content = post_post(post_data, post)
+            db.session.commit()
             logging.info("post created")
             if author.post_to_x_active:
                 post_to_x(author, post)
