@@ -754,7 +754,8 @@ def handle_new_commit(repo: Repo, commit_sha: str, cdata: dict, current_branch: 
                 # lets check again
                 parent_commit = Commit.query.filter_by(sha=parent_sha).first()
                 if parent_commit is None:
-                    raise ParentCommitNotFoundError(f"parent_commit is still None with sha:{parent_sha}, we couldn't fix it with recursion")
+                    create_admin_notification(f"parent_commit is still None with sha:{parent_sha} for repo {repo.name} owned by {repo.owner_github_login}, we couldn't fix it with recursion. Current commit sha: {commit_sha}, branch: {current_branch.name}")
+                    continue
                 logging.info(f"parent_commit is now {parent_sha}")
             current_commit.parents.append(parent_commit)
             logging.info(f"found and linked parent {parent_sha} to commit {commit_sha}")
