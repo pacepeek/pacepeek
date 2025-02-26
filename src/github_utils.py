@@ -638,27 +638,34 @@ def build_full_text(commit_data):
                 text += f"{file['patch']}\n"
     return text
 
-
 def create_post_data(github_ses, post: Post):
     logging.info("enter create_post_data")
 
     post_data = f"Author: {post.author_github_login}\n" if post.author_github_login else "Author: Unknown\n"
+    logging.info(f"Initial post_data: {post_data}")
 
     lines_changed_total = 0
     tokens_used_total = count_tokens(post_data)
+    logging.info(f"Initial tokens_used_total: {tokens_used_total}")
 
     post.commits.sort(key=lambda x: x.creation_timestamp)
-    for commit in post.commits:
+    logging.info(f"Number of commits to process: {len(post.commits)}")
+    
+    for i, commit in enumerate(post.commits):
+        logging.info(f"Processing commit {i+1}/{len(post.commits)}: {commit.sha}")
         tokens_used_commit = 0
         commitdata, url = fetch_commit_data(github_ses, post.repo, commit.sha)
+        logging.info(f"Fetched commit data from URL: {url}")
 
         commit_message = commitdata['commit']['message']
         commit_header = f"Commit Message: {commit.message}\n\n"
         tokens_used_commit += count_tokens(commit_header)
+        logging.info(f"Commit header tokens: {tokens_used_commit}")
         commit.message = commit_message
         commit.creation_timestamp = int(parse_to_utc_from_github_iso(commitdata['commit']['committer']['date'].rstrip("Z")).timestamp())
 
         file_data, tokens_used, lines = try_fitting_new_commit(commitdata, tokens_used_total + tokens_used_commit)
+        logging.info(f"try_fitting_new_commit returned: file_data length: {len(file_data) if file_data else 0}, tokens_used: {tokens_used}, lines: {lines}")
 
         # TODO this might not be accurate if there was commit or two that were left 
         # out since they didn't fit into the context window (when below 'if' was true)
@@ -671,14 +678,19 @@ def create_post_data(github_ses, post: Post):
         post_data += f"Commit Message: {commit.message}\n\n"
         post_data += file_data
         tokens_used_total = tokens_used
+        logging.info(f"After commit {i+1}, tokens_used_total: {tokens_used_total}, lines_changed_total: {lines_changed_total}")
 
     if post.lines_changed is None:
         post.lines_changed = 0
+        logging.info("post.lines_changed was None, set to 0")
+    
+    logging.info(f"Final post_data length: {len(post_data)}")
+    print(post_data)
     post.lines_changed = int(post.lines_changed) + int(lines_changed_total)
     post.summary_token_count = tokens_used_total
+    logging.info(f"Final post.lines_changed: {post.lines_changed}, post.summary_token_count: {post.summary_token_count}")
     logging.info("leave create_post_data")
     return post_data
-
 
 def post_post(post_data: str, post: Post):
     post_content, language, model = gpt_generate_summary_for_user_commits(post.repo.repo_description, post_data)
